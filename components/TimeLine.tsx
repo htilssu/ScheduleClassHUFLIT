@@ -27,7 +27,7 @@ function TimeLine({dragging}: TimeLineProps) {
                         <Table.Tr key={i}>
                             <Table.Td className={"text-center bg-rose-50 border-[1px] border-gray-400"}>{i + 1}</Table.Td>
                             {Array.from({length: 7}, (_, j) => j).map((j) => (
-                                i % 3 == 0 && <Table.Td key={j} rowSpan={3} className={"text-center border-[1px] border-gray-400"}>{dragging?.weekDay === (j + 2).toString() && dragging?.time === `${i + 1}-${i + 2}` ? "Dragging" : ""}</Table.Td>
+                                i % 3 == 0 && <Table.Td key={j} rowSpan={3} className={"text-center border-[1px] border-gray-400"}></Table.Td>
                             ))}
                         </Table.Tr>
                     ))}
