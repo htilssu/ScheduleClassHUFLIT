@@ -32,7 +32,6 @@ async function scrapData() {
                     year: value
                 }
             }),
-            skipDuplicates: true,
         })
     } catch
         (e) {
@@ -45,27 +44,15 @@ async function scrapData() {
                     semester: value
                 }
             }),
-            skipDuplicates: true,
         })
     } catch
         (e) {
     }
-    try {
-        await prisma.week.createMany({
-            data: week.map(value => {
-                return {
-                    week: value.week,
-                    year: value.year,
-                    semester: value.semester
-                }
-            })
-        })
-    } catch (e) {
-    }
+
     try {
         await prisma.lecturer.createMany({
             data: await loadProfessor(rawData.data),
-            skipDuplicates: true,
+
         })
     } catch (e) {
 
@@ -135,7 +122,7 @@ async function loadYearStudy(rawDataL: string) {
 
 }
 
-async function loadSubject(yearStudy: string[], term: string[]) {
+/*async function loadSubject(yearStudy: string[], term: string[]) {
     const data = []
 
     for (const year of yearStudy) {
@@ -150,7 +137,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
     }
 
     return data
-}
+}*/
 
 async function loadProfessor(rawData: string) {
     const $ = load(rawData)
