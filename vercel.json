@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/auth/[param]",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/major",
+      "schedule": "* * * * *"
+    }
+  ]
+}
