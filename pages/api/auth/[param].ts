@@ -56,6 +56,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
         });
 
+        console.log(params)
+        console.log(user)
+
         if (!user) {
             return null
         }
@@ -63,8 +66,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (result) {
             const resUser = {...user, password: undefined}
             let expires = "3h"
-            if (params.remember) expires= "7d"
-            const token = jwt.sign(resUser, process.env.JWT_SECRET!, {algorithm:"HS256",expiresIn: expires})
+            if (params.remember) expires = "7d"
+            const token = jwt.sign(resUser, process.env.JWT_SECRET!, {algorithm: "HS256", expiresIn: expires})
             res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/; SameSite=Strict; Secure`)
             return {...user, password: undefined, token: token}
         }
