@@ -6,7 +6,7 @@ import {useDraggable} from "@dnd-kit/core";
 function ClassCard({classData}: any) {
     const current = useRef(null);
     const {setNodeRef, transform, listeners, isDragging, attributes} = useDraggable({
-        id: "unique-id",
+        id: classData,
         data: {...classData}
     });
 

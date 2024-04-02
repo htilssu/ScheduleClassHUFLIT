@@ -70,16 +70,15 @@ model YearStudy {
 }
 
 model Semester {
-  semester String    @map("_id")
+  semester String @map("_id")
   Subject  Subject[]
   Week     Week[]
-
   @@id([semester])
 }
 
 model Week {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  week        String
+  week        Int
   semesterId  String
   semester    Semester  @relation(fields: [semesterId], references: [semester])
   yearStudyId String

@@ -1,16 +1,13 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import TimeLine from "@/components/TimeLine";
 import ActionBar from "@/components/ActionBar";
 import SelectSection from "@/components/SelectSection";
-import {useRouter} from "next/router";
-import {useAuth} from "@/contexts/AuthContext";
 import {DndContext, DragStartEvent} from "@dnd-kit/core";
-import {Class} from "@prisma/client";
 
 function Schedule() {
-    const [dragging, setDragging] = useState<Class | null>(null)
+    const [dragging, setDragging] = useState<any | null>(null)
     const onDndContextDragStart = useCallback((event: DragStartEvent) => {
-        setDragging({...event.active.data})
+        return setDragging({...event.active.data});
     }, []);
 
 
@@ -18,7 +15,7 @@ function Schedule() {
         setDragging(e.active.data)
     }
 
-    function onDndContextDragEnd(e) {
+    function onDndContextDragEnd() {
         setDragging(null)
     }
 
