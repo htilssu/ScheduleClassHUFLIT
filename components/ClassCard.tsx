@@ -3,10 +3,10 @@ import {Class} from "@prisma/client";
 import {Card, Image, Group, Text, Badge, Button} from "@mantine/core";
 import {useDraggable} from "@dnd-kit/core";
 
-function ClassCard({classData}: { classData: Class }) {
+function ClassCard({classData}: any) {
     const current = useRef(null);
     const {setNodeRef, transform, listeners, isDragging, attributes} = useDraggable({
-        id: classData.id,
+        id: "unique-id",
         data: {...classData}
     });
 

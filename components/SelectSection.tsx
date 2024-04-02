@@ -4,7 +4,6 @@ import {useRouter} from "next/router";
 import {apiRequest} from "@/services/apiRequest";
 import {Class, Major} from "@prisma/client";
 import {useForm} from "@mantine/form";
-import {classDummy} from "@/dummy";
 import ClassCard from "@/components/ClassCard";
 
 function SelectSection() {
@@ -15,7 +14,6 @@ function SelectSection() {
             major: ""
         }
     })
-    const classes: Class[] = classDummy;
 
     useEffect(() => {
         apiRequest.get("/api/major").then(res => {
@@ -37,7 +35,7 @@ function SelectSection() {
 
 
             <ScrollArea className={"overflow-x-hidden"}>
-                {classes.map(value => <ClassCard classData={value} key={value.id}/>)}
+                {Array.from({length: 8}).map((value,index) => <ClassCard classData={value} key={index}/>)}
             </ScrollArea>
 
         </div>
