@@ -1,24 +1,29 @@
 // noinspection TypeScriptValidateJSTypes
 
 import {NextApiRequest, NextApiResponse} from "next";
-import {PrismaClient} from "@prisma/client";
+import {Major, PrismaClient} from "@prisma/client";
 
 
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {id} = req.query;
-    switch (req.method) {
-        case "GET":
-            const result = await getMajor(id as string);
-            res.status(200).json(result);
-            break;
-        case "POST":
-            const {name} = req.body;
-            const newMajor = await createMajor(name);
-            res.status(201);
-            break;
+    try {
+        switch (req.method) {
+            case "GET":
+                const result = await getMajor(id as string);
+                res.status(200).json(result);
+                break;
+            case "POST":
+                const newMajor: Major = req.body;
+                await createMajor(newMajor);
+                res.status(201).json({status: "success"});
+                break;
 
+        }
+    } catch (e) {
+        console.log(e)
+        res.status(500).json(null);
     }
 }
 
@@ -35,6 +40,8 @@ async function getMajor(majorId: string) {
 }
 
 
-async function createMajor(name: string) {
-
+async function createMajor(major: Major) {
+    return prisma.major.create({
+        data: major
+    });
 }

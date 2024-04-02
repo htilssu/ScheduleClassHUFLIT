@@ -1,7 +1,6 @@
 import {Button} from '@mantine/core';
 import React from 'react';
 import Link from "next/link";
-import {IconArrowRight} from "@tabler/icons-react";
 import {useAuth} from "@/contexts/AuthContext";
 import {apiRequest} from "@/services/apiRequest";
 

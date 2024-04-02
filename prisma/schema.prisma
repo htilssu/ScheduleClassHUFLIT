@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,51 +8,82 @@ datasource db {
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  username String @unique
-  password String @map("password")
-  email String @unique
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  username String    @unique
+  password String    @map("password")
+  email    String    @unique
   timeline TimeLine?
-  role String @default("user")
+  role     String    @default("user")
 }
 
 model Lecturer {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
+  id      String  @id @map("_id")
+  name    String
   classes Class[]
 }
 
-model Class{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  lecturerId String @db.ObjectId
-  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
-  subjectId String @db.ObjectId
-  subject Subject @relation(fields: [subjectId], references: [id])
+model Class {
+  id         String   @id @map("_id")
+  weekDay    String
+  time       String
+  roomId     String
+  lecturerId String
+  lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
+  subjectId  String
+  subject    Subject  @relation(fields: [subjectId], references: [id])
+  weekId     String[] @db.ObjectId
+  week       Week[]   @relation(fields: [weekId], references: [id])
 }
 
 model Major {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  description String
-  subject Subject[]
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  subject     Subject[]
 }
 
 model Subject {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  description String
-  majorId String @db.ObjectId
-  major Major @relation(fields: [majorId], references: [id])
-  classId String[] @db.ObjectId
-  class Class[]
+  id          String    @id @map("_id")
+  name        String
+  majorId     String    @db.ObjectId
+  major       Major     @relation(fields: [majorId], references: [id])
+  classId     String[]
+  class       Class[]
+  yearStudyId String
+  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  semesterId  String
+  semester    Semester  @relation(fields: [semesterId], references: [semester])
 }
 
 model TimeLine {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @default(auto()) @map("_id") @db.ObjectId
   classId String[] @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId @unique
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String   @unique @db.ObjectId
+  @@id([id])
 }
 
+model YearStudy {
+  year    String    @id @map("_id")
+  Subject Subject[]
+  Week    Week[]
+}
+
+model Semester {
+  semester String    @map("_id")
+  Subject  Subject[]
+  Week     Week[]
+
+  @@id([semester])
+}
+
+model Week {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  week        String
+  semesterId  String
+  semester    Semester  @relation(fields: [semesterId], references: [semester])
+  yearStudyId String
+  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  classId     String[]
+  class       Class[]   @relation(fields: [classId], references: [id])
+}

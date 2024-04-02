@@ -8,13 +8,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/auth?reset=true', request.url))
     }
 
+    
+
+
+
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
     try {
         const verified = await jwtVerify(cookie.value, secret, {
             algorithms: ['HS256']
         });
-        return NextResponse.next()
+        return NextResponse.next({})
     } catch (e) {
         return NextResponse.redirect(new URL('/auth?reset=true', request.url))
 
