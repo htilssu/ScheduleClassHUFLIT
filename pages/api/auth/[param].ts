@@ -42,7 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     } catch (e) {
         res.status(500).json({message: "Lỗi hệ thống"})
-        res.status(200).json(param)
     }
 
     async function logout() {
