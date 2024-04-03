@@ -4,16 +4,9 @@ import {NextApiRequest, NextApiResponse} from "next";
 import axios from "axios";
 import {load} from "cheerio";
 import {prisma} from "@/services/prismaClient";
-import {Lecturer} from "@prisma/client";
+import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/utils/data";
+import {randomUUID} from "node:crypto";
 
-const weekDayMap = new Map<string,string>();
-weekDayMap.set("Thứ 2","T2")
-weekDayMap.set("Thứ 3","T3")
-weekDayMap.set("Thứ 4","T4")
-weekDayMap.set("Thứ 5","T5")
-weekDayMap.set("Thứ 6","T6")
-weekDayMap.set("Thứ 7","T7")
-weekDayMap.set("Chủ nhật","CN")
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
@@ -27,11 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function scrapData() {
     const rawData = await axios.get("https://portal.huflit.edu.vn/public/tracuuthoikhoabieu")
-    const classStudent: { ClassStudentID: string, ClassStudentName: string } = await loadClassStudent(rawData.data)
     const term = await loadTerm(rawData.data)
     const year = await loadYearStudy(rawData.data)
-    const week = await loadWeek(year, term)
-    const subject = await loadSubject(classStudent, year, term, week)
+    await loadWeek(year, term)
+    // await loadSubject(year, term)
+    await loadClass(year, term)
 
 
 // console.log(year)
@@ -39,80 +32,38 @@ async function scrapData() {
 // console.log(term)
 // console.log(year)
 
-    async function saveData() {
-        //save year
-        for (const value of year) {
-            const data = await prisma.yearStudy.findUnique({
-                where: {
-                    year: value
-                }
-            })
-
-
-            if (!data) {
-                await prisma.yearStudy.create({
-                    data: {
-                        year: value
-                    }
-                })
-            }
-        }
-
-        //save semester
-        for (const value of term) {
-            const data = await prisma.semester.findUnique({
-                where: {
-                    semester: value
-                }
-            })
-
-
-            if (!data) {
-                await prisma.semester.create({
-                    data: {
-                        semester: value
-                    }
-                })
-            }
-        }
-        //save week
-        for (const value of week) {
-            const data = await prisma.week.findFirst({
-                where: {
-                    yearStudyId: value.year,
-                    semesterId: value.semester,
-                    week: value.week
-                }
-
-            })
-
-
-            if (!data) {
-                await prisma.week.create({
-                    data: {
-                        week: value.week,
-                        semesterId: value.semester,
-                        yearStudyId: value.year
-                    }
-                })
-
-            }
-        }
-    }
 
 }
 
-async function loadClassStudent(rawData: string) {
-    const result = await axios.get("https://portal.huflit.edu.vn/Public/GetClassStudentByTerm/2023-2024$HK03")
-    return result.data
+async function loadClassStudent(yearStudy: string, term: string) {
+
+    const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetClassStudentByTerm/${yearStudy}$${term}`)
+    return result.data;
 }
 
 async function loadTerm(rawData: string) {
     const $ = load(rawData)
     const term: string[] = []
-    $("#TermID option").each((index, element) => {
+    $("#TermID option").each((_, element) => {
         term.push($(element).attr("value")!)
     })
+
+    for (const value of term) {
+        const data = await prisma.semester.findUnique({
+            where: {
+                semester: value
+            }
+        })
+
+
+        if (!data) {
+            await prisma.semester.create({
+                data: {
+                    semester: value
+                }
+            })
+        }
+    }
 
     return term
 }
@@ -120,22 +71,22 @@ async function loadTerm(rawData: string) {
 async function loadWeek(yearStudy: string[], term: string[]) {
     const data = []
 
-    for (const year of yearStudy) {
+    const scrapYear = yearStudy.filter(value => value.includes(new Date().getFullYear().toString()))
+
+    for (const year of scrapYear) {
         for (const term1 of term) {
             try {
                 const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetWeek/${year}$${term1}`) as {
                     data: {
                         Week: number,
-                        year: string,
-                        semester: string
+                        DisPlayWeek: number,
                     }[]
                 }
                 data.push(...result.data.map(value => {
                     return {
                         ...value,
-                        year: year,
+                        yearValue: year,
                         semester: term1,
-                        week: value.Week,
                     }
                 }))
             } catch (e) {
@@ -144,71 +95,255 @@ async function loadWeek(yearStudy: string[], term: string[]) {
 
     }
 
+
+    for (const value of data) {
+        const data = await prisma.week.findFirst({
+            where: {
+                yearStudyId: value.yearValue,
+                semesterId: value.semester,
+                weekValue: value.Week,
+                weekName: value.DisPlayWeek
+            }
+
+        })
+
+
+        if (!data) {
+            await prisma.week.create({
+                data: {
+                    weekValue: value.Week,
+                    weekName: value.DisPlayWeek,
+                    semester: {
+                        connectOrCreate: {
+                            where: {
+                                semester: value.semester
+                            },
+                            create: {
+                                semester: value.semester
+                            }
+                        }
+                    },
+                    yearStudy: {
+                        connectOrCreate: {
+                            where: {
+                                year: value.yearValue
+                            },
+                            create: {
+                                year: value.yearValue
+                            }
+                        }
+                    }
+                }
+            })
+
+        }
+    }
+
     return data
 }
 
 async function loadYearStudy(rawDataL: string) {
     const $ = load(rawDataL)
     const year: string[] = []
-    $("#YearStudy2 option").each((index, element) => {
+    $("#YearStudy2 option").each((_, element) => {
         year.push($(element).attr("value")!)
     })
+
+    for (const value of year) {
+        const data = await prisma.yearStudy.findUnique({
+            where: {
+                year: value
+            }
+        })
+
+
+        if (!data) {
+            await prisma.yearStudy.create({
+                data: {
+                    year: value
+                }
+            })
+        }
+    }
 
     return year
 
 
 }
 
-async function loadSubject(studentClass: any, yearStudy: string[], term: string[], week: {
-    Week: number,
-    year: string,
-    semester: string
-}[]) {
-
+async function loadSubject(yearStudy: string[], term: string[]) {
 
     const currentYear = new Date().getFullYear();
+
     const scrapYear = yearStudy.filter(value => value.includes(currentYear.toString()))
+    const week = await prisma.week.findMany({
+        where: {
+            yearStudyId: {
+                in: scrapYear
+            },
+        }
+    });
 
     for (let yearItem of scrapYear) {
         for (let semester of term) {
-            const weekData = week.filter(value => value.year === yearItem && value.semester === semester)
+            const weekData = week.filter(value => value.yearStudyId === yearItem && value.semesterId === semester)
             if (!weekData) continue
+            const studentClass = await loadClassStudent(yearItem, semester)
             for (let studentClassItem of studentClass) {
-                for (let weekDatum of weekData) {
-                    console.log(weekDatum)
-                    const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.Week}&ClassStudentID=${studentClassItem.ClassStudentID}`)
-                    const $ = load(result.data)
-                    const tr = $("tr:not(:first-child)")
-                    tr.each((index, element) => {
-                        const th = $(element).find("th")
-                        const weekDay = $(th).text().split("(")[0].trim()
-                        const shortWeekDay = weekDayMap.get(weekDay)
-                        const divL = $(element).find("td div")
+                const weekDatum = weekData[Math.round(weekData.length / 3)]
+                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem.ClassStudentID}`)
+                const $ = load(result.data)
 
-                        if (divL.length != 0){
-                            console.log(divL.length)
+                const tr = $("tr:not(:first-child)")
+                tr.each((_, element) => {
+                    const divL = $(element).find("td div")
+                    divL.each((_index, element) => {
+                        try {
+                            let result = getSubjectDataFromRaw($(element).text());
+                            prisma.subject.findUnique({
+                                where: {
+                                    id: result.subjectId,
+                                }
+                            }).then(value => {
+                                if (!value) {
+                                    prisma.subject.create({
+                                        data: {
+                                            id: result.subjectId,
+                                            name: result.subjectName,
+                                            semester: {
+                                                connectOrCreate: {
+                                                    where: {
+                                                        semester: semester
+                                                    },
+                                                    create: {
+                                                        semester: semester
+                                                    }
+                                                }
+                                            },
+                                            yearStudy: {
+                                                connectOrCreate: {
+                                                    where: {
+                                                        year: yearItem
+                                                    },
+                                                    create: {
+                                                        year: yearItem
+                                                    }
+                                                }
+                                            },
+                                            major: {
+                                                connectOrCreate: {
+                                                    where: {
+                                                        name: "_"
+                                                    },
+                                                    create: {
+                                                        name: "_"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }).then()
+                                }
+
+                            })
+                        } catch (e) {
+                            console.log($(element).text())
+                            console.log(e)
+                        }
+                    })
+                });
+            }
+        }
+    }
+
+
+}
+
+
+async function loadClass(yearStudy: string[], term: string[]) {
+
+    const lecture = await prisma.lecturer.findMany()
+    for (let year of yearStudy) {
+        for (let s of term) {
+            const subject = await prisma.subject.findMany({
+                where: {
+                    yearStudyId: year,
+                    semesterId: s
+                }
+            });
+            const week = await prisma.week.findMany({
+                where: {
+                    yearStudyId: year,
+                    semesterId: s
+                }
+            });
+
+            const standardWeek = week[Math.round(week.length / 3)]
+
+            for (let subjectElement of subject) {
+                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.id}&valueWeek=1&Week=${standardWeek.weekName}`)
+                const classData = getClassDataFromRaw(result.data)
+                for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
+
+                    if (lecture.find(value => value.name.includes(lectureName)) === undefined) {
+                        const newLecture = {
+                            id: randomUUID(),
+                            name: lectureName
+                        }
+                        await prisma.lecturer.create({
+                            data: {
+                                id: newLecture.id,
+                                name: newLecture.name
+                            }
+                        })
+                        lecture.push(newLecture)
+                    }
+
+                    const data = await prisma.class.findFirst({
+                        where: {
+                            id: id,
+                            subjectId: subjectId,
+                            yearStudyId: year,
+                            semesterId: s
                         }
                     });
 
+                    if (!data) {
+                        // @ts-ignore
+                        await prisma.class.create({
+                            data: {
+                                id: id,
+                                subject: {
+                                    connect: {
+                                        id: subjectId
+                                    }
+                                },
+                                room: room,
+                                time: time,
+                                weekDay: "T" + weekDay,
+                                type: type,
+                                yearStudy: {
+                                    connect: {
+                                        year: year
+                                    }
+                                },
+                                semester: {
+                                    connect: {
+                                        semester: s
+                                    }
+                                },
+                                lecturer: {
+                                    connect: {
+                                        id: lecture.find(value => value.name.includes(lectureName))!.id
+                                    }
+                                }
+
+                            }
+                        })
+                    }
 
                 }
             }
         }
     }
-
-}
-
-async function loadProfessor(rawData: string) {
-    const $ = load(rawData)
-    const professor: Lecturer[] = []
-    $("#ProfessorID option").each((index, element) => {
-        professor.push({
-            id: $(element).attr("value")!,
-            name: $(element).text()
-        })
-    })
-
-
-    return professor
 
 }

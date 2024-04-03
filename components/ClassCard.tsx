@@ -1,44 +1,41 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Class} from "@prisma/client";
-import {Card, Image, Group, Text, Badge, Button} from "@mantine/core";
+import React from 'react';
+import {Badge, Card, Group, Stack, Text} from "@mantine/core";
 import {useDraggable} from "@dnd-kit/core";
+import {ClassRoot} from "@/pages/schedule";
 
-function ClassCard({classData}: any) {
-    const current = useRef(null);
+function ClassCard({classData}: { classData: ClassRoot }) {
     const {setNodeRef, transform, listeners, isDragging, attributes} = useDraggable({
-        id: classData,
+        id: classData.id,
         data: {...classData}
     });
 
 
-
     return (
-        <div ref={setNodeRef}  {...listeners} {...attributes}  className={"mt-2 hover:cursor-grab overflow-hidden"} style={isDragging && transform ? {
-            transform: `translate(${transform.x}px, ${transform.y}px)`,
-            zIndex: 999,
-            cursor: "grab"
-        }: { }}>
+        <div ref={setNodeRef}  {...listeners} {...attributes} className={"mt-2 hover:cursor-grab overflow-hidden"}
+             style={isDragging && transform ? {
+                 transform: `translate(${transform.x}px, ${transform.y}px)`,
+                 zIndex: 999,
+                 position: "absolute",
+                 cursor: "grab"
+             } : {}}>
             <Card shadow="sm" padding="md" radius="md" withBorder>
-                <Card.Section component="a" href="https://mantine.dev/">
-
-                </Card.Section>
-
-                <Group justify="space-between" mt="md" mb="xs">
-                    <Text fw={500}>Lý thuyết đồ thị</Text>
+                <Stack gap={"xs"}>
                     <Group>
-                        <Badge color="green">T3</Badge>
-                        <Badge color="blue">2-4</Badge>
-                        <Badge color="pink">B45</Badge>
+                        <Badge color="green">{classData.weekDay}</Badge>
+                        <Badge color="blue">{classData.time}</Badge>
+                        <Badge color="pink">{classData.room}</Badge>
                     </Group>
-                </Group>
+                    <Text fw={500}>{classData.subject.name}</Text>
+                    <Text size="sm" c="dimmed">
+                        {classData.lecturer.name}
+                    </Text>
+                </Stack>
 
-                <Text size="sm" c="dimmed">
-                    Ths. Nguyễn Văn A
-                </Text>
 
-                <Button color="blue" fullWidth mt="md" radius="md">
+
+                {/*<Button color="blue" fullWidth mt="md" radius="md">
                     Thêm
-                </Button>
+                </Button>*/}
             </Card>
         </div>
     );

@@ -56,8 +56,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
         });
 
-        console.log(params)
-        console.log(user)
 
         if (!user) {
             return null

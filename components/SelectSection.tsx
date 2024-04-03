@@ -1,41 +1,62 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {ScrollArea, Select} from "@mantine/core";
-import {useRouter} from "next/router";
-import {apiRequest} from "@/services/apiRequest";
-import {Class, Major} from "@prisma/client";
-import {useForm} from "@mantine/form";
+import React, {useEffect, useState} from 'react';
+import {ComboboxItem, Input, ScrollArea, Select, Stack} from "@mantine/core";
 import ClassCard from "@/components/ClassCard";
+import {ClassRoot} from "@/pages/schedule";
+import {debounce} from 'lodash';
 
-function SelectSection() {
-    const [major, setMajor] = useState<undefined | Major[]>(undefined)
-    const router= useRouter()
-    const form = useForm({
-        initialValues: {
-            major: ""
+interface SelectSectionProps {
+    classes: ClassRoot[]
+}
+
+function SelectSection({classes}: SelectSectionProps) {
+
+    const [classType, setClassType] = useState("Lý thuyết")
+    const [classList, setClassList] = useState<ClassRoot[]>([])
+    const [search, setSearch] = useState("")
+    const [displayCount, setDisplayCount] = useState(20)
+
+    const debouncedSearch = debounce((search) => {
+        setDisplayCount(20)
+        if (classType === "Tất cả") {
+            setClassList(_ => classes)
+        } else {
+            setClassList(_ => classes.filter(value => value.type === classType))
         }
-    })
+
+        setClassList(classes => classes.filter(value => value.subject.name.toLowerCase().includes(search.toLowerCase())))
+    }, 500, {trailing: true, leading: false});
 
     useEffect(() => {
-        apiRequest.get("/api/major").then(res => {
-            if (res.status === 200) {
-                return res.data
-            } else {
-                router.push("/auth").then()
-            }
-        }).then(data => {
-            setMajor(data)
-        });
-    }, [router]);
+        debouncedSearch(search);
 
+    }, [classes, classType, search, debouncedSearch]);
+
+    function handleTypeChange(e: string | null, _: ComboboxItem) {
+        setClassType(e!)
+    }
+
+    function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setSearch(e.target.value)
+    }
+
+    function handleScroll(e: React.UIEvent<HTMLDivElement>) {
+        const bottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop === e.currentTarget.clientHeight;
+        if (bottom) {
+            setDisplayCount(displayCount + 20);
+        }
+    }
 
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md"}>
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
-            <Select data={major?.map(value => value.name)} label={"Chọn chuyên ngành"} placeholder={major ? "Chọn chuyên ngành" : "Loading..."}/>
+            <Stack className={"mt-2"}>
+                <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
+                <Select defaultValue={"Tất cả"} onChange={handleTypeChange} data={["Tất cả", "Lý thuyết", "Thực hành"]}
+                        placeholder={"Chọn loại"}/>
+            </Stack>
 
-
-            <ScrollArea className={"overflow-x-hidden"}>
-                {Array.from({length: 8}).map((value,index) => <ClassCard classData={value} key={index}/>)}
+            <ScrollArea scrollbars={"y"} className={"overflow-x-hidden mt-4 scroll-hide-thumb"} onScroll={handleScroll}>
+                {classList.map((value, index) => <ClassCard key={index} classData={value}/>)}
             </ScrollArea>
 
         </div>

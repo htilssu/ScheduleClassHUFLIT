@@ -23,6 +23,7 @@
     "@tabler/icons-react": "^3.1.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/lodash": "^4.17.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "cheerio": "1.0.0-rc.12",

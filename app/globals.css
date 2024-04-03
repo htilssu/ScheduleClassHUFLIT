@@ -26,5 +26,9 @@ body {
     border-radius: 5px;
 }
 
+.scroll-hide-thumb::-webkit-scrollbar-thumb::-moz-scrollbar-thumb {
+    background: transparent;
+}
+
 
 
