@@ -40,7 +40,7 @@ function LoginForm() {
             }
             localStorage.setItem("token", result.data.token)
             auth.setCurrentUser({...result.data})
-            router.push("/").then()
+            router.push("/").then();
         })
     }
 
@@ -58,7 +58,7 @@ function LoginForm() {
                 <Text className={"ml-2 text-white text-center h-full"}>Ghi nhớ đăng nhập</Text>
             </div>
             <div className={"text-center mt-5"}>
-                <Button onClick={login} className="text-center bg-purple-900 hover:bg-amber-100 hover:text-purple-900"
+                <Button onClick={login} className="text-center bg-purple-900 hover:bg-blue-300 hover:text-purple-900"
                         fullWidth>Đăng nhập</Button>
             </div>
         </div>

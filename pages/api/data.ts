@@ -9,13 +9,8 @@ import {randomUUID} from "node:crypto";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
-    switch (req.method) {
-        case "POST":
-            await scrapData()
-            res.status(200).json({message: "Scraping data"})
-            break;
-    }
+    await scrapData()
+    res.status(200).json({message: "Scraping data"})
 }
 
 async function scrapData() {
@@ -23,7 +18,7 @@ async function scrapData() {
     const term = await loadTerm(rawData.data)
     const year = await loadYearStudy(rawData.data)
     await loadWeek(year, term)
-    // await loadSubject(year, term)
+    await loadSubject(year, term)
     await loadClass(year, term)
 
 
@@ -168,14 +163,28 @@ async function loadYearStudy(rawDataL: string) {
 
     return year
 
+}
 
+function handlerStudentClass(studentClass: { ClassStudentID: string }[]) {
+    const data: String[] = []
+
+    studentClass.map(value => {
+        const fourChar = value.ClassStudentID.slice(0, 4)
+        if (!data.includes(fourChar)) {
+            data.push(fourChar)
+        }
+    })
+
+    return data;
 }
 
 async function loadSubject(yearStudy: string[], term: string[]) {
 
+    const existSubjectId: String[] = [];
     const currentYear = new Date().getFullYear();
 
     const scrapYear = yearStudy.filter(value => value.includes(currentYear.toString()))
+    scrapYear.pop()
     const week = await prisma.week.findMany({
         where: {
             yearStudyId: {
@@ -188,10 +197,16 @@ async function loadSubject(yearStudy: string[], term: string[]) {
         for (let semester of term) {
             const weekData = week.filter(value => value.yearStudyId === yearItem && value.semesterId === semester)
             if (!weekData) continue
-            const studentClass = await loadClassStudent(yearItem, semester)
+            let studentClass = await loadClassStudent(yearItem, semester);
+
+            studentClass = handlerStudentClass(studentClass);
+
             for (let studentClassItem of studentClass) {
-                const weekDatum = weekData[Math.round(weekData.length / 3)]
-                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem.ClassStudentID}`)
+                //TODO: scrap more week
+
+
+                const weekDatum = weekData[3]
+                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem + "03"}`)
                 const $ = load(result.data)
 
                 const tr = $("tr:not(:first-child)")
@@ -200,15 +215,19 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                     divL.each((_index, element) => {
                         try {
                             let result = getSubjectDataFromRaw($(element).text());
-                            prisma.subject.findUnique({
+                            if (existSubjectId.includes(result.subjectId)) return;
+                            existSubjectId.push(result.subjectId);
+                            prisma.subject.findFirst({
                                 where: {
-                                    id: result.subjectId,
+                                    subjectCode: result.subjectId,
+                                    yearStudyId: yearItem,
+                                    semesterId: semester
                                 }
                             }).then(value => {
                                 if (!value) {
                                     prisma.subject.create({
                                         data: {
-                                            id: result.subjectId,
+                                            subjectCode: result.subjectId,
                                             name: result.subjectName,
                                             semester: {
                                                 connectOrCreate: {
@@ -277,10 +296,10 @@ async function loadClass(yearStudy: string[], term: string[]) {
                 }
             });
 
-            const standardWeek = week[Math.round(week.length / 3)]
+            const standardWeek = week[3]
 
             for (let subjectElement of subject) {
-                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.id}&valueWeek=1&Week=${standardWeek.weekName}`)
+                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.subjectCode}&valueWeek=1&Week=${standardWeek.weekName}`)
                 const classData = getClassDataFromRaw(result.data)
                 for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
 
@@ -301,44 +320,51 @@ async function loadClass(yearStudy: string[], term: string[]) {
                     const data = await prisma.class.findFirst({
                         where: {
                             id: id,
-                            subjectId: subjectId,
+                            subjectId: subjectElement.id,
                             yearStudyId: year,
                             semesterId: s
                         }
                     });
 
-                    if (!data) {
+                    if (data == null) {
                         // @ts-ignore
-                        await prisma.class.create({
-                            data: {
-                                id: id,
-                                subject: {
-                                    connect: {
-                                        id: subjectId
+                        try {
+                            //call from other thread
+                             prisma.class.create({
+                                data: {
+                                    id: id,
+                                    subject: {
+                                        connect: {
+                                            id: subjectElement.id
+                                        }
+                                    },
+                                    room: room,
+                                    time: time,
+                                    weekDay: "T" + weekDay,
+                                    type: type,
+                                    yearStudy: {
+                                        connect: {
+                                            year: year
+                                        }
+                                    },
+                                    semester: {
+                                        connect: {
+                                            semester: s
+                                        }
+                                    },
+                                    lecturer: {
+                                        connect: {
+                                            id: lecture.find(value => value.name.includes(lectureName))!.id
+                                        }
                                     }
-                                },
-                                room: room,
-                                time: time,
-                                weekDay: "T" + weekDay,
-                                type: type,
-                                yearStudy: {
-                                    connect: {
-                                        year: year
-                                    }
-                                },
-                                semester: {
-                                    connect: {
-                                        semester: s
-                                    }
-                                },
-                                lecturer: {
-                                    connect: {
-                                        id: lecture.find(value => value.name.includes(lectureName))!.id
-                                    }
-                                }
 
-                            }
-                        })
+                                }
+                            }).then()
+
+                        } catch (e) {
+                            console.log(e)
+                            console.log(id, lectureName, room, subjectId, time, type, weekDay)
+                        }
                     }
 
                 }

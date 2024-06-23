@@ -31,7 +31,7 @@ model Class {
   room       String
   lecturerId String
   lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
-  subjectId  String
+  subjectId  String @db.ObjectId
   subject    Subject  @relation(fields: [subjectId], references: [id])
   yearStudyId  String
   yearStudy    YearStudy @relation(fields: [yearStudyId], references: [year])
@@ -46,7 +46,8 @@ model Major {
 }
 
 model Subject {
-  id          String    @id @map("_id")
+  id          String    @id @map("_id") @default(auto()) @db.ObjectId
+  subjectCode String
   name        String
   majorId     String    @db.ObjectId
   major       Major     @relation(fields: [majorId], references: [id])

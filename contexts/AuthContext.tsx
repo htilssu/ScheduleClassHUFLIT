@@ -21,7 +21,7 @@ export type AuthContextType = {
 export const AuthProvider: FC<{ children?: ReactNode | undefined }> = props => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true)
-    
+
     useEffect(() => {
         const token = localStorage.getItem("token")
 
@@ -32,7 +32,7 @@ export const AuthProvider: FC<{ children?: ReactNode | undefined }> = props => {
 
         setIsLoadingUser(false)
 
-    }, []);
+    }, [currentUser]);
 
     return (
         <AuthContext.Provider value={{user: currentUser, setCurrentUser, loading: isLoadingUser}}>

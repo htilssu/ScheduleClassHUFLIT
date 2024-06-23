@@ -8,7 +8,7 @@ function Auth() {
 
     return (
         <div className="flex min-h-screen justify-center items-center bg-gradient-to-br from-slate-900 to-zinc-600">
-            <div className="w-1/3 min-h-[400px] flex flex-col bg-rose-400 rounded-md mt-4 p-5"
+            <div className="w-1/3 min-h-[400px] flex flex-col border-gray-300 rounded-md mt-4 p-5"
             >
                 <Tabs defaultValue={"login"}>
                     <Tabs.List justify={"center"}>

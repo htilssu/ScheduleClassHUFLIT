@@ -16,7 +16,7 @@ function Navbar() {
     }
 
     return (
-        <div className="flex items-center justify-around gap-5 bg-amber-100 h-16 p-2">
+        <div className="flex items-center justify-around gap-5 bg-cyan-900   h-16 p-2">
             <div className={""}></div>
             <div className={"flex gap-5"}>
                 <Button className={"hover:text-yellow-100"} component={Link} href={"/"}>Home</Button>
