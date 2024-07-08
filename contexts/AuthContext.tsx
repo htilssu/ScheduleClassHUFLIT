@@ -1,3 +1,4 @@
+'use client';
 import {createContext, FC, ReactNode, useContext, useEffect, useState} from "react";
 import {User} from "@prisma/client";
 import jwt from "jsonwebtoken";

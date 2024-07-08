@@ -2,6 +2,9 @@
 const nextConfig = {
     devIndicators: {
         buildActivity: false,
+    },
+    experimental: {
+
     }
 };
 

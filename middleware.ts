@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
         const verified = await jwtVerify(cookie.value, secret, {
             algorithms: ['HS256']
         });
-        return NextResponse.next({})
+        return NextResponse.next()
     } catch (e) {
         return NextResponse.redirect(new URL('/auth?reset=true', request.url))
 
@@ -26,5 +26,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: '/((?!api/auth|auth|_next|image|favicon.ico).*)',
+    matcher: '/((?!api/auth|api/secret|auth|_next|image|favicon.ico).*)',
 }

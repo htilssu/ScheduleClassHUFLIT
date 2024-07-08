@@ -1,3 +1,4 @@
+'use client';
 import React, {useCallback, useEffect, useState} from 'react';
 import TimeLine from "@/components/TimeLine";
 import ActionBar from "@/components/ActionBar";

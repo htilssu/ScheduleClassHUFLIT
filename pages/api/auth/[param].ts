@@ -57,6 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
 
+
         if (!user) {
             return null
         }
@@ -81,7 +82,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
 
         if (!existedUser) {
-            if (user.role) return
             const hashPass = await hashPassword(user.password)
             await prisma.user.create({
                 data: {

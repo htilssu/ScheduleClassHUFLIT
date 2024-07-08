@@ -24,19 +24,30 @@ model Lecturer {
 }
 
 model Class {
-  id         String   @id @map("_id")
-  weekDay    String
-  time       String
-  type       String
-  room       String
-  lecturerId String
-  lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
-  subjectId  String @db.ObjectId
-  subject    Subject  @relation(fields: [subjectId], references: [id])
-  yearStudyId  String
-  yearStudy    YearStudy @relation(fields: [yearStudyId], references: [year])
+  id          String    @id @map("_id")
+  weekDay     String
+  time        String
+  type        String
+  room        String
+  lecturerId  String
+  lecturer    Lecturer  @relation(fields: [lecturerId], references: [id])
+  subjectId   String    @db.ObjectId
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  yearStudyId String
+  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
   semester    Semester  @relation(fields: [semesterId], references: [semester])
+}
+
+model ClassSecret {
+  classId String @id @db.ObjectId @map("_id")
+  secret  String
+  children ClassSecretType[]
+}
+
+type ClassSecretType {
+  classId String
+  secret String
 }
 
 model Major {
@@ -46,7 +57,7 @@ model Major {
 }
 
 model Subject {
-  id          String    @id @map("_id") @default(auto()) @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   subjectCode String
   name        String
   majorId     String    @db.ObjectId

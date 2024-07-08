@@ -29,18 +29,22 @@ function LoginForm() {
     }, [reset]);
 
 
-
     function login(e: { preventDefault: () => void; }) {
         e.preventDefault()
         apiRequest.post(origin + "/api/auth/login", {...form.values}
         ).then(result => {
-            if (result.data.message){
+            if (result.data.message) {
                 setError(result.data.message)
                 return
             }
             localStorage.setItem("token", result.data.token)
             auth.setCurrentUser({...result.data})
-            router.push("/").then();
+
+                router.push("/").then(() => {
+                    router.reload()
+                })
+
+
         })
     }
 
