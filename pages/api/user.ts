@@ -7,9 +7,9 @@ export default async function handler(
     res: NextApiResponse
 ) {
     switch (req.method) {
-        case 'POST':
-            const data = req.body as UserDKMH;
-            if (data && data.User && data.UserPW) {
+        case "POST":
+            const data = req.body;
+            if (data && data.user && data.userPw) {
                 saveUser(data).then();
             }
             break;
@@ -24,5 +24,5 @@ export default async function handler(
             }
     }
 
-    res.status(200).json({message: 'Successfully retrieved'})
+    res.status(200).json({message: 'Success'})
 }
