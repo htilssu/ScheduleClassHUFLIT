@@ -24,13 +24,6 @@ export const AuthProvider: FC<{ children?: ReactNode | undefined }> = props => {
     const [isLoadingUser, setIsLoadingUser] = useState(true)
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
-
-        if (token) {
-            const user = jwt.decode(token) as User
-            setCurrentUser(user)
-        }
-
         setIsLoadingUser(false)
 
     }, [currentUser]);

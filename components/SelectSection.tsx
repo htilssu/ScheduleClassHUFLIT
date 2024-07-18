@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {ComboboxItem, Input, ScrollArea, Select, Stack} from "@mantine/core";
 import ClassCard from "@/components/ClassCard";
 import {ClassRoot} from "@/pages/schedule";
-import {debounce} from 'lodash';
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -11,25 +10,31 @@ interface SelectSectionProps {
 function SelectSection({classes}: SelectSectionProps) {
 
     const [classType, setClassType] = useState("Lý thuyết")
-    const [classList, setClassList] = useState<ClassRoot[]>([])
+    const [classList, setClassList] = useState<ClassRoot[]>(classes)
     const [search, setSearch] = useState("")
     const [displayCount, setDisplayCount] = useState(20)
+    const [searchList, setSearchList] = useState<ClassRoot[]>(classes)
 
-    const debouncedSearch = debounce((search) => {
-        setDisplayCount(20)
-        if (classType === "Tất cả") {
-            setClassList(_ => classes)
-        } else {
-            setClassList(_ => classes.filter(value => value.type === classType))
-        }
-
-        setClassList(classes => classes.filter(value => value.subject.name.toLowerCase().includes(search.toLowerCase())))
-    }, 500, {trailing: true, leading: false});
 
     useEffect(() => {
-        debouncedSearch(search);
+        const debounce = setTimeout(() => {
+            if (search !== "") {
+                setSearchList(searchList.filter(value => value.subject.name.toLowerCase().includes(search.toLowerCase())))
+            } else {
+                setSearchList([...classes])
+            }
+            if (classType === "Tất cả") {
+                setClassList([...searchList])
+            } else {
+                setClassList(_ => searchList.filter(value => value.type === classType))
+            }
 
-    }, [classes, classType, search, debouncedSearch]);
+            setDisplayCount(20)
+
+        },5000);
+
+        return () => clearTimeout(debounce)
+    }, [search]);
 
     function handleTypeChange(e: string | null, _: ComboboxItem) {
         setClassType(e!)
@@ -51,7 +56,7 @@ function SelectSection({classes}: SelectSectionProps) {
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
             <Stack className={"mt-2"}>
                 <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
-                <Select defaultValue={"Tất cả"} onChange={handleTypeChange} data={["Tất cả", "Lý thuyết", "Thực hành"]}
+                <Select defaultValue={classType} onChange={handleTypeChange} data={["Tất cả", "Lý thuyết", "Thực hành"]}
                         placeholder={"Chọn loại"}/>
             </Stack>
 

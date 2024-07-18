@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useState} from 'react';
 import LoginForm from "@/components/LoginForm";
 import {Tabs} from "@mantine/core";

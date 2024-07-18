@@ -4,14 +4,14 @@ import {FaUser} from "react-icons/fa";
 import {MdLock} from "react-icons/md";
 import {apiRequest} from "@/services/apiRequest";
 import {useAuth} from "@/contexts/AuthContext";
-import {useRouter} from "next/router";
 import {useForm} from "@mantine/form";
+import {useRouter} from "next/router";
 
 
 function LoginForm() {
     const [error, setError] = useState()
     const auth = useAuth()
-    const router = useRouter()
+    const router = useRouter();
     const form = useForm({
         initialValues: {
             username: "",
@@ -40,9 +40,7 @@ function LoginForm() {
             localStorage.setItem("token", result.data.token)
             auth.setCurrentUser({...result.data})
 
-                router.push("/").then(() => {
-                    router.reload()
-                })
+                router.push("/").then()
 
 
         })

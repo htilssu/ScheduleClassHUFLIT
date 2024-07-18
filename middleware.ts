@@ -2,18 +2,14 @@ import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 import {jwtVerify} from 'jose'
 
+const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+
 export async function middleware(request: NextRequest) {
     let cookie = request.cookies.get('token')
     if (!cookie || cookie.value.length === 0) {
         return NextResponse.redirect(new URL('/auth?reset=true', request.url))
     }
 
-    
-
-
-
-
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
     try {
         const verified = await jwtVerify(cookie.value, secret, {
             algorithms: ['HS256']
