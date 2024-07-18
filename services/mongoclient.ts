@@ -12,4 +12,16 @@ mongoClient.connect().then(() => {
     console.log("Connected to MongoDB")
 });
 
+async function getSecretById(id: string) {
+    return await mongoClient.db("huflit")
+        .collection("secret")
+        .findOne({
+            id: id
+        });
+}
+
+
+
+
+export {getSecretById};
 export default mongoClient;
