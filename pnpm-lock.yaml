@@ -11,6 +11,9 @@ importers:
       '@dnd-kit/core':
         specifier: ^6.1.0
         version: 6.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
       '@mantine/charts':
         specifier: ^7.7.1
         version: 7.7.1(@mantine/core@7.7.1(@mantine/hooks@7.7.1(react@18.2.0))(@types/react@18.2.73)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@mantine/hooks@7.7.1(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(recharts@2.12.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
