@@ -1,4 +1,8 @@
-// noinspection TypeScriptValidateJSTypes
+import dynamic from "next/dynamic";
+
+dynamic({
+    ssr: false
+})
 
 import {NextApiRequest, NextApiResponse} from "next";
 import {prisma} from "@/services/prismaClient";

@@ -21,14 +21,6 @@ async function scrapData() {
     await loadWeek(year, term)
     await loadSubject(year, term)
     await loadClass(year, term)
-
-
-// console.log(year)
-// console.log(classStudent)
-// console.log(term)
-// console.log(year)
-
-
 }
 
 async function loadClassStudent(yearStudy: string, term: string) {
