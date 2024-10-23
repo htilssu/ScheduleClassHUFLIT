@@ -15,8 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function scrapData() {
     const rawData = await axios.get("https://portal.huflit.edu.vn/public/tracuuthoikhoabieu")
-    const term = await loadTerm(rawData.data)
+    let term = await loadTerm(rawData.data)
     const year = await loadYearStudy(rawData.data)
+    term = term.reverse();
     await loadWeek(year, term)
     await loadSubject(year, term)
     await loadClass(year, term)
@@ -206,7 +207,8 @@ async function loadSubject(yearStudy: string[], term: string[]) {
 
 
                 const weekDatum = weekData[3]
-                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem + "03"}`)
+                const result = await axios.get(
+                    `https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem + "03"}`)
                 const $ = load(result.data)
 
                 const tr = $("tr:not(:first-child)")
@@ -299,7 +301,8 @@ async function loadClass(yearStudy: string[], term: string[]) {
             const standardWeek = week[3]
 
             for (let subjectElement of subject) {
-                const result = await axios.get(`https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.subjectCode}&valueWeek=1&Week=${standardWeek.weekName}`)
+                const result = await axios.get(
+                    `https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.subjectCode}&valueWeek=1&Week=${standardWeek.weekName}`)
                 const classData = getClassDataFromRaw(result.data)
                 for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
 
@@ -330,7 +333,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                         // @ts-ignore
                         try {
                             //call from other thread
-                             prisma.class.create({
+                            prisma.class.create({
                                 data: {
                                     id: id,
                                     subject: {
