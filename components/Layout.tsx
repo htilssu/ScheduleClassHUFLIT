@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import {useRouter} from "next/navigation";
 
 function Layout({children}: { children: React.ReactNode }) {
-    const location = useRouter();
 
     return (
         <div>

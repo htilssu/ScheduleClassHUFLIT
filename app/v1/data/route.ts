@@ -5,7 +5,7 @@ import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/utils/data";
 import {randomUUID} from "node:crypto";
 import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     await scrapData()
 
     return NextResponse.json({});
