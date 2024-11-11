@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Input, Text} from "@mantine/core";
 import {FaUser} from "react-icons/fa";
 import {MdLock} from "react-icons/md";
-import {apiRequest} from "@/services/apiRequest";
+import {apiRequest} from "@/utils/request.util";
 import {useAuth} from "@/contexts/AuthContext";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/router";
@@ -54,7 +54,7 @@ function LoginForm() {
                    placeholder={"Tên đăng nhập"}/>
             <Input {...form.getInputProps("password")} leftSection={<MdLock/>} className={"mt-2"}
                    placeholder={"Mật khẩu"} type={"password"}/>
-            {error && <Text className={"text-purple-900"}>{error}</Text>}
+            {error && <Text className={"text-white"}>{error}</Text>}
             <div className={"flex items-center mt-3"}>
                 <Checkbox {...form.getInputProps("remember")}/>
                 <Text className={"ml-2 text-white text-center h-full"}>Ghi nhớ đăng nhập</Text>

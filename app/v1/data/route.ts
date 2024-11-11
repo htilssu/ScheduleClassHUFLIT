@@ -1,16 +1,14 @@
-// noinspection TypeScriptValidateJSTypes
-
-import {NextApiRequest, NextApiResponse} from "next";
 import axios from "axios";
 import {load} from "cheerio";
 import {prisma} from "@/services/prismaClient";
 import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/utils/data";
 import {randomUUID} from "node:crypto";
+import {NextRequest, NextResponse} from "next/server";
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(request: NextRequest) {
     await scrapData()
-    res.status(200).json({message: "Scraping data"})
+
+    return NextResponse.json({});
 }
 
 async function scrapData() {
@@ -366,5 +364,4 @@ async function loadClass(yearStudy: string[], term: string[]) {
             }
         }
     }
-
 }

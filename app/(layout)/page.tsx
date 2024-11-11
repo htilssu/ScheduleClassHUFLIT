@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-function Index() {
+function Page() {
 
 
     return (
@@ -11,4 +11,4 @@ function Index() {
     );
 }
 
-export default Index;
+export default Page;

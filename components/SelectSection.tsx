@@ -1,40 +1,45 @@
-import React, {useEffect, useState} from 'react';
+'use client'
+
+import React, {useCallback, useEffect, useState} from 'react';
 import {ComboboxItem, Input, ScrollArea, Select, Stack} from "@mantine/core";
+import {ClassRoot} from "@/app/(layout)/schedule/page";
+import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
-import {ClassRoot} from "@/pages/schedule";
 
 interface SelectSectionProps {
     classes: ClassRoot[]
 }
 
 function SelectSection({classes}: SelectSectionProps) {
-
-    const [classType, setClassType] = useState("Lý thuyết")
-    const [classList, setClassList] = useState<ClassRoot[]>(classes)
+    const [classType, setClassType] = useState("Tất cả")
     const [search, setSearch] = useState("")
-    const [displayCount, setDisplayCount] = useState(20)
-    const [searchList, setSearchList] = useState<ClassRoot[]>(classes)
+    const [limit, setLimit] = useState(100)
+    const [searchList, setSearchList] = useState<ClassRoot[]>(classes ? [...classes] : [])
+    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps
+    const debouncedSearch = useCallback(debounce((searchString: string) => {
+        if (searchString !== "") {
+            if (classType !== "Tất cả") {
+                setSearchList(
+                    classes.filter(value => {
+                        return value.subject.name.toLowerCase().includes(
+                            searchString.toLowerCase()) && value.type === classType
+                    }))
 
+            } else {
+                setSearchList(
+                    classes.filter(value => value.subject.name.toLowerCase().includes(searchString.toLowerCase())));
+            }
+        } else {
+            setSearchList([...classes])
+        }
+    }, 500, {leading: false, trailing: true}), [classType, classes]);
 
     useEffect(() => {
-        const debounce = setTimeout(() => {
-            if (search !== "") {
-                setSearchList(searchList.filter(value => value.subject.name.toLowerCase().includes(search.toLowerCase())))
-            } else {
-                setSearchList([...classes])
-            }
-            if (classType === "Tất cả") {
-                setClassList([...searchList])
-            } else {
-                setClassList(_ => searchList.filter(value => value.type === classType))
-            }
+        setSearchList(_ => [])
+        debouncedSearch(search)
 
-            setDisplayCount(20)
-
-        },5000);
-
-        return () => clearTimeout(debounce)
-    }, [search]);
+        return debouncedSearch.cancel
+    }, [debouncedSearch, search]);
 
     function handleTypeChange(e: string | null, _: ComboboxItem) {
         setClassType(e!)
@@ -44,15 +49,8 @@ function SelectSection({classes}: SelectSectionProps) {
         setSearch(e.target.value)
     }
 
-    function handleScroll(e: React.UIEvent<HTMLDivElement>) {
-        const bottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop === e.currentTarget.clientHeight;
-        if (bottom) {
-            setDisplayCount(displayCount + 20);
-        }
-    }
-
     return (
-        <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md"}>
+        <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
             <Stack className={"mt-2"}>
                 <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
@@ -60,10 +58,11 @@ function SelectSection({classes}: SelectSectionProps) {
                         placeholder={"Chọn loại"}/>
             </Stack>
 
-            <ScrollArea scrollbars={"y"} className={"overflow-x-hidden mt-4 scroll-hide-thumb"} onScroll={handleScroll}>
-                {classList.map((value, index) => <ClassCard key={index} classData={value}/>)}
+            <ScrollArea className={"mt-2"}>
+                {searchList.slice(0, limit).map((value, index) => (
+                    <ClassCard key={index} classData={value}/>
+                ))}
             </ScrollArea>
-
         </div>
     );
 }

@@ -2,14 +2,14 @@ import {Button} from '@mantine/core';
 import React from 'react';
 import Link from "next/link";
 import {useAuth} from "@/contexts/AuthContext";
-import {apiRequest} from "@/services/apiRequest";
+import {post} from "@/utils/request.util";
 
 function Navbar() {
 
     const {user} = useAuth();
 
     function logout() {
-        apiRequest.post(origin + '/api/auth/logout', {action: 'logout'}).then(() => {
+        post(origin + '/v1/auth/logout', {action: 'logout'}).then(() => {
             localStorage.setItem("token", "")
             window.location.href = '/';
         });

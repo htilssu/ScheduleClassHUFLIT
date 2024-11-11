@@ -1,64 +1,74 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Group, Select, Stack} from "@mantine/core";
+'use client'
+
+import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import {Button, Group, Select} from "@mantine/core";
 import {IconDeviceFloppy, IconTrash} from "@tabler/icons-react";
-import {Major, Semester, YearStudy} from '@prisma/client';
-import {apiRequest} from "@/services/apiRequest";
+import {get} from "@/utils/request.util";
 import {useForm} from "@mantine/form";
+import {Filter} from "@/hooks/use-filter";
 
 interface ActionBarProps {
-    setCurrentYear: (value: (((prevState: string) => string) | string)) => void,
-    setCurrentSemester: (value: (((prevState: string) => string) | string)) => void,
-    setCurrentMajor: (value: (((prevState: string) => string) | string)) => void
+    filters: Filter,
+    setFilters: Dispatch<SetStateAction<Filter>>
 }
 
-function ActionBar({setCurrentYear, setCurrentSemester, setCurrentMajor}: ActionBarProps) {
-    const [major, setMajor] = useState<Major[]>()
-    const [studyYear, setStudyYear] = useState<YearStudy[]>()
-    const [semester, setSemester] = useState<Semester[]>()
-
+function ActionBar({filters, setFilters}: ActionBarProps) {
     const form = useForm({
         initialValues: {
-            major: "",
-            year: "",
-            semester: ""
+            year: filters.year,
+            semester: filters.semester,
+            major: filters.major
         }
-    })
+    });
 
     useEffect(() => {
-        setCurrentMajor(form.values.major)
-        setCurrentSemester(form.values.semester)
-        setCurrentYear(form.values.year)
-    }, [setCurrentMajor, form.values.major, setCurrentSemester, form.values.semester, setCurrentYear, form.values.year]);
+        if (form.values.year === "" && form.values.semester === "" && form.values.major === "") {
+            return;
+        }
+        setFilters({
+            year: form.values.year,
+            semester: form.values.semester,
+            major: form.values.major
+        });
+    }, [form.values.year, form.values.semester, form.values.major]);
+
+    const [major, setMajor] = React.useState<any>(null);
+    const [studyYear, setStudyYear] = React.useState<any>(null);
+    const [semester, setSemester] = React.useState<any>(null);
 
     useEffect(() => {
-        apiRequest.get("/api/major").then(res => {
+        get("/v1/major").then(res => {
             if (res.status === 200) {
-                return res.data
+                return res.data;
             }
         }).then(data => {
-            setMajor(data)
+            setMajor(data);
         });
 
-        apiRequest.get("/api/studyYear").then(res => {
-            setStudyYear(res.data)
+        get("/v1/studyYear").then(res => {
+            setStudyYear(res.data);
         });
 
-        apiRequest.get("/api/semester").then(res => {
-            setSemester(res.data)
+        get("/v1/semester").then(res => {
+            setSemester(res.data);
         });
 
     }, []);
+
 
     return (
         <div className={"p-2"}>
             <div className="bg-gray-200 h-14 rounded-md flex justify-end items-center p-3">
                 <Group className={"mr-4"}>
-                    <Select {...form.getInputProps("major")} data={major?.map(value => value.name)}
-                            placeholder={major ? "Chọn chuyên ngành" : "Loading..."}/>
-                    <Select {...form.getInputProps("year")} placeholder={studyYear ? "Chọn năm học" : "Loading..."}
-                            data={studyYear?.map(value => value.year)}/>
-                    <Select {...form.getInputProps("semester")} placeholder={semester ? "Chọn học kỳ" : "Loading..."}
-                            data={semester?.map(value => value.semester)}/>
+                    <Select  {...form.getInputProps("major")} value={form.values.major}
+                             data={major?.map((value: { name: string; }) => value.name)}
+                             placeholder={major ? "Chọn chuyên ngành" : "Loading..."}/>
+                    <Select  {...form.getInputProps("year")} value={form.values.year}
+                             placeholder={studyYear ? "Chọn năm học" : "Loading..."}
+                             data={studyYear?.map((value: { year: any; }) => value.year)}/>
+                    <Select {...form.getInputProps("semester")} value={form.values.semester}
+                            placeholder={semester ? "Chọn học kỳ" : "Loading..."}
+                            data={semester?.map((value: { semester: any; }) => value.semester)}/>
                 </Group>
                 <Button rightSection={<IconTrash/>} color="red"
                         className="mr-2 hover:bg-red-500 text-center">Reset</Button>
