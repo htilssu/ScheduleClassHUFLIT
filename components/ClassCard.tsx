@@ -16,6 +16,7 @@ function ClassCard({classData}: { classData: ClassRoot }) {
                         <Badge color="green">{classData.weekDay}</Badge>
                         <Badge color="blue">{classData.time}</Badge>
                         <Badge color="pink">{classData.room}</Badge>
+                        <Badge color="pink">{classData.type}</Badge>
                     </Group>
                     <Text fw={500}>{classData.subject.name}</Text>
                     <Text size="sm" c="dimmed">
