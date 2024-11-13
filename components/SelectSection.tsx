@@ -13,7 +13,7 @@ interface SelectSectionProps {
 function SelectSection({classes}: SelectSectionProps) {
     const [classType, setClassType] = useState("Tất cả")
     const [search, setSearch] = useState("")
-    const [limit, setLimit] = useState(200)
+    const [limit, setLimit] = useState(300)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
 

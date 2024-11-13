@@ -6,6 +6,8 @@ import {IconDeviceFloppy, IconTrash} from "@tabler/icons-react";
 import {get} from "@/utils/request.util";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/navigation";
+import {Simulate} from "react-dom/test-utils";
+import reset = Simulate.reset;
 
 export interface Filter {
     year: string,
@@ -15,9 +17,10 @@ export interface Filter {
 
 interface ActionBarProps {
     filters: Filter,
+    reset?: () => void
 }
 
-function ActionBar({filters}: ActionBarProps) {
+function ActionBar({filters,reset}: ActionBarProps) {
     const form = useForm({
         initialValues: {
             year: filters.year,
@@ -74,7 +77,7 @@ function ActionBar({filters}: ActionBarProps) {
                             placeholder={semester ? "Chọn học kỳ" : "Loading..."}
                             data={semester?.map((value: { semester: any; }) => value.semester)}/>
                 </Group>
-                <Button rightSection={<IconTrash/>} color="red"
+                <Button onClick={reset} rightSection={<IconTrash/>} color="red"
                         className="mr-2 hover:bg-red-500 text-center">Reset</Button>
                 <Button rightSection={<IconDeviceFloppy/>} color="blue" className="text-center"
                         variant="filled">Lưu</Button>

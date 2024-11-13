@@ -23,23 +23,37 @@ interface DndContext {
     setRefDragging: (ref: RefObject<HTMLElement>) => void;
     refDragging: MutableRefObject<HTMLElement> | null;
     setContextValue: Dispatch<SetStateAction<DndContext>>;
-    droppableList: Droppable[]
+    droppableList: Droppable[];
+    droppedData: any;
+}
+
+type DroppedCallback = (dropped: any) => void;
+
+interface DndContextProps {
+    children?: ReactNode;
+    onDragEnd?: (() => void) | DroppedCallback;
 }
 
 const Context = createContext<DndContext>({} as DndContext);
 export const useDndContext = () => useContext(Context);
-export const DndContext: FC<{ children?: ReactNode | undefined }> = props => {
+export const DndContext: FC<DndContextProps> = props => {
     const [contextValue, setContextValue] = useState<DndContext>({
         data: null,
         setRefDragging: () => {
         },
+        droppedData: null,
         refDragging: null,
         droppableList: [],
         setContextValue: () => {
         }
     } as DndContext)
+
     const ref = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        props.onDragEnd?.(contextValue.droppedData)
+        setContextValue(prevState => ({...prevState, droppedData: null}))
+    }, [contextValue.droppedData, props.onDragEnd]);
 
     const handleMouseMove = useCallback(function (e: MouseEvent) {
         if (!ref.current) return;

@@ -38,7 +38,7 @@ const RefEvent = (data: any) => {
         // info("mouse down")
         setIsDragging(true)
         // info(data)
-        setContextValue((prevState) => ({...prevState, data, refDragging: ref}));
+        setContextValue((prevState) => ({...prevState, data, refDragging: ref, droppedData: null}));
     }
 
 

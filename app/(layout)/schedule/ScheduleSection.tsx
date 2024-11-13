@@ -1,7 +1,6 @@
 'use client'
 
 import React, {useState} from 'react';
-import {Class} from "@prisma/client";
 import ActionBar from "@/components/ActionBar";
 import {DndContext} from "@/hooks/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
@@ -14,22 +13,31 @@ const ScheduleSection = ({year, semester, major, classes}: {
     major: string,
     classes?: ClassRoot[]
 }) => {
-    const [addedClass, setAddedClass] = useState([])
+    const [selectedClass, setSelectedClass] = useState<ClassRoot[]>([])
+
+    function handleOnDragEnd(data: ClassRoot) {
+        if (data !== null) {
+            if (!selectedClass.includes(data)) {
+                setSelectedClass(prevState => [...prevState, data])
+            }
+        }
+    }
 
 
-    const [draggingItem, setDraggingItem] = useState<Class | null>(null)
     return (
         <div className={'select-none'}>
             <div className={"relative"}>
-                <ActionBar filters={{
+                <ActionBar reset={() => {
+                    setSelectedClass([])
+                }} filters={{
                     year,
                     semester,
                     major
                 }}/>
-                <DndContext>
+                <DndContext onDragEnd={handleOnDragEnd}>
                     <div className={"flex p-2 relative z-10 max-h-screen"}>
                         <SelectSection classes={classes || []}/>
-                        <TimeLine dragging={draggingItem}/>
+                        <TimeLine selectedClass={selectedClass}/>
                     </div>
                 </DndContext>
             </div>

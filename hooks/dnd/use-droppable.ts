@@ -23,6 +23,7 @@ export function useDroppable() {
         if (e.clientX >= refBound.left && e.clientX <= refBound.right
             && e.clientY > refBound.top && e.clientY <= refBound.bottom) {
             setDroppedData(dndContext.data)
+            dndContext.setContextValue(prevState => ({...prevState, droppedData: dndContext.data}))
         }
     }
 
