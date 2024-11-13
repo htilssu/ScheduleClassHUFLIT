@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {ComboboxItem, Input, ScrollArea, Select, Stack} from "@mantine/core";
+import {ComboboxItem, Input, Select, Stack} from "@mantine/core";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
@@ -13,8 +13,10 @@ interface SelectSectionProps {
 function SelectSection({classes}: SelectSectionProps) {
     const [classType, setClassType] = useState("Tất cả")
     const [search, setSearch] = useState("")
-    const [limit, setLimit] = useState(100)
-    const [searchList, setSearchList] = useState<ClassRoot[]>(classes ? [...classes] : [])
+    const [limit, setLimit] = useState(300)
+    const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
+
+
     // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps
     const debouncedSearch = useCallback(debounce((searchString: string) => {
         if (searchString !== "") {
@@ -58,11 +60,11 @@ function SelectSection({classes}: SelectSectionProps) {
                         placeholder={"Chọn loại"}/>
             </Stack>
 
-            <ScrollArea className={"mt-2"}>
+            <div className={"mt-2 overflow-y-auto overflow-x-visible"}>
                 {searchList.slice(0, limit).map((value, index) => (
                     <ClassCard key={index} classData={value}/>
                 ))}
-            </ScrollArea>
+            </div>
         </div>
     );
 }

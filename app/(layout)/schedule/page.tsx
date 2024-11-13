@@ -1,13 +1,7 @@
-'use client';
-
-import React, {useState} from 'react';
-import ActionBar from "@/components/ActionBar";
-import SelectSection from "@/components/SelectSection";
-import {DndContext} from "@dnd-kit/core";
-import {useQuery} from "@tanstack/react-query";
-import TimeLine from "@/components/TimeLine";
-import useFilter from "@/hooks/use-filter";
+import {SearchParams} from "@/app/page.type";
+import ScheduleSection from "@/app/(layout)/schedule/ScheduleSection";
 import {getClass} from "@/services/class.service";
+import {prisma} from "@/services/prismaClient";
 
 
 export type ClassRoot = {
@@ -34,32 +28,30 @@ export type ClassRoot = {
     }
 }
 
+async function Page({
+                        searchParams
+                    }: { searchParams: SearchParams }) {
 
-function Page() {
-    const {filters, setFilters} = useFilter();
-    const [dragCard, setDragCard] = useState(null)
+    const params = await searchParams;
+    const year = params.year as string ?? "";
+    const semester = params.semester as string ?? "";
+    const major = params.major as string ?? "";
 
-    const {data: classes, isLoading} = useQuery({
-        queryKey: ['classes', filters],
-        queryFn: () => getClass(filters.major, filters.semester, filters.year),
-        staleTime: 1000 * 60 * 60 * 24
+    const classes = await prisma.class.findMany({
+        where: {
+            yearStudyId: year as string,
+            semesterId: semester as string,
+        },
+        include: {
+            subject: true,
+            lecturer: true,
+        }
     });
 
-    const [draggingItem, setDraggingItem] = useState(null)
 
-    return (
-        <div>
-            <div className={"relative"}>
-                <ActionBar filters={filters} setFilters={setFilters}/>
-                <div className={"flex p-2 relative"}>
-                    <DndContext >
-                        <SelectSection classes={classes}/>
-                        <TimeLine dragging={draggingItem}/>
-                    </DndContext>
-                </div>
-            </div>
-        </div>
-    );
+    return (<div>
+        <ScheduleSection classes={classes} year={year} semester={semester} major={major}/>
+    </div>);
 }
 
 export default Page;

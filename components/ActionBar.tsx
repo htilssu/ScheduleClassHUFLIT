@@ -1,18 +1,26 @@
 'use client'
 
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Button, Group, Select} from "@mantine/core";
 import {IconDeviceFloppy, IconTrash} from "@tabler/icons-react";
 import {get} from "@/utils/request.util";
 import {useForm} from "@mantine/form";
-import {Filter} from "@/hooks/use-filter";
+import {useRouter} from "next/navigation";
+import {Simulate} from "react-dom/test-utils";
+import reset = Simulate.reset;
+
+export interface Filter {
+    year: string,
+    semester: string,
+    major: string,
+}
 
 interface ActionBarProps {
     filters: Filter,
-    setFilters: Dispatch<SetStateAction<Filter>>
+    reset?: () => void
 }
 
-function ActionBar({filters, setFilters}: ActionBarProps) {
+function ActionBar({filters,reset}: ActionBarProps) {
     const form = useForm({
         initialValues: {
             year: filters.year,
@@ -21,15 +29,14 @@ function ActionBar({filters, setFilters}: ActionBarProps) {
         }
     });
 
+    const router = useRouter();
+
     useEffect(() => {
         if (form.values.year === "" && form.values.semester === "" && form.values.major === "") {
             return;
         }
-        setFilters({
-            year: form.values.year,
-            semester: form.values.semester,
-            major: form.values.major
-        });
+
+        router.push("?year=" + form.values.year + "&semester=" + form.values.semester + "&major=" + form.values.major)
     }, [form.values.year, form.values.semester, form.values.major]);
 
     const [major, setMajor] = React.useState<any>(null);
@@ -70,7 +77,7 @@ function ActionBar({filters, setFilters}: ActionBarProps) {
                             placeholder={semester ? "Chọn học kỳ" : "Loading..."}
                             data={semester?.map((value: { semester: any; }) => value.semester)}/>
                 </Group>
-                <Button rightSection={<IconTrash/>} color="red"
+                <Button onClick={reset} rightSection={<IconTrash/>} color="red"
                         className="mr-2 hover:bg-red-500 text-center">Reset</Button>
                 <Button rightSection={<IconDeviceFloppy/>} color="blue" className="text-center"
                         variant="filled">Lưu</Button>

@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Input, Text} from "@mantine/core";
 import {FaUser} from "react-icons/fa";
 import {MdLock} from "react-icons/md";
-import {apiRequest} from "@/utils/request.util";
 import {useAuth} from "@/contexts/AuthContext";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/router";
+import {post} from "@/utils/request.util";
 
 
 function LoginForm() {
@@ -31,7 +31,7 @@ function LoginForm() {
 
     function login(e: { preventDefault: () => void; }) {
         e.preventDefault()
-        apiRequest.post(origin + "/api/auth/login", {...form.values}
+        post(origin + "/api/auth/login", {...form.values}
         ).then(result => {
             if (result.data.message) {
                 setError(result.data.message)
@@ -40,7 +40,7 @@ function LoginForm() {
             localStorage.setItem("token", result.data.token)
             auth.setCurrentUser({...result.data})
 
-                router.push("/").then()
+            router.push("/").then()
 
 
         })

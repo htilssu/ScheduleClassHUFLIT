@@ -13,9 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ 18 , 20 ]
+        node: [ 20 ]
     steps:
       - uses: actions/checkout@v4
+      - name: download env
+        run: |
+          echo "${{ secrets.ENV }}" > ${{github.workspace}}/.env
       - uses: actions/setup-node@v4
         with:
           node-version: ${{matrix.node}}
