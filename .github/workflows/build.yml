@@ -16,6 +16,9 @@ jobs:
         node: [ 20 ]
     steps:
       - uses: actions/checkout@v4
+      - name: download env
+        run: |
+          echo ${{ secrets.ENV }} > .env
       - uses: actions/setup-node@v4
         with:
           node-version: ${{matrix.node}}
