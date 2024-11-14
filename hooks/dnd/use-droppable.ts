@@ -28,16 +28,18 @@ export function useDroppable() {
     }
 
     useEffect(() => {
-        document.addEventListener('mouseup', handleMouseUp, {
-            capture: true
-        })
+        if (dndContext.refDragging) {
+            document.addEventListener('mouseup', handleMouseUp, {
+                capture: true
+            })
+        }
 
         return () => {
             document.removeEventListener('mouseup', handleMouseUp, {
                 capture: true
             })
         }
-    }, [ref.current, handleMouseUp]);
+    }, [dndContext.refDragging,ref.current, handleMouseUp]);
 
 
     useEffect(() => {

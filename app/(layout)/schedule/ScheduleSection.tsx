@@ -6,6 +6,7 @@ import {DndContext} from "@/hooks/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
+import {isOverlap} from "@/utils/class.util";
 
 const ScheduleSection = ({year, semester, major, classes}: {
     year: string,
@@ -17,7 +18,8 @@ const ScheduleSection = ({year, semester, major, classes}: {
 
     function handleOnDragEnd(data: ClassRoot) {
         if (data !== null) {
-            if (!selectedClass.includes(data)) {
+            if (!selectedClass.includes(data) && !isOverlap(selectedClass, data)) {
+                console.log("added")
                 setSelectedClass(prevState => [...prevState, data])
             }
         }
