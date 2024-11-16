@@ -1,9 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Badge, Table} from "@mantine/core";
+import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
 import {useDroppable} from "@/hooks/dnd/use-droppable";
 import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
+import {TableClassCard} from './TableCardClass';
 
 
 interface TimeLineProps {
@@ -20,8 +21,10 @@ const mm = Array.from({
 
 
 function TimeLine({selectedClass}: TimeLineProps) {
-    const {data, setNodeRef, droppedData, isDragging} = useDroppable();
-    const [classList, setClassList] = useState<Class[]>([])
+    console.log("mouse up")
+
+    const {setNodeRef, droppedData} = useDroppable();
+    const [classList, setClassList] = useState<ClassRoot[]>([])
     const [mergeMark, setMergeMark] = useState(mm);
 
     useEffect(() => {
@@ -70,7 +73,6 @@ function TimeLine({selectedClass}: TimeLineProps) {
             const weekDay = Number(value.weekDay[1]);
             const time = value.time.split('-').map(trim).map(Number);
             const start = time[0];
-            const end = time[1];
             return weekDay - 2 === col && start - 1 == row
         })
         if (classData) {
@@ -116,19 +118,3 @@ function TimeLine({selectedClass}: TimeLineProps) {
 }
 
 export default TimeLine;
-
-export const TableClassCard = ({classData}: { classData: ClassRoot }) => {
-    return (
-        <div
-            className={"border-2 hover:cursor-grabbing flex flex-col gap-2 py-3 px-2 w-full h-full border-violet-600 border-dashed"}>
-            <h1 className={'font-bold text-base'}>{classData.subject.name}</h1>
-            <div className={'flex text-center flex-wrap gap-2 items-center justify-center'}>
-                <Badge color={'teal'}>{classData.type}</Badge>
-                <Badge color={'red'}>{classData.room}</Badge>
-                <Badge color={'yellow'}>{classData.time}</Badge>
-            </div>
-            <h2 className={'text-base'}>{classData.lecturer.name}</h2>
-            <p className={'select-text'}>{classData.id}</p>
-        </div>
-    )
-}

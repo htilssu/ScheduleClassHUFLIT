@@ -37,6 +37,7 @@ interface DndContextProps {
 const Context = createContext<DndContext>({} as DndContext);
 export const useDndContext = () => useContext(Context);
 export const DndContext: FC<DndContextProps> = props => {
+    console.log("dnd context re render")
     const [contextValue, setContextValue] = useState<DndContext>({
         data: null,
         setRefDragging: () => {

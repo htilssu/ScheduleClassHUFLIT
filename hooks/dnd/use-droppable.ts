@@ -22,22 +22,23 @@ export function useDroppable() {
         const refBound = ref.current.getBoundingClientRect();
         if (e.clientX >= refBound.left && e.clientX <= refBound.right
             && e.clientY > refBound.top && e.clientY <= refBound.bottom) {
-            setDroppedData(dndContext.data)
             dndContext.setContextValue(prevState => ({...prevState, droppedData: dndContext.data}))
         }
     }
 
     useEffect(() => {
-        document.addEventListener('mouseup', handleMouseUp, {
-            capture: true
-        })
+        if (dndContext.refDragging) {
+            document.addEventListener('mouseup', handleMouseUp, {
+                capture: true
+            })
+        }
 
         return () => {
             document.removeEventListener('mouseup', handleMouseUp, {
                 capture: true
             })
         }
-    }, [ref.current, handleMouseUp]);
+    }, [ref.current, dndContext.refDragging, handleMouseUp]);
 
 
     useEffect(() => {
@@ -50,7 +51,7 @@ export function useDroppable() {
         data: dndContext.data,
         isDragging: dndContext.refDragging !== null && dndContext.refDragging !== undefined,
         setNodeRef,
-        droppedData
+        droppedData: dndContext.data
     }
 }
 
