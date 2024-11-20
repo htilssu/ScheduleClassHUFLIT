@@ -1,5 +1,4 @@
-import {expect, test} from "@jest/globals";
-import {getSubjectDataFromRaw} from "@/utils/data";
+import {getSubjectDataFromRaw} from "@/util/data";
 
 test("test subject with ()", () => {
    const dada= getSubjectDataFromRaw("-Môn: Văn hóa doanh nghiệp (tiếng Trung) (1930082)-Lớp: TTM2001-Tiết: 5->6-Phòng: K72-GV: Lưu Cẩm Huệ-Nội dung:")

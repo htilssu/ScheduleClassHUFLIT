@@ -1,7 +1,6 @@
 import {SearchParams} from "@/app/page.type";
 import ScheduleSection from "@/app/(layout)/schedule/ScheduleSection";
-import {getClass} from "@/services/class.service";
-import {prisma} from "@/services/prismaClient";
+import {prisma} from "@/service/prismaClient";
 
 
 export type ClassRoot = {

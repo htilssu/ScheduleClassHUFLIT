@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import mongoClient, {getSecretById} from "@/services/mongoclient";
+import mongoClient, {getSecretById} from "@/service/mongoclient";
 
 export async function POST(req: NextRequest) {
     const client = mongoClient.db("huflit").collection("secret");

@@ -1,8 +1,8 @@
 import {Button} from '@mantine/core';
 import React from 'react';
 import Link from "next/link";
-import {useAuth} from "@/contexts/AuthContext";
-import {post} from "@/utils/request.util";
+import {useAuth} from "@/context/AuthContext";
+import {post} from "@/util/request.util";
 
 function Navbar() {
 

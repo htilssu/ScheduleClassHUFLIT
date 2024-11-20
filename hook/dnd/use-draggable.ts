@@ -1,13 +1,13 @@
 import {useEffect, useRef, useState} from "react";
-import {useDndContext} from "@/hooks/use-dnd-context";
+import {useDndContext} from "@/hook/use-dnd-context";
 
 const RefEvent = (data: any) => {
     const ref = useRef<HTMLElement>({} as HTMLElement);
     const [isDragging, setIsDragging] = useState(false);
-    const {setContextValue} = useDndContext();
+    const dndContext = useDndContext();
 
 
-    if (!setContextValue) {
+    if (!dndContext) {
         throw new Error("You must call this hook inside DndContext")
     }
 
@@ -26,7 +26,8 @@ const RefEvent = (data: any) => {
         // info("mouse up")
         setIsDragging(false)
         ref.current.style.transform = "none"
-        setContextValue((prevState) => ({...prevState, data, refDragging: null}));
+        dndContext.dataRef.current.data = null;
+        dndContext.dataRef.current.refDragging = null;
     }
 
     function setNodeRef(target: HTMLElement | null) {
@@ -38,7 +39,8 @@ const RefEvent = (data: any) => {
         // info("mouse down")
         setIsDragging(true)
         // info(data)
-        setContextValue((prevState) => ({...prevState, data, refDragging: ref, droppedData: null}));
+        dndContext.dataRef.current.data = data;
+        dndContext.dataRef.current.refDragging = ref;
     }
 
 

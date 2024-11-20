@@ -10,7 +10,7 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -26,7 +26,7 @@
         "./*"
       ]
     },
-    "target": "esnext"
+    "target": "ESNext"
   },
   "include": [
     "next-env.d.ts",

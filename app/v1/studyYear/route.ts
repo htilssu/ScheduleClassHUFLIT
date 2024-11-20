@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {prisma} from "@/services/prismaClient";
+import {prisma} from "@/service/prismaClient";
 
 export async function GET() {
     const year = await prisma.yearStudy.findMany();

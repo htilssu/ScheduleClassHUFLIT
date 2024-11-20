@@ -1,8 +1,8 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, {Profiler, useCallback, useState} from 'react';
 import ActionBar from "@/components/ActionBar";
-import {DndContext} from "@/hooks/use-dnd-context";
+import {DndContext} from "@/hook/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
@@ -15,34 +15,40 @@ const ScheduleSection = ({year, semester, major, classes}: {
 }) => {
     const [selectedClass, setSelectedClass] = useState<ClassRoot[]>([])
 
-    function handleOnDragEnd(data: ClassRoot) {
+    const handleOnDragEnd = useCallback((data: ClassRoot) => {
+
         if (data !== null) {
             if (!selectedClass.includes(data)) {
                 setSelectedClass(prevState => [...prevState, data])
             }
         }
-    }
+
+    }, [selectedClass]);
+
 
 
     return (
-        <div className={'select-none'}>
-            <div className={"relative"}>
-                <ActionBar reset={() => {
-                    setSelectedClass([])
-                }} filters={{
-                    year,
-                    semester,
-                    major
-                }}/>
-                <DndContext onDragEnd={handleOnDragEnd}>
-                    <div className={"flex p-2 relative z-10 max-h-screen"}>
-                        <SelectSection classes={classes || []}/>
-                        <TimeLine selectedClass={selectedClass}/>
-                    </div>
-                </DndContext>
+        <Profiler id={"Schedule"} onRender={()=> {}}>
+            <div className={'select-none'}>
+                <div className={"relative"}>
+                    <ActionBar reset={() => {
+                        setSelectedClass([])
+                    }} filters={{
+                        year,
+                        semester,
+                        major
+                    }}/>
+                    <DndContext onDragEnd={handleOnDragEnd}>
+                        <div className={"flex p-2 relative z-10 max-h-screen"}>
+                            <SelectSection classes={classes || []}/>
+                            <TimeLine selectedClass={selectedClass}/>
+                        </div>
+                    </DndContext>
+                </div>
             </div>
-        </div>
+        </Profiler>
     );
 };
 
 export default ScheduleSection;
+

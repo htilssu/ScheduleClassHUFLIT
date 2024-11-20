@@ -3,11 +3,9 @@
 import React, {useEffect} from 'react';
 import {Button, Group, Select} from "@mantine/core";
 import {IconDeviceFloppy, IconTrash} from "@tabler/icons-react";
-import {get} from "@/utils/request.util";
+import {get} from "@/util/request.util";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/navigation";
-import {Simulate} from "react-dom/test-utils";
-import reset = Simulate.reset;
 
 export interface Filter {
     year: string,

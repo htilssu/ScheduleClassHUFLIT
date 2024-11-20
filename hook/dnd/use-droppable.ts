@@ -1,5 +1,5 @@
-import {useDndContext} from "@/hooks/use-dnd-context";
-import {useEffect, useRef, useState} from "react";
+import {useDndContext} from "@/hook/use-dnd-context";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 export function useDroppable() {
     const dndContext = useDndContext();
@@ -18,27 +18,29 @@ export function useDroppable() {
                 ({...prevState, droppableList: [...prevState.droppableList, {ref, setDroppedData}]}));
     }, []);
 
-    function handleMouseUp(e: MouseEvent) {
+    const handleMouseUp = useCallback(function (e: MouseEvent) {
+        if (dndContext.dataRef.current.data === null) return;
         const refBound = ref.current.getBoundingClientRect();
         if (e.clientX >= refBound.left && e.clientX <= refBound.right
             && e.clientY > refBound.top && e.clientY <= refBound.bottom) {
-            dndContext.setContextValue(prevState => ({...prevState, droppedData: dndContext.data}))
+            setDroppedData(dndContext.dataRef.current.data)
+            if (typeof dndContext.onDragEnd === "function") {
+                dndContext.onDragEnd(dndContext.dataRef.current.data)
+            }
         }
-    }
+    }, []);
 
     useEffect(() => {
-        if (dndContext.refDragging) {
             document.addEventListener('mouseup', handleMouseUp, {
                 capture: true
             })
-        }
 
         return () => {
             document.removeEventListener('mouseup', handleMouseUp, {
                 capture: true
             })
         }
-    }, [ref.current, dndContext.refDragging, handleMouseUp]);
+    }, [handleMouseUp]);
 
 
     useEffect(() => {
@@ -49,9 +51,9 @@ export function useDroppable() {
 
     return {
         data: dndContext.data,
-        isDragging: dndContext.refDragging !== null && dndContext.refDragging !== undefined,
+        isDragging: dndContext.dataRef.current.data !== null,
         setNodeRef,
-        droppedData: dndContext.data
+        droppedData: droppedData
     }
 }
 

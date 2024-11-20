@@ -1,7 +1,7 @@
 import axios from "axios";
 import {load} from "cheerio";
-import {prisma} from "@/services/prismaClient";
-import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/utils/data";
+import {prisma} from "@/service/prismaClient";
+import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/util/data";
 import {randomUUID} from "node:crypto";
 import {NextRequest, NextResponse} from "next/server";
 

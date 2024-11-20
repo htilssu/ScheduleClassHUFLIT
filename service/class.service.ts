@@ -1,4 +1,4 @@
-import {get} from "@/utils/request.util";
+import {get} from "@/util/request.util";
 
 export async function getClass(major: string, semester: string,
                                year: string) {

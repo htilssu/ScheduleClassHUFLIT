@@ -1,7 +1,7 @@
 import React from 'react';
 import {Badge, Card, Group, Stack, Text} from "@mantine/core";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
-import {useDraggable} from "@/hooks/dnd/use-draggable";
+import {useDraggable} from "@/hook/dnd/use-draggable";
 
 function ClassCard({classData}: { classData: ClassRoot }) {
     const {setNodeRef, isDragging} = useDraggable(classData)

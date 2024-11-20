@@ -1,10 +1,11 @@
 'use client'
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {ComboboxItem, Input, Select, Stack} from "@mantine/core";
+import {Button, ComboboxItem, Flex, Input, Select, Stack} from "@mantine/core";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
+import {IconAdjustmentsHorizontal} from '@tabler/icons-react';
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -16,8 +17,6 @@ function SelectSection({classes}: SelectSectionProps) {
     const [limit, setLimit] = useState(300)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
-
-    // eslint-disable-next-line react-compiler/react-compiler,react-hooks/exhaustive-deps
     const debouncedSearch = useCallback(debounce((searchString: string) => {
         if (searchString !== "") {
             if (classType !== "Tất cả") {
@@ -56,8 +55,15 @@ function SelectSection({classes}: SelectSectionProps) {
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
             <Stack className={"mt-2"}>
                 <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
-                <Select defaultValue={classType} onChange={handleTypeChange} data={["Tất cả", "Lý thuyết", "Thực hành"]}
-                        placeholder={"Chọn loại"}/>
+                <Flex gap={'xs'} justify={'end'}>
+                    <Select className={'w-full'} defaultValue={classType} onChange={handleTypeChange}
+                            data={["Tất cả", "Lý thuyết", "Thực hành"]}
+                            placeholder={"Chọn loại"}/>
+                    <Button variant={'gradient'}
+                            color={'blue'}
+                            className={'w-auto'}><IconAdjustmentsHorizontal/></Button>
+                </Flex>
+
             </Stack>
 
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>

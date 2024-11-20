@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
-import {useDroppable} from "@/hooks/dnd/use-droppable";
+import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
@@ -21,15 +21,15 @@ const mm = Array.from({
 
 
 function TimeLine({selectedClass}: TimeLineProps) {
-    console.log("mouse up")
+    console.log("TimeLine Render")
 
     const {setNodeRef, droppedData} = useDroppable();
-    const [classList, setClassList] = useState<ClassRoot[]>([])
     const [mergeMark, setMergeMark] = useState(mm);
+    const [classes, setClasses] = useState<ClassRoot[]>(selectedClass ?? []);
 
     useEffect(() => {
-        selectedClass?.map(value => handleAddClass(value))
-    }, [selectedClass]);
+        classes?.map(value => handleAddClass(value))
+    }, [classes]);
 
     function handleAddClass(classData: Class) {
         const weekDay = Number(classData.weekDay[1]);
@@ -52,24 +52,25 @@ function TimeLine({selectedClass}: TimeLineProps) {
 
     const getRowSpan = useCallback((col: number, i: number) => {
         const arr = Array.from(mergeMark[col]);
-        if (arr.includes(i)) {
-            if (arr.indexOf(i) === arr.length - 1) {
+        const indexOfi = arr.indexOf(i);
+        if (indexOfi !== -1) {
+            if (indexOfi === arr.length - 1) {
                 return MAX_TIME_SECTION - i
             }
-            return arr[arr.indexOf(i) + 1] - i
+            return arr[indexOfi + 1] - i
         }
         return 1
     }, [mergeMark]);
 
     useEffect(() => {
         if (droppedData) {
-            handleAddClass(droppedData)
+            setClasses(prevState => [...prevState, droppedData])
         }
     }, [droppedData]);
 
 
     function getTableClassCard(row: number, col: number) {
-        const classData = selectedClass?.find(value => {
+        const classData = classes?.find(value => {
             const weekDay = Number(value.weekDay[1]);
             const time = value.time.split('-').map(trim).map(Number);
             const start = time[0];

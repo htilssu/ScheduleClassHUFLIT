@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
-import {prisma} from "@/services/prismaClient";
-import {comparePassword} from "@/utils/password";
+import {prisma} from "@/service/prismaClient";
+import {comparePassword} from "@/util/password";
 import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {

@@ -25,13 +25,15 @@ interface DndContext {
     setContextValue: Dispatch<SetStateAction<DndContext>>;
     droppableList: Droppable[];
     droppedData: any;
+    onDragEnd: (() => void) | DroppedCallback | null;
+    dataRef: { current: { data: any, refDragging: RefObject<HTMLElement> | null } };
 }
 
 type DroppedCallback = (dropped: any) => void;
 
 interface DndContextProps {
     children?: ReactNode;
-    onDragEnd?: (() => void) | DroppedCallback;
+    onDragEnd: (() => void) | DroppedCallback | null;
 }
 
 const Context = createContext<DndContext>({} as DndContext);
@@ -46,8 +48,18 @@ export const DndContext: FC<DndContextProps> = props => {
         refDragging: null,
         droppableList: [],
         setContextValue: () => {
-        }
+        },
+        onDragEnd: () => {
+        },
+        dataRef: {current: {data: null, refDragging: null}}
     } as DndContext)
+
+    const refData = useRef({
+        data: null,
+        refDragging: {
+            current: null
+        }
+    });
 
     const ref = useRef<HTMLDivElement>(null);
 
@@ -62,21 +74,19 @@ export const DndContext: FC<DndContextProps> = props => {
         const x = clientRect.x
         const y = clientRect.y
 
-        const refDragging = contextValue.refDragging;
-
+        const refDragging: HTMLElement = refData.current.refDragging?.current!;
 
         if (refDragging) {
-            const refDraggingBound = refDragging?.current.getBoundingClientRect()!;
+            const refDraggingBound = refDragging.getBoundingClientRect()!;
             const refDraggingWidth = refDraggingBound?.width
             const refDraggingHeight = refDraggingBound?.height
-            refDragging.current.style.transform = `translate(${e.clientX - x - refDraggingWidth / 2}px,${e.clientY - y - refDraggingHeight / 2}px)`
+            refDragging.style.transform = `translate(${e.clientX - x - refDraggingWidth / 2}px,${e.clientY - y - refDraggingHeight / 2}px)`
         }
 
-    }, [contextValue.refDragging]);
+    }, []);
 
 
     useEffect(() => {
-        if (contextValue.refDragging == null) return;
 
         ref.current?.addEventListener("mousemove", handleMouseMove)
 
@@ -84,11 +94,11 @@ export const DndContext: FC<DndContextProps> = props => {
         return () => {
             ref.current?.removeEventListener("mousemove", handleMouseMove)
         }
-    }, [contextValue.refDragging, ref.current]);
+    }, [handleMouseMove]);
 
 
     return (
-        <Context.Provider value={{...contextValue, setContextValue}}>
+        <Context.Provider value={{...contextValue, setContextValue, dataRef: refData, onDragEnd: props.onDragEnd}}>
             <div ref={ref} className={'relative z-10'}>
                 {props.children}
             </div>

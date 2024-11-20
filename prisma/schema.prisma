@@ -7,6 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Code {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  code       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  expiredAt  DateTime
+  Type       CodeType @relation(fields: [codeTypeId], references: [id])
+  codeTypeId String   @db.ObjectId
+
+  @@index([code])
+}
+
+model CodeType {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  delay     Int //secs
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Code      Code[]
+}
+
 model User {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
@@ -40,14 +61,14 @@ model Class {
 }
 
 model ClassSecret {
-  classId String @id @db.ObjectId @map("_id")
-  secret  String
+  classId  String            @id @map("_id") @db.ObjectId
+  secret   String
   children ClassSecretType[]
 }
 
 type ClassSecretType {
   classId String
-  secret String
+  secret  String
 }
 
 model Major {

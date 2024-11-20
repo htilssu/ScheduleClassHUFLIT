@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Input, Text} from "@mantine/core";
 import {FaUser} from "react-icons/fa";
 import {MdLock} from "react-icons/md";
-import {useAuth} from "@/contexts/AuthContext";
+import {useAuth} from "@/context/AuthContext";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/router";
-import {post} from "@/utils/request.util";
+import {post} from "@/util/request.util";
 
 
 function LoginForm() {
