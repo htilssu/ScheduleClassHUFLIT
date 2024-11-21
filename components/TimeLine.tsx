@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
@@ -22,7 +24,7 @@ const mm = Array.from({
 }).map(() => new Set<number>(defaultMark))
 
 
-function TimeLine({selectedClass}: TimeLineProps) {
+function TimeLine() {
     info('TimeLine render')
 
     const {setNodeRef, droppedData} = useDroppable();

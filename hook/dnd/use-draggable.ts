@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {useDndContext} from "@/hook/use-dnd-context";
+import {info} from "@/util/logging.util";
 
 const RefEvent = (data: any) => {
     const ref = useRef<HTMLElement>({} as HTMLElement);
@@ -36,9 +37,7 @@ const RefEvent = (data: any) => {
     }
 
     function handleMouseDown(e: MouseEvent) {
-        // info("mouse down")
         setIsDragging(true)
-        // info(data)
         dndContext.dataRef.current.data = data;
         dndContext.dataRef.current.refDragging = ref;
     }
