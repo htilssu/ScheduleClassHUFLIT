@@ -33,8 +33,7 @@ model User {
   password String    @map("password")
   email    String    @unique
   timeline TimeLine?
-  role     String    @default("user")
-
+  role String @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -42,10 +41,9 @@ model User {
 model Lecturer {
   id String @id @map("_id") @default(auto()) @db.ObjectId
   name    String
-  classes Class[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Classes Class[]
 }
 
 model Class {
@@ -54,17 +52,16 @@ model Class {
   time        String
   type        String
   room        String
-  lecturerId  String
-  lecturer    Lecturer  @relation(fields: [lecturerId], references: [id])
   subjectId   String    @db.ObjectId
   subject     Subject   @relation(fields: [subjectId], references: [id])
   yearStudyId String
   yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
   semester    Semester  @relation(fields: [semesterId], references: [semester])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
+  lecturerId String   @db.ObjectId
 }
 
 model ClassSecret {

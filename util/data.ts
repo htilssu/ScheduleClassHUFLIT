@@ -28,8 +28,10 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
         majorId: "",
         classId: [],
         yearStudyId: "",
-        semesterId: ""
-    };
+        semesterId: "",
+        createdAt: new Date(),
+        updatedAt: new Date()
+    }
     const splitData = htmlInner.split(/<br\/?>/g);
     const subjectName = splitData[0].split(":")[1].trim() //Bảo đảm chất lượng phần mềm (1230534)
     const subjectId = getSubjectIdFromSubjectName(subjectName);
