@@ -317,7 +317,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                     const data = await prisma.class.findFirst({
                         where: {
                             id: id,
-                            subjectId: subjectElement.subjectCode,
+                            subjectId: subjectId,
                             yearStudyId: year,
                             semesterId: s
                         }
