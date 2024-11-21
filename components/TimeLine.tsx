@@ -29,8 +29,8 @@ function TimeLine({selectedClass}: TimeLineProps) {
     const [classes, setClasses] = useState<ClassRoot[]>(selectedClass ?? []);
 
     useEffect(() => {
-        selectedClass?.map(value => handleAddClass(value))
-    }, [selectedClass]);
+        classes?.map(value => handleAddClass(value))
+    }, [classes]);
 
     function handleAddClass(classData: Class) {
         const weekDay = Number(classData.weekDay[1]);
