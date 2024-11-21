@@ -69,6 +69,12 @@ function TimeLine({selectedClass}: TimeLineProps) {
         }
     }, [droppedData]);
 
+    const removeClass = useCallback(
+        function removeClass(classId: string) {
+            setClasses(prevState => prevState.filter(value => value.id !== classId))
+        }
+        , []);
+
 
     function getTableClassCard(row: number, col: number) {
         const classData = classes?.find(value => {
@@ -78,7 +84,7 @@ function TimeLine({selectedClass}: TimeLineProps) {
             return weekDay - 2 === col && start - 1 == row
         })
         if (classData) {
-            return <TableClassCard classData={classData}/>
+            return <TableClassCard onRemoveClass={removeClass} classData={classData}/>
         }
     }
 
