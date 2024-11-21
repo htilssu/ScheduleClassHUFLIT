@@ -41,7 +41,7 @@ const ScheduleSection = ({year, semester, major, classes}: {
                     <DndContext onDragEnd={handleOnDragEnd}>
                         <div className={"flex p-2 relative z-10 max-h-screen"}>
                             <SelectSection classes={classes || []}/>
-                            <TimeLine selectedClass={selectedClass}/>
+                            <TimeLine />
                         </div>
                     </DndContext>
                 </div>

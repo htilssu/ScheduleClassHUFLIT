@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
@@ -5,6 +7,8 @@ import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
+import {info} from "@/util/logging.util";
+import {loadClassFromLocal, saveClassToLocal} from "@/service/class.service";
 
 
 interface TimeLineProps {
@@ -20,12 +24,16 @@ const mm = Array.from({
 }).map(() => new Set<number>(defaultMark))
 
 
-function TimeLine({selectedClass}: TimeLineProps) {
-    console.log("TimeLine Render")
+function TimeLine() {
+    info('TimeLine render')
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);
-    const [classes, setClasses] = useState<ClassRoot[]>(selectedClass ?? []);
+    const [classes, setClasses] = useState<ClassRoot[]>(loadClassFromLocal);
+
+    useEffect(() => {
+        saveClassToLocal(classes)
+    }, [classes]);
 
     useEffect(() => {
         classes?.map(value => handleAddClass(value))
@@ -68,6 +76,12 @@ function TimeLine({selectedClass}: TimeLineProps) {
         }
     }, [droppedData]);
 
+    const removeClass = useCallback(
+        function removeClass(classId: string) {
+            setClasses(prevState => prevState.filter(value => value.id !== classId))
+        }
+        , []);
+
 
     function getTableClassCard(row: number, col: number) {
         const classData = classes?.find(value => {
@@ -77,7 +91,7 @@ function TimeLine({selectedClass}: TimeLineProps) {
             return weekDay - 2 === col && start - 1 == row
         })
         if (classData) {
-            return <TableClassCard classData={classData}/>
+            return <TableClassCard onRemoveClass={removeClass} classData={classData}/>
         }
     }
 

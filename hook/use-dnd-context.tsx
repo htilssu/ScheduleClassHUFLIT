@@ -1,8 +1,9 @@
+'use client'
+
 import {
     createContext,
     Dispatch,
     FC,
-    MutableRefObject,
     ReactNode,
     RefObject,
     SetStateAction,
@@ -20,11 +21,8 @@ interface Droppable {
 
 interface DndContext {
     data: any;
-    setRefDragging: (ref: RefObject<HTMLElement>) => void;
-    refDragging: MutableRefObject<HTMLElement> | null;
     setContextValue: Dispatch<SetStateAction<DndContext>>;
     droppableList: Droppable[];
-    droppedData: any;
     onDragEnd: (() => void) | DroppedCallback | null;
     dataRef: { current: { data: any, refDragging: RefObject<HTMLElement> | null } };
 }
@@ -42,10 +40,6 @@ export const DndContext: FC<DndContextProps> = props => {
     console.log("dnd context re render")
     const [contextValue, setContextValue] = useState<DndContext>({
         data: null,
-        setRefDragging: () => {
-        },
-        droppedData: null,
-        refDragging: null,
         droppableList: [],
         setContextValue: () => {
         },
@@ -63,10 +57,6 @@ export const DndContext: FC<DndContextProps> = props => {
 
     const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        props.onDragEnd?.(contextValue.droppedData)
-        setContextValue(prevState => ({...prevState, droppedData: null}))
-    }, [contextValue.droppedData, props.onDragEnd]);
 
     const handleMouseMove = useCallback(function (e: MouseEvent) {
         if (!ref.current) return;
