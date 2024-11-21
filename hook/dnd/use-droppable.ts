@@ -1,4 +1,7 @@
+'use client'
+
 import {useDndContext} from "@/hook/use-dnd-context";
+
 import {useCallback, useEffect, useRef, useState} from "react";
 
 export function useDroppable() {
@@ -27,6 +30,7 @@ export function useDroppable() {
             if (typeof dndContext.onDragEnd === "function") {
                 dndContext.onDragEnd(dndContext.dataRef.current.data)
             }
+            dndContext.setContextValue(prevState => ({...prevState, data: null}))
         }
     }, []);
 
@@ -44,10 +48,10 @@ export function useDroppable() {
 
 
     useEffect(() => {
-        if (dndContext.refDragging !== null) {
+        if (droppedData) {
             setDroppedData(null)
         }
-    }, [dndContext.refDragging]);
+    }, [droppedData]);
 
     return {
         data: dndContext.data,

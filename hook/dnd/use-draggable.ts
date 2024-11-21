@@ -1,3 +1,4 @@
+'use client'
 import {useEffect, useRef, useState} from "react";
 import {useDndContext} from "@/hook/use-dnd-context";
 
@@ -36,9 +37,7 @@ const RefEvent = (data: any) => {
     }
 
     function handleMouseDown(e: MouseEvent) {
-        // info("mouse down")
         setIsDragging(true)
-        // info(data)
         dndContext.dataRef.current.data = data;
         dndContext.dataRef.current.refDragging = ref;
     }
