@@ -6,6 +6,7 @@ import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
 import {info} from "@/util/logging.util";
+import {loadClassFromLocal, saveClassToLocal} from "@/service/class.service";
 
 
 interface TimeLineProps {
@@ -26,7 +27,11 @@ function TimeLine({selectedClass}: TimeLineProps) {
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);
-    const [classes, setClasses] = useState<ClassRoot[]>(selectedClass ?? []);
+    const [classes, setClasses] = useState<ClassRoot[]>(loadClassFromLocal);
+
+    useEffect(() => {
+        saveClassToLocal(classes)
+    }, [classes]);
 
     useEffect(() => {
         classes?.map(value => handleAddClass(value))
