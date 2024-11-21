@@ -74,7 +74,7 @@ export function getClassDataFromRaw(rawData: string): ClassData[] {
             const currentElement = $(element);
             switch (index) {
                 case 1:
-                    temp = {...temp, subjectId: currentElement.text().trim()}
+                    temp.subjectId = currentElement.text().trim()
                     const attr = currentElement.attr("rowspan");
                     if (attr && attr === "2") {
                         prevClass = temp as ClassData;
