@@ -1,4 +1,7 @@
+'use client'
+
 import {useDndContext} from "@/hook/use-dnd-context";
+
 import {useCallback, useEffect, useRef, useState} from "react";
 
 export function useDroppable() {
