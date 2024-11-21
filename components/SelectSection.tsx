@@ -6,6 +6,7 @@ import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
 import {IconAdjustmentsHorizontal} from '@tabler/icons-react';
+import {Class} from "@prisma/client";
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -28,14 +29,14 @@ function SelectSection({classes}: SelectSectionProps) {
 
                 setSearchList(
                     classes.filter((value) => {
-                        const matchesSubject = value.subject.name
+                        const matchesSubject = value.Subject.name
                                                     .toLowerCase()
                                                     .includes(searchString.toLowerCase());
                         const matchesType =
                             classType === "Tất cả" || value.type === classType;
                         const matchesTeacher =
                             teacherName === "" ||
-                            value.lecturer.name.toLowerCase().includes(teacherName.toLowerCase());
+                            value.Lecturer.name.toLowerCase().includes(teacherName.toLowerCase());
 
                         return matchesSubject && matchesType && matchesTeacher;
                     })

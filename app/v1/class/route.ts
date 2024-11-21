@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
             semesterId: semester as string,
         },
         include: {
-            subject: true,
-            lecturer: true,
+            Subject: true,
+            Lecturer: true,
         }
     });
 

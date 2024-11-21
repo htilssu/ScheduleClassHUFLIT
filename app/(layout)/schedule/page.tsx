@@ -1,32 +1,17 @@
 import {SearchParams} from "@/app/page.type";
 import ScheduleSection from "@/app/(layout)/schedule/ScheduleSection";
 import {prisma} from "@/service/prismaClient";
+import {Prisma} from "@prisma/client";
 
 
-export type ClassRoot = {
-    id: string
-    weekDay: string
-    time: string
-    type: string
-    room: string
-    lecturerId: string
-    subjectId: string
-    yearStudyId: string
-    semesterId: string
-    subject: {
-        id: string
-        name: string
-        majorId: string
-        classId: Array<any>
-        yearStudyId: string
-        semesterId: string
+export type ClassRoot = Prisma.ClassGetPayload<{
+    include: {
+        Subject: true,
+        Lecturer: true,
+        Semester: true,
+        YearStudy: true,
     }
-    lecturer: {
-        id: string
-        name: string
-    }
-}
-
+}>
 async function Page({
                         searchParams
                     }: { searchParams: SearchParams }) {
@@ -42,8 +27,10 @@ async function Page({
             semesterId: semester as string,
         },
         include: {
-            subject: true,
-            lecturer: true,
+            Subject: true,
+            Lecturer: true,
+            YearStudy: true,
+            Semester: true,
         }
     });
 
