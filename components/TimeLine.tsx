@@ -29,7 +29,7 @@ function TimeLine() {
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);
-    const [classes, setClasses] = useState<ClassRoot[]>(loadClassFromLocal);
+    const [classes, setClasses] = useState<Class[]>(loadClassFromLocal);
 
     useEffect(() => {
         saveClassToLocal(classes)

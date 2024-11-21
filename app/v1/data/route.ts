@@ -351,8 +351,8 @@ async function loadClass(yearStudy: string[], term: string[]) {
                                     },
                                     lecturer: {
                                         connect: {
-                                            id: lectureName !== "" ? lecture.find(
-                                                value => value.name.includes(lectureName))!.id : ""
+                                            id: lecture.find(
+                                                value => value.name === lectureName)!.id
                                         }
                                     }
 
