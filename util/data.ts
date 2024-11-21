@@ -53,6 +53,8 @@ export function getClassDataFromRaw(rawData: string): ClassData[] {
             if (td.length < 4) return;
 
             prevClass = {...prevClass}
+            prevClass.time = td.eq(0).text().trim();
+            prevClass.weekDay = td.eq(1).text().trim();
             result.push({...prevClass});
             prevClass = null;
         }
