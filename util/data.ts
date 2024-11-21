@@ -24,7 +24,6 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
     const data: Subject = {
         name: "",
         id: "",
-        subjectCode: "",
         majorId: "",
         classId: [],
         yearStudyId: "",
@@ -37,7 +36,7 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
     const subjectId = getSubjectIdFromSubjectName(subjectName);
 
     data.name = subjectName;
-    data.subjectCode = subjectId
+    data.id = subjectId
 
     return data
 }
@@ -77,7 +76,7 @@ export function getClassDataFromRaw(rawData: string): ClassData[] {
                     temp.subjectId = currentElement.text().trim()
                     const attr = currentElement.attr("rowspan");
                     if (attr && attr === "2") {
-                        prevClass = temp as ClassData;
+                        prevClass = temp;
                     }
                     break;
                 case 2:

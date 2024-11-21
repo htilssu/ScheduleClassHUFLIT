@@ -215,11 +215,11 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                     divL.each((_index, element) => {
                         try {
                             let subjectData = getSubjectDataFromRaw($(element).html() ?? "");
-                            if (existSubjectId.includes(subjectData.subjectCode)) return;
-                            existSubjectId.push(subjectData.subjectCode);
+                            if (existSubjectId.includes(subjectData.id)) return;
+                            existSubjectId.push(subjectData.id);
                             prisma.subject.findFirst({
                                 where: {
-                                    subjectCode: subjectData.subjectCode,
+                                    id: subjectData.id,
                                     yearStudyId: yearItem,
                                     semesterId: semester
                                 }
@@ -227,7 +227,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                 if (!value) {
                                     prisma.subject.create({
                                         data: {
-                                            subjectCode: subjectData.subjectCode,
+                                            id: subjectData.id,
                                             name: subjectData.name,
                                             Semester: {
                                                 connectOrCreate: {
@@ -301,7 +301,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
 
             for (let subjectElement of subject) {
                 const result = await axios.get(
-                    `https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.subjectCode}&valueWeek=1&Week=${standardWeek.weekName}`)
+                    `https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.id}&valueWeek=1&Week=${standardWeek.weekName}`)
                 const classData = getClassDataFromRaw(result.data)
                 for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
 
@@ -317,9 +317,11 @@ async function loadClass(yearStudy: string[], term: string[]) {
                     const data = await prisma.class.findFirst({
                         where: {
                             id: id,
-                            subjectId: subjectId,
                             yearStudyId: year,
-                            semesterId: s
+                            semesterId: s,
+                            Subject: {
+                                id: subjectId
+                            }
                         }
                     });
 
@@ -332,7 +334,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                                     id: id,
                                     Subject: {
                                         connect: {
-                                            id: subjectElement.id
+                                            id: subjectId
                                         }
                                     },
                                     room: room,
@@ -360,7 +362,6 @@ async function loadClass(yearStudy: string[], term: string[]) {
                             }).then()
 
                         } catch (e) {
-                            console.log(e)
                             console.log(id, lectureName, room, subjectId, time, type, weekDay)
                         }
                     }

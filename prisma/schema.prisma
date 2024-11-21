@@ -52,7 +52,7 @@ model Class {
   time        String
   type        String
   room        String
-  subjectId   String    @db.ObjectId
+  subjectId   String
   Subject     Subject   @relation(fields: [subjectId], references: [id])
   yearStudyId String
   YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
@@ -82,8 +82,7 @@ model Major {
 }
 
 model Subject {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  subjectCode String
+  id          String    @id @map("_id")
   name        String
   majorId     String    @db.ObjectId
   Major       Major     @relation(fields: [majorId], references: [id])
