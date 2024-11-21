@@ -12,5 +12,5 @@ export function saveClassToLocal(classes: Class[]) {
 }
 
 export function loadClassFromLocal() {
-    return JSON.parse(localStorage.getItem("classes") || "[]") as Class[];
+    return JSON.parse(localStorage.getItem("classes") || "[]") as ClassRoot[];
 }

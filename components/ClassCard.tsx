@@ -18,9 +18,9 @@ function ClassCard({classData}: { classData: ClassRoot }) {
                         <Badge color="pink">{classData.room}</Badge>
                         <Badge color="pink">{classData.type}</Badge>
                     </Group>
-                    <Text fw={500}>{classData.subject.name}</Text>
+                    <Text fw={500}>{classData.Subject.name}</Text>
                     <Text size="sm" c="dimmed">
-                        {classData.lecturer.name}
+                        {classData.Lecturer.name}
                     </Text>
                 </Stack>
             </Card>

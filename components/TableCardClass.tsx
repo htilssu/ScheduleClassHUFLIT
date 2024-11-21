@@ -1,11 +1,10 @@
-import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {Badge, Menu} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {IoTrash} from "react-icons/io5";
-import {Class} from "@prisma/client";
+import {ClassRoot} from "@/app/(layout)/schedule/page";
 
 export const TableClassCard = ({classData, onRemoveClass}: {
-    classData: Class,
+    classData: ClassRoot,
     onRemoveClass?: (classId: string) => void
 }) => {
     const [isOpenMenuContext, setIsOpenMenuContext] = useState(false)
@@ -33,13 +32,13 @@ export const TableClassCard = ({classData, onRemoveClass}: {
             <Menu.Target>
                 <div onContextMenu={handleContextMenu}
                      className={"border-2 hover:cursor-grabbing flex flex-col gap-2 py-3 px-2 w-full h-full border-violet-600 border-dashed"}>
-                    <h1 className={'font-bold text-base'}>{classData.subject.name}</h1>
+                    <h1 className={'font-bold text-base'}>{classData.Subject.name}</h1>
                     <div className={'flex text-center flex-wrap gap-2 items-center justify-center'}>
                         <Badge color={'teal'}>{classData.type}</Badge>
                         <Badge color={'red'}>{classData.room}</Badge>
                         <Badge color={'yellow'}>{classData.time}</Badge>
                     </div>
-                    <h2 className={'text-base'}>{classData.lecturer.name}</h2>
+                    <h2 className={'text-base'}>{classData.Lecturer.name}</h2>
                     <p className={'select-text'}>{classData.id}</p>
                 </div>
             </Menu.Target>

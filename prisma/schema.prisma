@@ -53,14 +53,14 @@ model Class {
   type        String
   room        String
   subjectId   String    @db.ObjectId
-  subject     Subject   @relation(fields: [subjectId], references: [id])
+  Subject     Subject   @relation(fields: [subjectId], references: [id])
   yearStudyId String
-  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
-  semester    Semester  @relation(fields: [semesterId], references: [semester])
+  Semester    Semester  @relation(fields: [semesterId], references: [semester])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
+  Lecturer   Lecturer @relation(fields: [lecturerId], references: [id])
   lecturerId String   @db.ObjectId
 }
 
@@ -78,7 +78,7 @@ type ClassSecretType {
 model Major {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
   name    String    @unique
-  subject Subject[]
+  Subjects Subject[]
 }
 
 model Subject {
@@ -86,13 +86,13 @@ model Subject {
   subjectCode String
   name        String
   majorId     String    @db.ObjectId
-  major       Major     @relation(fields: [majorId], references: [id])
+  Major       Major     @relation(fields: [majorId], references: [id])
   classId     String[]
-  class       Class[]
+  Classes       Class[]
   yearStudyId String
-  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
-  semester    Semester  @relation(fields: [semesterId], references: [semester])
+  Semester    Semester  @relation(fields: [semesterId], references: [semester])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -100,7 +100,7 @@ model Subject {
 model TimeLine {
   id      String   @default(auto()) @map("_id") @db.ObjectId
   classId String[] @db.ObjectId
-  user    User     @relation(fields: [userId], references: [id])
+  User    User     @relation(fields: [userId], references: [id])
   userId  String   @unique @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,9 +110,9 @@ model TimeLine {
 
 model YearStudy {
   year    String    @id @map("_id")
-  Subject Subject[]
-  Week    Week[]
-  Class   Class[]
+  Subjects Subject[]
+  Weeks    Week[]
+  Classes   Class[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -121,7 +121,7 @@ model Semester {
   semester String    @map("_id")
   Subject  Subject[]
   Week     Week[]
-  Class    Class[]
+  Classes    Class[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -133,9 +133,9 @@ model Week {
   weekValue   Int
   weekName    Int
   semesterId  String
-  semester    Semester  @relation(fields: [semesterId], references: [semester])
+  Semester    Semester  @relation(fields: [semesterId], references: [semester])
   yearStudyId String
-  yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -122,7 +122,7 @@ async function loadWeek(yearStudy: string[], termList: string[]) {
                 data: {
                     weekValue: value.Week,
                     weekName: value.DisPlayWeek,
-                    semester: {
+                    Semester: {
                         connectOrCreate: {
                             where: {
                                 semester: value.semester
@@ -132,7 +132,7 @@ async function loadWeek(yearStudy: string[], termList: string[]) {
                             }
                         }
                     },
-                    yearStudy: {
+                    YearStudy: {
                         connectOrCreate: {
                             where: {
                                 year: value.yearValue
@@ -229,7 +229,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                         data: {
                                             subjectCode: subjectData.subjectCode,
                                             name: subjectData.name,
-                                            semester: {
+                                            Semester: {
                                                 connectOrCreate: {
                                                     where: {
                                                         semester: semester
@@ -239,7 +239,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                                     }
                                                 }
                                             },
-                                            yearStudy: {
+                                            YearStudy: {
                                                 connectOrCreate: {
                                                     where: {
                                                         year: yearItem
@@ -249,7 +249,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                                     }
                                                 }
                                             },
-                                            major: {
+                                            Major: {
                                                 connectOrCreate: {
                                                     where: {
                                                         name: "_"
@@ -330,7 +330,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                             prisma.class.create({
                                 data: {
                                     id: id,
-                                    subject: {
+                                    Subject: {
                                         connect: {
                                             id: subjectElement.id
                                         }
@@ -339,17 +339,17 @@ async function loadClass(yearStudy: string[], term: string[]) {
                                     time: time,
                                     weekDay: "T" + weekDay,
                                     type: type,
-                                    yearStudy: {
+                                    YearStudy: {
                                         connect: {
                                             year: year
                                         }
                                     },
-                                    semester: {
+                                    Semester: {
                                         connect: {
                                             semester: s
                                         }
                                     },
-                                    lecturer: {
+                                    Lecturer: {
                                         connect: {
                                             id: lecture.find(
                                                 value => value.name === lectureName)!.id
