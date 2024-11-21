@@ -13,27 +13,39 @@ interface SelectSectionProps {
 
 function SelectSection({classes}: SelectSectionProps) {
     const [classType, setClassType] = useState("Tất cả")
+    const [teacherName, setTeacherName] = useState("")
     const [search, setSearch] = useState("")
     const [limit, setLimit] = useState(300)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
-    const debouncedSearch = useCallback(debounce((searchString: string) => {
-        if (searchString !== "") {
-            if (classType !== "Tất cả") {
-                setSearchList(
-                    classes.filter(value => {
-                        return value.subject.name.toLowerCase().includes(
-                            searchString.toLowerCase()) && value.type === classType
-                    }))
+    const debouncedSearch = useCallback(
+        debounce(
+            (searchString: string) => {
+                if (searchString === "") {
+                    setSearchList([...classes]);
+                    return;
+                }
 
-            } else {
                 setSearchList(
-                    classes.filter(value => value.subject.name.toLowerCase().includes(searchString.toLowerCase())));
-            }
-        } else {
-            setSearchList([...classes])
-        }
-    }, 500, {leading: false, trailing: true}), [classType, classes]);
+                    classes.filter((value) => {
+                        const matchesSubject = value.subject.name
+                                                    .toLowerCase()
+                                                    .includes(searchString.toLowerCase());
+                        const matchesType =
+                            classType === "Tất cả" || value.type === classType;
+                        const matchesTeacher =
+                            teacherName === "" ||
+                            value.lecturer.name.toLowerCase().includes(teacherName.toLowerCase());
+
+                        return matchesSubject && matchesType && matchesTeacher;
+                    })
+                );
+            },
+            500,
+            { leading: false, trailing: true }
+        ),
+        [classType, classes, teacherName]
+    );
 
     useEffect(() => {
         setSearchList(_ => [])
@@ -50,11 +62,16 @@ function SelectSection({classes}: SelectSectionProps) {
         setSearch(e.target.value)
     }
 
+    function handleSearchByTeacher(e: React.ChangeEvent<HTMLInputElement>) {
+        setTeacherName(e.target.value)
+    }
+
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
             <Stack className={"mt-2"}>
                 <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
+                <Input onChange={handleSearchByTeacher} placeholder={"Tên giáo viên"}/>
                 <Flex gap={'xs'} justify={'end'}>
                     <Select className={'w-full'} defaultValue={classType} onChange={handleTypeChange}
                             data={["Tất cả", "Lý thuyết", "Thực hành"]}
