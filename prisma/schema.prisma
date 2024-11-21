@@ -47,7 +47,8 @@ model Lecturer {
 }
 
 model Class {
-  id          String    @id @map("_id")
+  id      String @id @map("_id") @default(auto()) @db.ObjectId
+  classId String
   weekDay     String
   time        String
   type        String

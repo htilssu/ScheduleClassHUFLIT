@@ -39,7 +39,7 @@ export const TableClassCard = ({classData, onRemoveClass}: {
                         <Badge color={'yellow'}>{classData.time}</Badge>
                     </div>
                     <h2 className={'text-base'}>{classData.Lecturer.name}</h2>
-                    <p className={'select-text'}>{classData.id}</p>
+                    <p className={'select-text'}>{classData.classId}</p>
                 </div>
             </Menu.Target>
 

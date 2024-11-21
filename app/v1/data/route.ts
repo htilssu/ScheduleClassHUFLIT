@@ -316,7 +316,8 @@ async function loadClass(yearStudy: string[], term: string[]) {
 
                     const data = await prisma.class.findFirst({
                         where: {
-                            id: id,
+                            subjectId: subjectId,
+                            time: time,
                             yearStudyId: year,
                             semesterId: s,
                             Subject: {
@@ -331,7 +332,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                             //call from other thread
                             prisma.class.create({
                                 data: {
-                                    id: id,
+                                    classId: id,
                                     Subject: {
                                         connect: {
                                             id: subjectId
