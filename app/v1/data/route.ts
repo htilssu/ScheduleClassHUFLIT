@@ -367,7 +367,6 @@ async function loadClass(yearStudy: string[], term: string[]) {
                             console.log(id, lectureName, room, subjectId, time, type, weekDay)
                         }
                     }
-
                 }
             }
         }

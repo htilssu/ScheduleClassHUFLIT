@@ -1,29 +1,39 @@
 import {NextRequest, NextResponse} from "next/server";
-import mongoClient, {getSecretById} from "@/service/mongoclient";
+import {prisma} from "@/service/prismaClient";
 
 export async function POST(req: NextRequest) {
-    const client = mongoClient.db("huflit").collection("secret");
     const data = await req.json();
-    const svData = await getSecretById(data.id);
 
-    if (svData == null) {
-        await client.insertOne(data);
+    const classSecret = await prisma.classSecret.findFirst({
+        where: {
+            id: data.id,
+        }
+    });
+
+    if (!classSecret) {
+        await prisma.classSecret.create({
+            data: {
+                id: data.id,
+                secret: data.secret,
+                children: data.children.map((child: { id: string, secret: string }) => {
+                    return {
+                        id: child.id,
+                        secret: child.secret,
+                    }
+                })
+            }
+        });
     } else {
-        await client.replaceOne({ id: data.id }, data);
-    }
-    return NextResponse.json({ message: "Success" });
-}
-
-export async function GET(req: NextRequest) {
-    const client = mongoClient.db("huflit").collection("secret");
-    const {searchParams} = new URL(req.url);
-    const id = searchParams.get("id");
-
-    if (id) {
-        const secret = await getSecretById(id);
-        return NextResponse.json(secret);
+        await prisma.classSecret.update({
+            where: {
+                id: data.id,
+            },
+            data: {
+                secret: data.secret,
+            }
+        })
     }
 
-    const data = await client.find({}).toArray();
-    return NextResponse.json(data);
+
+    return NextResponse.json({message: "Success"});
 }
