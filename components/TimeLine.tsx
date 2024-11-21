@@ -5,6 +5,7 @@ import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
+import {info} from "@/util/logging.util";
 
 
 interface TimeLineProps {
@@ -21,15 +22,15 @@ const mm = Array.from({
 
 
 function TimeLine({selectedClass}: TimeLineProps) {
-    console.log("TimeLine Render")
+    info('TimeLine render')
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);
     const [classes, setClasses] = useState<ClassRoot[]>(selectedClass ?? []);
 
     useEffect(() => {
-        classes?.map(value => handleAddClass(value))
-    }, [classes]);
+        selectedClass?.map(value => handleAddClass(value))
+    }, [selectedClass]);
 
     function handleAddClass(classData: Class) {
         const weekDay = Number(classData.weekDay[1]);
