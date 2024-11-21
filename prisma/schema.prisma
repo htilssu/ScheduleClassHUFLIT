@@ -9,14 +9,12 @@ datasource db {
 
 model Code {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  code       String
+  code String @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   expiredAt  DateTime
   Type       CodeType @relation(fields: [codeTypeId], references: [id])
   codeTypeId String   @db.ObjectId
-
-  @@index([code])
 }
 
 model CodeType {
@@ -36,12 +34,18 @@ model User {
   email    String    @unique
   timeline TimeLine?
   role     String    @default("user")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Lecturer {
-  id      String  @id @map("_id")
+  id String @id @map("_id") @default(auto()) @db.ObjectId
   name    String
   classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Class {
@@ -58,6 +62,9 @@ model Class {
   yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
   semester    Semester  @relation(fields: [semesterId], references: [semester])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ClassSecret {
@@ -89,6 +96,8 @@ model Subject {
   yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   semesterId  String
   semester    Semester  @relation(fields: [semesterId], references: [semester])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TimeLine {
@@ -96,6 +105,8 @@ model TimeLine {
   classId String[] @db.ObjectId
   user    User     @relation(fields: [userId], references: [id])
   userId  String   @unique @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([id])
 }
@@ -105,6 +116,8 @@ model YearStudy {
   Subject Subject[]
   Week    Week[]
   Class   Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Semester {
@@ -112,6 +125,8 @@ model Semester {
   Subject  Subject[]
   Week     Week[]
   Class    Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([semester])
 }
@@ -124,4 +139,6 @@ model Week {
   semester    Semester  @relation(fields: [semesterId], references: [semester])
   yearStudyId String
   yearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

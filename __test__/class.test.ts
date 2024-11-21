@@ -7,7 +7,6 @@ test("test subject with ()", () => {
     expect(dada.lectureName).toBe("Lưu Cẩm Huệ")
     expect(dada.room).toBe("K72")
     expect(dada.time).toBe("5-6")
-
 });
 
 test("test subject with - and ()", () => {
@@ -17,5 +16,4 @@ test("test subject with - and ()", () => {
    expect(dada.lectureName).toBe("Lưu Cẩm Huệ")
    expect(dada.room).toBe("K72")
    expect(dada.time).toBe("5-6")
-
 });

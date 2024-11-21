@@ -2,8 +2,7 @@ import axios from "axios";
 import {load} from "cheerio";
 import {prisma} from "@/service/prismaClient";
 import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/util/data";
-import {randomUUID} from "node:crypto";
-import {NextRequest, NextResponse} from "next/server";
+import {NextResponse} from "next/server";
 
 export async function GET() {
     await scrapData()
@@ -11,10 +10,32 @@ export async function GET() {
     return NextResponse.json({});
 }
 
+async function saveYearStudy(year: string[]) {
+    for (const value of year) {
+        const data = await prisma.yearStudy.findUnique({
+            where: {
+                year: value
+            }
+        })
+
+
+        if (!data) {
+            await prisma.yearStudy.create({
+                data: {
+                    year: value
+                }
+            })
+        }
+    }
+}
+
 async function scrapData() {
+    console.log("Đang lấy thông tin thời khóa biểu")
     const rawData = await axios.get("https://portal.huflit.edu.vn/public/tracuuthoikhoabieu")
     let term = await loadTerm(rawData.data)
+    await saveTerm(term)
     const year = await loadYearStudy(rawData.data)
+    await saveYearStudy(year)
     term = term.reverse();
     await loadWeek(year, term)
     await loadSubject(year, term)
@@ -22,7 +43,6 @@ async function scrapData() {
 }
 
 async function loadClassStudent(yearStudy: string, term: string) {
-
     const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetClassStudentByTerm/${yearStudy}$${term}`)
     return result.data;
 }
@@ -34,13 +54,16 @@ async function loadTerm(rawData: string) {
         term.push($(element).attr("value")!)
     })
 
+    return term
+}
+
+async function saveTerm(term: string[]) {
     for (const value of term) {
         const data = await prisma.semester.findUnique({
             where: {
                 semester: value
             }
         })
-
 
         if (!data) {
             await prisma.semester.create({
@@ -50,19 +73,19 @@ async function loadTerm(rawData: string) {
             })
         }
     }
-
-    return term
 }
 
-async function loadWeek(yearStudy: string[], term: string[]) {
+async function loadWeek(yearStudy: string[], termList: string[]) {
     const data = []
+    console.log("Đang lấy thông tin tuần học")
 
     const scrapYear = yearStudy.filter(value => value.includes(new Date().getFullYear().toString()))
 
     for (const year of scrapYear) {
-        for (const term1 of term) {
+        console.log(`Đang lấy tuần của năm học ${year}`)
+        for (const term of termList) {
             try {
-                const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetWeek/${year}$${term1}`) as {
+                const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetWeek/${year}$${term}`) as {
                     data: {
                         Week: number,
                         DisPlayWeek: number,
@@ -72,7 +95,7 @@ async function loadWeek(yearStudy: string[], term: string[]) {
                     return {
                         ...value,
                         yearValue: year,
-                        semester: term1,
+                        semester: term,
                     }
                 }))
             } catch (e) {
@@ -129,34 +152,19 @@ async function loadWeek(yearStudy: string[], term: string[]) {
 }
 
 async function loadYearStudy(rawDataL: string) {
+    console.log("Đang lấy thông tin năm học")
     const $ = load(rawDataL)
     const year: string[] = []
-    $("#YearStudy2 option").each((_, element) => {
+    $("#YearStudy option").each((_, element) => {
         year.push($(element).attr("value")!)
     })
-
-    for (const value of year) {
-        const data = await prisma.yearStudy.findUnique({
-            where: {
-                year: value
-            }
-        })
-
-
-        if (!data) {
-            await prisma.yearStudy.create({
-                data: {
-                    year: value
-                }
-            })
-        }
-    }
-
+    console.log("Đã lấy thông tin năm học")
+    console.log(year)
     return year
 
 }
 
-function handlerStudentClass(studentClass: { ClassStudentID: string }[]) {
+function handleStudentClass(studentClass: { ClassStudentID: string }[]) {
     const data: String[] = []
 
     studentClass.map(value => {
@@ -190,7 +198,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
             if (!weekData) continue
             let studentClass = await loadClassStudent(yearItem, semester);
 
-            studentClass = handlerStudentClass(studentClass);
+            studentClass = handleStudentClass(studentClass);
 
             for (let studentClassItem of studentClass) {
                 //TODO: scrap more week
@@ -206,12 +214,12 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                     const divL = $(element).find("td div")
                     divL.each((_index, element) => {
                         try {
-                            let result = getSubjectDataFromRaw($(element).text());
-                            if (existSubjectId.includes(result.subjectId)) return;
-                            existSubjectId.push(result.subjectId);
+                            let subjectData = getSubjectDataFromRaw($(element).html() ?? "");
+                            if (existSubjectId.includes(subjectData.subjectCode)) return;
+                            existSubjectId.push(subjectData.subjectCode);
                             prisma.subject.findFirst({
                                 where: {
-                                    subjectCode: result.subjectId,
+                                    subjectCode: subjectData.subjectCode,
                                     yearStudyId: yearItem,
                                     semesterId: semester
                                 }
@@ -219,8 +227,8 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                 if (!value) {
                                     prisma.subject.create({
                                         data: {
-                                            subjectCode: result.subjectId,
-                                            name: result.subjectName,
+                                            subjectCode: subjectData.subjectCode,
+                                            name: subjectData.name,
                                             semester: {
                                                 connectOrCreate: {
                                                     where: {
@@ -237,7 +245,7 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                                         year: yearItem
                                                     },
                                                     create: {
-                                                        year: yearItem
+                                                        year: yearItem,
                                                     }
                                                 }
                                             },
@@ -281,6 +289,7 @@ async function loadClass(yearStudy: string[], term: string[]) {
                     semesterId: s
                 }
             });
+
             const week = await prisma.week.findMany({
                 where: {
                     yearStudyId: year,
@@ -296,15 +305,10 @@ async function loadClass(yearStudy: string[], term: string[]) {
                 const classData = getClassDataFromRaw(result.data)
                 for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
 
-                    if (lecture.find(value => value.name.includes(lectureName)) === undefined) {
-                        const newLecture = {
-                            id: randomUUID(),
-                            name: lectureName
-                        }
-                        await prisma.lecturer.create({
+                    if (lecture.find(value => value.name === lectureName) === undefined) {
+                        const newLecture = await prisma.lecturer.create({
                             data: {
-                                id: newLecture.id,
-                                name: newLecture.name
+                                name: lectureName
                             }
                         })
                         lecture.push(newLecture)
@@ -347,7 +351,8 @@ async function loadClass(yearStudy: string[], term: string[]) {
                                     },
                                     lecturer: {
                                         connect: {
-                                            id: lecture.find(value => value.name.includes(lectureName))!.id
+                                            id: lectureName !== "" ? lecture.find(
+                                                value => value.name.includes(lectureName))!.id : ""
                                         }
                                     }
 
