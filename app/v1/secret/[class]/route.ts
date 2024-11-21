@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ cl
 
     const classSecret = await prisma.classSecret.findFirst({
         where: {
-            classId: pr.class
+            id: pr.class
         }
     })
 
