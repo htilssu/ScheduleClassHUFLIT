@@ -4,14 +4,14 @@ import {prisma} from "@/service/prismaClient";
 export async function POST(req: NextRequest) {
     const data = await req.json();
 
-    const classSecret = await prisma.classSecret.findFirst({
+    let classSecret = await prisma.classSecret.findFirst({
         where: {
-            id: data.id,
+            id: data.id
         }
     });
 
     if (!classSecret) {
-        await prisma.classSecret.create({
+        classSecret = await prisma.classSecret.create({
             data: {
                 id: data.id,
                 secret: data.secret,
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
             }
         });
     } else {
-        await prisma.classSecret.update({
+        classSecret = await prisma.classSecret.update({
             where: {
                 id: data.id,
             },
@@ -35,5 +35,5 @@ export async function POST(req: NextRequest) {
     }
 
 
-    return NextResponse.json({message: "Success"});
+    return NextResponse.json({...classSecret});
 }
