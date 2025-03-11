@@ -10,12 +10,6 @@ import {TableClassCard} from './TableCardClass';
 import {info} from "@/util/logging.util";
 import {loadClassFromLocal, saveClassToLocal} from "@/service/class.service";
 
-
-interface TimeLineProps {
-    dragging?: ClassRoot,
-    selectedClass?: ClassRoot[]
-}
-
 const MAX_TIME_SECTION = 15;
 
 const defaultMark = [0, 3, 6, 9, 12]

@@ -16,7 +16,6 @@ const ScheduleSection = ({year, semester, major, classes}: {
     const [selectedClass, setSelectedClass] = useState<ClassRoot[]>([])
 
     const handleOnDragEnd = useCallback((data: ClassRoot) => {
-
         if (data !== null) {
             if (!selectedClass.includes(data)) {
                 setSelectedClass(prevState => [...prevState, data])

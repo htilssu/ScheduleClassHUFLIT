@@ -178,7 +178,7 @@ function handleStudentClass(studentClass: { ClassStudentID: string }[]) {
 }
 
 async function loadSubject(yearStudy: string[], term: string[]) {
-
+    console.log("Đang lấy thông tin môn học")
     const existSubjectId: String[] = [];
     const currentYear = new Date().getFullYear();
 
