@@ -7,7 +7,7 @@ import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
-import {info} from "@/util/logging.util";
+import {debug} from "@/util/logging.util";
 import {loadClassFromLocal, saveClassToLocal} from "@/service/class.service";
 
 const MAX_TIME_SECTION = 15;
@@ -19,7 +19,7 @@ const mm = Array.from({
 
 
 function TimeLine() {
-    info('TimeLine render')
+    debug('TimeLine render')
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);

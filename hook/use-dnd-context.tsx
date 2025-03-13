@@ -13,6 +13,7 @@ import {
     useRef,
     useState
 } from "react";
+import {debug} from "@/util/logging.util";
 
 interface Droppable {
     ref: RefObject<HTMLElement>;
@@ -37,7 +38,7 @@ interface DndContextProps {
 const Context = createContext<DndContext>({} as DndContext);
 export const useDndContext = () => useContext(Context);
 export const DndContext: FC<DndContextProps> = props => {
-    console.log("dnd context re render")
+    debug("DndContext render")
     const [contextValue, setContextValue] = useState<DndContext>({
         data: null,
         droppableList: [],
@@ -67,7 +68,7 @@ export const DndContext: FC<DndContextProps> = props => {
         const refDragging: HTMLElement = refData.current.refDragging?.current!;
 
         if (refDragging) {
-            const refDraggingBound = refDragging.getBoundingClientRect()!;
+            const refDraggingBound = refDragging.getBoundingClientRect();
             const refDraggingWidth = refDraggingBound?.width
             const refDraggingHeight = refDraggingBound?.height
             refDragging.style.transform = `translate(${e.clientX - x - refDraggingWidth / 2}px,${e.clientY - y - refDraggingHeight / 2}px)`

@@ -6,8 +6,9 @@ import {DndContext} from "@/hook/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
+import {saveClassToLocal} from "@/service/class.service";
 
-const ScheduleSection = ({year, semester, major, classes}: {
+const ScheduleMain = ({year, semester, major, classes}: {
     year: string,
     semester: string,
     major: string,
@@ -25,13 +26,14 @@ const ScheduleSection = ({year, semester, major, classes}: {
     }, [selectedClass]);
 
 
-
     return (
-        <Profiler id={"Schedule"} onRender={()=> {}}>
+        <Profiler id={"Schedule"} onRender={() => {
+        }}>
             <div className={'select-none'}>
                 <div className={"relative"}>
                     <ActionBar reset={() => {
                         setSelectedClass([])
+                        saveClassToLocal([])
                     }} filters={{
                         year,
                         semester,
@@ -40,7 +42,7 @@ const ScheduleSection = ({year, semester, major, classes}: {
                     <DndContext onDragEnd={handleOnDragEnd}>
                         <div className={"flex p-2 relative z-10 max-h-screen"}>
                             <SelectSection classes={classes || []}/>
-                            <TimeLine />
+                            <TimeLine/>
                         </div>
                     </DndContext>
                 </div>
@@ -49,5 +51,5 @@ const ScheduleSection = ({year, semester, major, classes}: {
     );
 };
 
-export default ScheduleSection;
+export default ScheduleMain;
 

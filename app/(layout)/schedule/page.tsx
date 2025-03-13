@@ -1,5 +1,5 @@
 import {SearchParams} from "@/app/page.type";
-import ScheduleSection from "@/app/(layout)/schedule/ScheduleSection";
+import ScheduleMain from "@/app/(layout)/schedule/ScheduleMain";
 import {prisma} from "@/service/prismaClient";
 import {Prisma} from "@prisma/client";
 
@@ -14,7 +14,7 @@ export type ClassRoot = Prisma.ClassGetPayload<{
 }>
 async function Page({
                         searchParams
-                    }: { searchParams: SearchParams }) {
+                    }: Readonly<{ searchParams: SearchParams }>) {
 
     const params = await searchParams;
     const year = params.year as string ?? "";
@@ -23,8 +23,8 @@ async function Page({
 
     const classes = await prisma.class.findMany({
         where: {
-            yearStudyId: year as string,
-            semesterId: semester as string,
+            yearStudyId: year,
+            semesterId: semester,
         },
         include: {
             Subject: true,
@@ -36,7 +36,7 @@ async function Page({
 
 
     return (<div>
-        <ScheduleSection classes={classes} year={year} semester={semester} major={major}/>
+        <ScheduleMain classes={classes} year={year} semester={semester} major={major}/>
     </div>);
 }
 

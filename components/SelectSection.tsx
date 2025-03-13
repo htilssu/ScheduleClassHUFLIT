@@ -6,13 +6,12 @@ import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
 import {IconAdjustmentsHorizontal} from '@tabler/icons-react';
-import {Class} from "@prisma/client";
 
 interface SelectSectionProps {
     classes: ClassRoot[]
 }
 
-function SelectSection({classes}: SelectSectionProps) {
+function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const [classType, setClassType] = useState("Tất cả")
     const [teacherName, setTeacherName] = useState("")
     const [search, setSearch] = useState("")
@@ -43,7 +42,7 @@ function SelectSection({classes}: SelectSectionProps) {
                 );
             },
             500,
-            { leading: false, trailing: true }
+            {leading: false, trailing: true}
         ),
         [classType, classes, teacherName]
     );
@@ -86,7 +85,7 @@ function SelectSection({classes}: SelectSectionProps) {
 
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>
                 {searchList.slice(0, limit).map((value, index) => (
-                    <ClassCard key={index} classData={value}/>
+                    <ClassCard key={value.classId} classData={value}/>
                 ))}
             </div>
         </div>
