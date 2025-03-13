@@ -25,5 +25,8 @@ export function saveClassToLocal(classes: Class[]) {
  * Load scheduled classes from local storage.
  */
 export function loadClassFromLocal(): ClassRoot[] {
-    return JSON.parse(localStorage.getItem("classes") ?? "[]");
+    if (typeof window !== "undefined") {
+        return JSON.parse(localStorage.getItem("classes") ?? "[]");
+    }
+    return [];
 }
