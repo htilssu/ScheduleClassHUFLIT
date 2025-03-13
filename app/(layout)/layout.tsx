@@ -4,24 +4,25 @@ import {AuthProvider} from "@/context/AuthContext";
 import {MantineProvider} from "@mantine/core";
 import "@/app/globals.css";
 import "@mantine/core/styles.css"
-import Layout from "@/components/Layout";
 import CacheProvider from "@/components/CacheProvider";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
     title: 'Home',
-    description: 'Welcome to Next.js',
+    description: '',
 }
 
-export default function RootLayout({children,}: { children: React.ReactNode }) {
+export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning={true}>
         <body>
         <CacheProvider>
             <AuthProvider>
                 <MantineProvider>
-                    <Layout>
+                    <Navbar/>
                         {children}
-                    </Layout>
+                    <Footer/>
                 </MantineProvider>
             </AuthProvider>
         </CacheProvider>
