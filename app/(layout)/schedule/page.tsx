@@ -1,25 +1,27 @@
-import {SearchParams} from "@/app/page.type";
 import ScheduleMain from "@/app/(layout)/schedule/ScheduleMain";
 import {prisma} from "@/service/prismaClient";
-import {Prisma} from "@prisma/client";
+import {cookies} from "next/headers";
+import {ClassConfig} from "@/lib/utils/class.util";
+import {redirect} from "next/navigation";
 
 
-export type ClassRoot = Prisma.ClassGetPayload<{
-    include: {
-        Subject: true,
-        Lecturer: true,
-        Semester: true,
-        YearStudy: true,
+async function Page() {
+
+    const cookie = await cookies();
+    const classConfigCookie = cookie.get("classConfig");
+    let year,
+        semester = "",
+        major = ""
+
+    if (classConfigCookie) {
+        const classConfig: ClassConfig = JSON.parse(classConfigCookie.value);
+        year = classConfig.year;
+        semester = classConfig.semester;
+        major = classConfig.major;
+        if (year && semester && major) {
+            redirect("setup")
+        }
     }
-}>
-async function Page({
-                        searchParams
-                    }: Readonly<{ searchParams: SearchParams }>) {
-
-    const params = await searchParams;
-    const year = params.year as string ?? "";
-    const semester = params.semester as string ?? "";
-    const major = params.major as string ?? "";
 
     const classes = await prisma.class.findMany({
         where: {
@@ -34,9 +36,8 @@ async function Page({
         }
     });
 
-
     return (<div>
-        <ScheduleMain classes={classes} year={year} semester={semester} major={major}/>
+        <ScheduleMain classes={classes}/>
     </div>);
 }
 

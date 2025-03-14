@@ -1,11 +1,10 @@
 'use client'
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, ComboboxItem, Flex, Input, Select, Stack} from "@mantine/core";
+import {ComboboxItem, Input, Select, Stack} from "@mantine/core";
 import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
-import {IconAdjustmentsHorizontal} from '@tabler/icons-react';
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -13,6 +12,7 @@ interface SelectSectionProps {
 
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const [classType, setClassType] = useState("Tất cả")
+    const [day, setDay] = useState("")
     const [teacherName, setTeacherName] = useState("")
     const [search, setSearch] = useState("")
     const [limit, setLimit] = useState(300)
@@ -58,6 +58,10 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
         setClassType(e!)
     }
 
+    function handleDayChange(e: string | null, _: ComboboxItem) {
+        setDay(e!);
+    }
+
     function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSearch(e.target.value)
     }
@@ -69,18 +73,15 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
             <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
-            <Stack className={"mt-2"}>
+            <Stack gap={4} className={"mt-2"}>
                 <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
                 <Input onChange={handleSearchByTeacher} placeholder={"Tên giáo viên"}/>
-                <Flex gap={'xs'} justify={'end'}>
-                    <Select className={'w-full'} defaultValue={classType} onChange={handleTypeChange}
-                            data={["Tất cả", "Lý thuyết", "Thực hành"]}
-                            placeholder={"Chọn loại"}/>
-                    <Button variant={'gradient'}
-                            color={'blue'}
-                            className={'w-auto'}><IconAdjustmentsHorizontal/></Button>
-                </Flex>
-
+                <Select className={'w-full'} defaultValue={classType} onChange={handleTypeChange}
+                        data={["Tất cả", "Lý thuyết", "Thực hành"]}
+                        placeholder={"Chọn loại"}/>
+                <Select className={'w-full'} defaultValue={day} onChange={handleDayChange}
+                        data={["Tất cả các ngày","T2", "T3", "T4", "T5", "T6", "T7", "CN"]}
+                        placeholder={"Chọn ngày"}/>
             </Stack>
 
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>

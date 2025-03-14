@@ -1,14 +1,17 @@
 import React, {ReactNode} from 'react';
 import "@/app/globals.css"
+import "@mantine/core/styles.css"
 import CacheProvider from "@/components/CacheProvider";
+import {MantineProvider} from '@mantine/core';
 
 const Layout = ({children}: Readonly<{ children: ReactNode }>) => {
     return (
-        <html lang={"en"} suppressHydrationWarning >
+        <html lang={"en"} suppressHydrationWarning>
         <body>
         <CacheProvider>
-            {children}
-            <p><div></div></p>
+            <MantineProvider>
+                {children}
+            </MantineProvider>
         </CacheProvider>
         </body>
         </html>
