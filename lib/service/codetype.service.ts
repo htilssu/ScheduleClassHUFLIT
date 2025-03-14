@@ -1,4 +1,4 @@
-import {prisma} from "@/service/prismaClient";
+import {prisma} from "@/lib/service/prismaClient";
 
 export namespace CodeTypeService {
     export async function createCodeType(codeType: { name: string, delay: number }) {

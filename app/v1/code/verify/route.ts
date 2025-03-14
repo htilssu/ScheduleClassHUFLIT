@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
-import {ErrorVm} from "@/model/ErrorVm";
-import {CodeService} from "@/service/code.service";
+import {ErrorVm} from "@/lib/model/ErrorVm";
+import {CodeService} from "@/lib/service/code.service";
 
 
 export async function POST(request: NextRequest) {

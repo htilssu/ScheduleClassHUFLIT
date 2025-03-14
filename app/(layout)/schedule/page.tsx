@@ -1,5 +1,5 @@
 import ScheduleMain from "@/app/(layout)/schedule/ScheduleMain";
-import {prisma} from "@/service/prismaClient";
+import {prisma} from "@/lib/service/prismaClient";
 import {cookies} from "next/headers";
 import {ClassConfig} from "@/lib/utils/class.util";
 import {redirect} from "next/navigation";
@@ -18,9 +18,11 @@ async function Page() {
         year = classConfig.year;
         semester = classConfig.semester;
         major = classConfig.major;
-        if (year && semester && major) {
-            redirect("setup")
+        if (year === "" && semester === "" && major === "") {
+            redirect("/schedule/setup")
         }
+    } else {
+        redirect("/schedule/setup")
     }
 
     const classes = await prisma.class.findMany({

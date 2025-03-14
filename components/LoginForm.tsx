@@ -5,7 +5,7 @@ import {MdLock} from "react-icons/md";
 import {useAuth} from "@/context/AuthContext";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/router";
-import {post} from "@/util/request.util";
+import {post} from "@/lib/utils/request.util";
 
 
 function LoginForm() {

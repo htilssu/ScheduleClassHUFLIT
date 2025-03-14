@@ -1,4 +1,4 @@
-import {CodeService} from "@/service/code.service";
+import {CodeService} from "@/lib/service/code.service";
 import {Code} from "@prisma/client";
 import {NextRequest, NextResponse} from "next/server";
 

@@ -2,29 +2,17 @@
 
 import React, {useCallback, useEffect} from 'react';
 import {Button, Group, Select} from "@mantine/core";
-import {get} from "@/util/request.util";
+import {get} from "@/lib/utils/request.util";
 import {useForm} from "@mantine/form";
 import {useRouter} from "next/navigation";
 import {ChevronsRight} from "lucide-react";
 import { loadClassConfig } from '@/lib/utils/class.util';
-import { debug } from '@/util/logging.util';
+import { debug } from '@/lib/utils/logging.util';
 
 function SetupSection() {
     const form = useForm({
         initialValues: loadClassConfig()
     });
-
-    const router = useRouter();
-
-    useEffect(() => {
-        if (form.values.year === "" && form.values.semester === "" && form.values.major === "") {
-            return;
-        }
-
-        router.push("?year=" + form.values.year + "&semester=" + form.values.semester + "&major=" + form.values.major)
-    }, [form.values.year, form.values.semester, form.values.major]);
-
-    debug(form);
 
     const [major, setMajor] = React.useState<any>(null);
     const [studyYear, setStudyYear] = React.useState<any>(null);

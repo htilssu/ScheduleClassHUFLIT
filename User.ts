@@ -1,4 +1,4 @@
-import mongoClient from "@/service/mongoclient";
+import mongoClient from "@/lib/service/mongoclient";
 
 export type UserDKMH = {
     user: string,

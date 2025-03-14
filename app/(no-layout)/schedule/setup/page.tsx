@@ -2,7 +2,7 @@ import SetupSection from "@/components/SetupSection";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Chọn thông tin',
+    title: 'Thiết lập thông tin môn học',
 }
 
 export default function Page() {

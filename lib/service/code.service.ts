@@ -1,5 +1,5 @@
-import {prisma} from "@/service/prismaClient";
-import {isExpired} from "@/util/time.util";
+import {prisma} from "@/lib/service/prismaClient";
+import {isExpired} from "@/lib/utils/time.util";
 import {Code} from "@prisma/client";
 
 /**

@@ -4,7 +4,7 @@ import React, {Profiler, useCallback, useState} from 'react';
 import {DndContext} from "@/hook/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
-import {ClassRoot} from '@/model/class';
+import {ClassRoot} from '@/lib/model/class';
 
 const ScheduleMain = ({classes}: {
     classes?: ClassRoot[]

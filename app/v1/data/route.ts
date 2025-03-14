@@ -1,7 +1,7 @@
 import axios from "axios";
 import {load} from "cheerio";
-import {prisma} from "@/service/prismaClient";
-import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/util/data";
+import {prisma} from "@/lib/service/prismaClient";
+import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/lib/utils/data";
 import {NextResponse} from "next/server";
 
 export async function GET() {

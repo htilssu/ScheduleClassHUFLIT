@@ -1,4 +1,4 @@
-import hashPassword, {comparePassword} from "@/util/password";
+import hashPassword, {comparePassword} from "@/lib/utils/password";
 
 test("password test", async () => {
     const myPassword = "123456";

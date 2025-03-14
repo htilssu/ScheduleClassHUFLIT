@@ -13,7 +13,7 @@ import {
     useRef,
     useState
 } from "react";
-import {debug} from "@/util/logging.util";
+import {debug} from "@/lib/utils/logging.util";
 
 interface Droppable {
     ref: RefObject<HTMLElement>;
