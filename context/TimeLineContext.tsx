@@ -1,4 +1,4 @@
-import {ClassRoot} from "@/app/(no-layout)/schedule/page";
+import {ClassRoot} from "@/lib/model/Class";
 import {createContext, useContext} from "react";
 
 export interface TimeLineContextType {

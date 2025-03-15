@@ -5,10 +5,10 @@ import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
 import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
-import {ClassRoot} from "@/app/(no-layout)/schedule/page";
 import {TableClassCard} from './TableCardClass';
 import {debug} from "@/lib/utils/logging.util";
 import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
+import { ClassRoot } from '@/lib/model/Class';
 
 const MAX_TIME_SECTION = 15;
 
