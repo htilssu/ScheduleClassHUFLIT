@@ -1,4 +1,4 @@
-import ScheduleMain from "@/app/(layout)/schedule/ScheduleMain";
+import ScheduleMain from "@/app/(no-layout)/schedule/ScheduleMain";
 import {prisma} from "@/lib/service/prismaClient";
 import {cookies} from "next/headers";
 import {ClassConfig} from "@/lib/utils/class.util";

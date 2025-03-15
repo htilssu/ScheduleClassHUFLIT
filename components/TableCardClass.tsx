@@ -1,7 +1,7 @@
 import {Badge, Menu} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {IoTrash} from "react-icons/io5";
-import {ClassRoot} from "@/app/(layout)/schedule/page";
+import {ClassRoot} from "@/app/(no-layout)/schedule/page";
 
 export const TableClassCard = ({classData, onRemoveClass}: {
     classData: ClassRoot,

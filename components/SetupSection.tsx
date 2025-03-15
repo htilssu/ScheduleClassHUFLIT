@@ -4,10 +4,8 @@ import React, {useCallback, useEffect} from 'react';
 import {Button, Group, Select} from "@mantine/core";
 import {get} from "@/lib/utils/request.util";
 import {useForm} from "@mantine/form";
-import {useRouter} from "next/navigation";
 import {ChevronsRight} from "lucide-react";
-import { loadClassConfig } from '@/lib/utils/class.util';
-import { debug } from '@/lib/utils/logging.util';
+import {loadClassConfig} from '@/lib/utils/class.util';
 
 function SetupSection() {
     const form = useForm({
@@ -20,6 +18,7 @@ function SetupSection() {
 
     const handleSaveClassConfig = useCallback(() => {
         localStorage.setItem("classConfig", JSON.stringify(form.values));
+        document.cookie = `classConfig=${JSON.stringify(form.values)}; path=/; max-age=31536000`;
     }, [form.values]);
 
     useEffect(() => {

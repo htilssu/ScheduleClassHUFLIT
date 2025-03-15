@@ -2,9 +2,9 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {ComboboxItem, Input, Select, Stack} from "@mantine/core";
-import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
+import { ClassRoot } from '@/lib/model/Class';
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -72,18 +72,6 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
 
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
-            <h1 className={"text-center text-lg font-bold text-amber-800"}>Tùy chọn</h1>
-            <Stack gap={4} className={"mt-2"}>
-                <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
-                <Input onChange={handleSearchByTeacher} placeholder={"Tên giáo viên"}/>
-                <Select className={'w-full'} defaultValue={classType} onChange={handleTypeChange}
-                        data={["Tất cả", "Lý thuyết", "Thực hành"]}
-                        placeholder={"Chọn loại"}/>
-                <Select className={'w-full'} defaultValue={day} onChange={handleDayChange}
-                        data={["Tất cả các ngày","T2", "T3", "T4", "T5", "T6", "T7", "CN"]}
-                        placeholder={"Chọn ngày"}/>
-            </Stack>
-
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>
                 {searchList.slice(0, limit).map((value, index) => (
                     <ClassCard key={value.classId} classData={value}/>

@@ -21,15 +21,15 @@ function Navbar() {
         <div className="flex items-center justify-around gap-5 bg-white shadow-lg h-16 px-2 py-8">
             <div className={""}></div>
             <div className={"flex gap-5"}>
-                <Button
+                <Link
                     className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    component={Link} href={"/"}>Home</Button>
-                <Button
+                    href={"/"}>Home</Link>
+                <Link
                     className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    component={Link} href={"/schedule"}>Xếp lịch</Button>
-                <Button
+                    href={"/schedule"}>Xếp lịch</Link>
+                <Link
                     className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    component={Link} href={"/info"}>Thông tin</Button>
+                    href={"/info"}>Thông tin</Link>
             </div>
             <div className={"flex gap-5"}>
                 {user ? <Button className={"hover:text-yellow-100"} onClick={logout}>Đăng xuất</Button> :

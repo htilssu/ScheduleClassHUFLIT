@@ -1,6 +1,6 @@
 import {get} from "@/lib/utils/request.util";
-import {ClassRoot} from "@/app/(layout)/schedule/page";
 import {Class} from "@prisma/client";
+import {ClassRoot} from "@/lib/model/Class";
 
 /**
  * Fetches class data from the server.
@@ -25,8 +25,5 @@ export function saveClassToLocal(classes: Class[]) {
  * Load scheduled classes from local storage.
  */
 export function loadClassFromLocal(): ClassRoot[] {
-    if (typeof window !== "undefined") {
-        return JSON.parse(localStorage.getItem("classes") ?? "[]");
-    }
-    return [];
+    return JSON.parse(localStorage.getItem("classes") ?? "[]");
 }
