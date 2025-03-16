@@ -6,11 +6,13 @@ import {get} from "@/lib/utils/request.util";
 import {useForm} from "@mantine/form";
 import {ChevronsRight} from "lucide-react";
 import {loadClassConfig} from '@/lib/utils/class.util';
+import { useRouter } from 'next/navigation';
 
 function SetupSection() {
     const form = useForm({
         initialValues: loadClassConfig()
     });
+    var router = useRouter();
 
     const [major, setMajor] = React.useState<any>(null);
     const [studyYear, setStudyYear] = React.useState<any>(null);
@@ -54,7 +56,10 @@ function SetupSection() {
                         placeholder={semester ? "Chọn học kỳ" : "Đang load..."}
                         data={semester?.map((value: { semester: any; }) => value.semester)}/>
             </Group>
-            <Button onClick={handleSaveClassConfig} rightSection={<ChevronsRight/>} color="blue" className="text-center"
+            <Button onClick={()=> {
+                handleSaveClassConfig();
+                router.replace('/schedule');
+            }} rightSection={<ChevronsRight/>} color="blue" className="text-center"
                     variant="filled">Tiếp tục</Button>
         </div>
     );

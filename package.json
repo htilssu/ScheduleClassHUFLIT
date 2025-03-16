@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "set NODE_OPTIONS=--inspect && next dev --turbo",
-    "build": "prisma generate && next build --no-lint",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
