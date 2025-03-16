@@ -6,9 +6,11 @@ export interface ClassConfig {
 
 
 export function loadClassConfig(): ClassConfig {
-    const config = localStorage.getItem("classConfig");
-    if (config) {
-        return JSON.parse(config);
+    if (typeof window !== 'undefined') {
+        const config = localStorage.getItem("classConfig");
+        if (config) {
+            return JSON.parse(config);
+        }
     }
 
     return {

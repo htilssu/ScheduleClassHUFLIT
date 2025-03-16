@@ -1,14 +1,14 @@
+'use client'
 import SetupSection from "@/components/SetupSection";
-import {Metadata} from "next";
-
-export const metadata: Metadata = {
-    title: 'Thiết lập thông tin môn học',
-}
+import ClientPage from "@/components/ClientPage";
 
 export default function Page() {
+
     return (
-        <div className={'h-screen'}>
-            <SetupSection/>
-        </div>
+        <ClientPage title={"Lịch học - Thiết lập"}>
+            <div className={'h-screen'}>
+                <SetupSection/>
+            </div>
+        </ClientPage>
     );
 }
