@@ -3,7 +3,11 @@ import {prisma} from "@/lib/service/prismaClient";
 import {cookies} from "next/headers";
 import {ClassConfig} from "@/lib/utils/class.util";
 import {redirect} from "next/navigation";
+import {Metadata} from "next";
 
+export const metadata : Metadata = {
+    title: "Xếp lịch học",
+}
 
 async function Page() {
 

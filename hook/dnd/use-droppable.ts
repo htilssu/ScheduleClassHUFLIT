@@ -35,9 +35,9 @@ export function useDroppable() {
     }, []);
 
     useEffect(() => {
-            document.addEventListener('mouseup', handleMouseUp, {
-                capture: true
-            })
+        document.addEventListener('mouseup', handleMouseUp, {
+            capture: true
+        })
 
         return () => {
             document.removeEventListener('mouseup', handleMouseUp, {
@@ -57,6 +57,7 @@ export function useDroppable() {
         data: dndContext.data,
         isDragging: dndContext.dataRef.current.data !== null,
         setNodeRef,
+        draggingData: dndContext.dataRef.current.data !== null,
         droppedData: droppedData
     }
 }

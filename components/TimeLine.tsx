@@ -7,8 +7,8 @@ import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {TableClassCard} from './TableCardClass';
 import {debug} from "@/lib/utils/logging.util";
-import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
-import { ClassRoot } from '@/lib/model/Class';
+import {loadClassFromLocal} from "@/lib/service/class.service";
+import {ClassRoot} from '@/lib/model/Class';
 
 const MAX_TIME_SECTION = 15;
 
@@ -23,11 +23,13 @@ function TimeLine() {
 
     const {setNodeRef, droppedData} = useDroppable();
     const [mergeMark, setMergeMark] = useState(mm);
-    const [classes, setClasses] = useState<ClassRoot[]>(loadClassFromLocal);
+    const [classes, setClasses] = useState<ClassRoot[]>([]);
 
     useEffect(() => {
-        saveClassToLocal(classes)
-    }, [classes]);
+        setClasses(() => {
+            return loadClassFromLocal();
+        })
+    }, []);
 
     useEffect(() => {
         classes?.map(value => handleAddClass(value))

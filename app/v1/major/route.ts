@@ -1,12 +1,11 @@
 import {NextRequest, NextResponse} from "next/server";
 import {Major, PrismaClient} from "@prisma/client";
+import {unstable_cache} from "next/cache";
 
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
-    const {searchParams} = new URL(req.url);
-    const majorId = searchParams.get("majorId");
-    const data = await getMajor(majorId);
+    const data = await getMajor();
     return NextResponse.json(data);
 }
 
@@ -16,17 +15,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newMajor);
 }
 
-async function getMajor(majorId: string | null) {
-    if (!majorId) {
-        return prisma.major.findMany();
-    } else {
-        return prisma.major.findUnique({
-            where: {
-                id: majorId
-            }
-        });
-    }
-}
+const getMajor = unstable_cache(async () => {
+    return prisma.major.findMany();
+}, ['major'], {
+    revalidate: 3600 * 24 * 7,
+})
 
 async function createMajor(major: Major) {
     return prisma.major.create({
