@@ -22,16 +22,13 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
         // eslint-disable-next-line react-compiler/react-compiler
         debounce(
             () => {
-                if (filter.className === "") {
-                    setSearchList([...classes]);
-                    return;
-                }
-
                 setSearchList(
                     classes.filter((classSection) => {
-                        const matchesSubject = classSection.Subject.name
-                                                           .toLowerCase()
-                                                           .includes(filter.className.toLowerCase());
+                        const matchesSubject = filter.className === ""
+                            || classSection.Subject.name
+                                           .toLowerCase()
+                                           .includes(
+                                               filter.className.toLowerCase());
                         const matchesType =
                             filter.classType === "Tất cả" || classSection.type === filter.classType;
                         const matchesTeacher =
