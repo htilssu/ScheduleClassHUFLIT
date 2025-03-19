@@ -1,27 +1,26 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ComboboxItem, Flex, Input, Select} from "@mantine/core";
+import {useDispatch} from "react-redux";
+import {filterSlice} from '@/lib/state/filter';
 
 const FilterBar = () => {
-    const [classType, setClassType] = useState("Tất cả")
-    const [day, setDay] = useState("")
-    const [teacherName, setTeacherName] = useState("")
-    const [search, setSearch] = useState("")
-    const [limit, setLimit] = useState(300)
+    const dispatch = useDispatch();
+    const actions = filterSlice.actions
 
     function handleTypeChange(e: string | null, _: ComboboxItem) {
-        setClassType(e!)
+        dispatch(actions.setClassType(e))
     }
 
     function handleDayChange(e: string | null, _: ComboboxItem) {
-        setDay(e!);
+        dispatch(actions.setWeekDay(e))
     }
 
     function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setSearch(e.target.value)
+        dispatch(actions.setClassName(e.target.value))
     }
 
     function handleSearchByTeacher(e: React.ChangeEvent<HTMLInputElement>) {
-        setTeacherName(e.target.value)
+        dispatch(actions.setTeacherName(e.target.value))
     }
 
     return (

@@ -1,74 +1,62 @@
 'use client'
 
 import React, {useCallback, useEffect, useState} from 'react';
-import {ComboboxItem, Input, Select, Stack} from "@mantine/core";
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
-import { ClassRoot } from '@/lib/model/Class';
+import {ClassRoot} from '@/lib/model/Class';
+import {useSelector} from "react-redux";
+import {RootState} from "@/lib/state";
+import {ClassFilter} from "@/lib/state/filter";
 
 interface SelectSectionProps {
     classes: ClassRoot[]
 }
 
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
-    const [classType, setClassType] = useState("Tất cả")
-    const [day, setDay] = useState("")
-    const [teacherName, setTeacherName] = useState("")
-    const [search, setSearch] = useState("")
+    const filter = useSelector<RootState, ClassFilter>(state => state.filter);
+
     const [limit, setLimit] = useState(300)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
     const debouncedSearch = useCallback(
+        // eslint-disable-next-line react-compiler/react-compiler
         debounce(
-            (searchString: string) => {
-                if (searchString === "") {
+            () => {
+                if (filter.className === "") {
                     setSearchList([...classes]);
                     return;
                 }
 
                 setSearchList(
-                    classes.filter((value) => {
-                        const matchesSubject = value.Subject.name
-                                                    .toLowerCase()
-                                                    .includes(searchString.toLowerCase());
+                    classes.filter((classSection) => {
+                        const matchesSubject = classSection.Subject.name
+                                                           .toLowerCase()
+                                                           .includes(filter.className.toLowerCase());
                         const matchesType =
-                            classType === "Tất cả" || value.type === classType;
+                            filter.classType === "Tất cả" || classSection.type === filter.classType;
                         const matchesTeacher =
-                            teacherName === "" ||
-                            value.Lecturer.name.toLowerCase().includes(teacherName.toLowerCase());
+                            filter.teacherName === "" ||
+                            classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
 
-                        return matchesSubject && matchesType && matchesTeacher;
+                        const matchesWeekDay = filter.weekDay === "" || classSection.weekDay.includes(filter.weekDay);
+
+                        return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
                     })
                 );
             },
             500,
             {leading: false, trailing: true}
         ),
-        [classType, classes, teacherName]
+        [classes, filter]
     );
 
     useEffect(() => {
         setSearchList(_ => [])
-        debouncedSearch(search)
+        debouncedSearch()
 
         return debouncedSearch.cancel
-    }, [debouncedSearch, search]);
+    }, [debouncedSearch]);
 
-    function handleTypeChange(e: string | null, _: ComboboxItem) {
-        setClassType(e!)
-    }
-
-    function handleDayChange(e: string | null, _: ComboboxItem) {
-        setDay(e!);
-    }
-
-    function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setSearch(e.target.value)
-    }
-
-    function handleSearchByTeacher(e: React.ChangeEvent<HTMLInputElement>) {
-        setTeacherName(e.target.value)
-    }
 
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
