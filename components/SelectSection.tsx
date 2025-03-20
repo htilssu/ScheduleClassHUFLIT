@@ -35,7 +35,7 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
                             filter.teacherName === "" ||
                             classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
 
-                        const matchesWeekDay = filter.weekDay === "" || classSection.weekDay.includes(filter.weekDay);
+                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.weekDay.includes(filter.weekDay);
 
                         return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
                     })

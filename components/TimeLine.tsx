@@ -6,7 +6,7 @@ import {Class} from "@prisma/client";
 import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {TableClassCard} from './TableCardClass';
-import {debug} from "@/lib/utils/logging.util";
+import {debug} from "@/lib/utils/logging";
 import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
 import {ClassRoot} from '@/lib/model/Class';
 

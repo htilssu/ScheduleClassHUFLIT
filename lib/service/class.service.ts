@@ -1,4 +1,4 @@
-import {get} from "@/lib/utils/request.util";
+import {get} from "@/lib/utils/request";
 import {Class} from "@prisma/client";
 import {ClassRoot} from "@/lib/model/Class";
 

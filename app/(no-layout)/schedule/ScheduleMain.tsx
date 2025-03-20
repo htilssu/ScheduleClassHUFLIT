@@ -22,20 +22,17 @@ const ScheduleMain = ({classes}: {
     }, [selectedClass]);
 
     return (
-        <Profiler id={"Schedule"} onRender={() => {
-        }}>
-            <div className={'select-none'}>
-                <div className={"relative"}>
-                    <FilterBar/>
-                    <DndContext onDragEnd={handleOnDragEnd}>
-                        <div className={"flex p-2 relative z-10 max-h-screen"}>
-                            <SelectSection classes={classes || []}/>
-                            <TimeLine/>
-                        </div>
-                    </DndContext>
-                </div>
+        <div className={'select-none'}>
+            <div className={"relative"}>
+                <FilterBar/>
+                <DndContext onDragEnd={handleOnDragEnd}>
+                    <div className={"flex p-2 relative z-10 max-h-screen"}>
+                        <SelectSection classes={classes || []}/>
+                        <TimeLine/>
+                    </div>
+                </DndContext>
             </div>
-        </Profiler>
+        </div>
     );
 };
 
