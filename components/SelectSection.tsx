@@ -15,12 +15,10 @@ interface SelectSectionProps {
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const filter = useSelector<RootState, ClassFilter>(state => state.filter);
 
-    const [limit, setLimit] = useState(300)
+    const [limit, setLimit] = useState(100)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
-    const debouncedSearch = useCallback(
-        // eslint-disable-next-line react-compiler/react-compiler
-        debounce(
+    const debouncedSearch = useCallback(() => debounce(
             () => {
                 setSearchList(
                     classes.filter((classSection) => {
@@ -35,7 +33,8 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
                             filter.teacherName === "" ||
                             classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
 
-                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.weekDay.includes(filter.weekDay);
+                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.weekDay.includes(
+                            filter.weekDay);
 
                         return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
                     })
@@ -44,11 +43,10 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
             500,
             {leading: false, trailing: true}
         ),
-        [classes, filter]
+        [filter]
     );
 
     useEffect(() => {
-        setSearchList(_ => [])
         debouncedSearch()
 
         return debouncedSearch.cancel
