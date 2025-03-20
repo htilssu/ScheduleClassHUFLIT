@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import Link from "next/link";
 import {useAuth} from "@/context/AuthContext";
-import {post} from "@/lib/utils/request.util";
+import {post} from "@/lib/utils/request";
 import {Menu, X} from 'lucide-react'
 import Logo from '../public/images/LogoT&H.png';
 import Image from "next/image";
