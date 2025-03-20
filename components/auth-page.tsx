@@ -4,8 +4,8 @@ import {ChangeEvent, FormEvent, useState} from "react"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
-import {cn} from "@/lib/utils/utils"
-import {post} from "@/lib/utils/request.util";
+import {cn} from "@/lib/utils/TwMerge"
+import {post} from "@/lib/utils/request";
 
 interface LoginParam {
     username: string

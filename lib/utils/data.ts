@@ -25,9 +25,6 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
         name: "",
         id: "",
         majorId: "",
-        classId: [],
-        yearStudyId: "",
-        semesterId: "",
         createdAt: new Date(),
         updatedAt: new Date()
     }
@@ -98,7 +95,7 @@ export function getClassDataFromRaw(rawData: string): ClassData[] {
                     break;
                 case 11:
                     temp.lectureName = currentElement.text().trim()
-                            .replace("  ", " ")
+                                                     .replace("  ", " ")
                     break;
             }
         });

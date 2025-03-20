@@ -133,4 +133,6 @@ model Week {
   YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@unique([weekValue, semesterId, yearStudyId])
 }

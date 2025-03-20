@@ -2,10 +2,10 @@
 
 import React, {useCallback, useEffect} from 'react';
 import {Button, Group, Select} from "@mantine/core";
-import {get} from "@/lib/utils/request.util";
+import {get} from "@/lib/utils/request";
 import {useForm} from "@mantine/form";
 import {ChevronsRight} from "lucide-react";
-import {loadClassConfig} from '@/lib/utils/class.util';
+import {loadClassConfig} from '@/lib/utils/class';
 import {useRouter} from 'next/navigation';
 
 function SetupSection() {
