@@ -66,7 +66,7 @@ model Class {
 }
 
 model ClassSecret {
-  id   String            @id @map("_id")
+  id        String            @id @map("_id")
   secret    String
   children  ClassSecretType[]
   createdAt DateTime          @default(now())
@@ -74,8 +74,8 @@ model ClassSecret {
 }
 
 type ClassSecretType {
-  id   String
-  secret    String
+  id     String
+  secret String
 }
 
 model Major {
@@ -85,18 +85,13 @@ model Major {
 }
 
 model Subject {
-  id          String    @id @map("_id")
-  name        String
-  majorId     String    @db.ObjectId
-  Major       Major     @relation(fields: [majorId], references: [id])
-  classId     String[]
-  Classes     Class[]
-  yearStudyId String
-  YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
-  semesterId  String
-  Semester    Semester  @relation(fields: [semesterId], references: [semester])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @map("_id")
+  name      String
+  majorId   String   @db.ObjectId
+  Major     Major    @relation(fields: [majorId], references: [id])
+  Classes   Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TimeLine {
@@ -111,21 +106,19 @@ model TimeLine {
 }
 
 model YearStudy {
-  year      String    @id @map("_id")
-  Subjects  Subject[]
+  year      String   @id @map("_id")
   Weeks     Week[]
   Classes   Class[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Semester {
-  semester  String    @map("_id")
-  Subject   Subject[]
+  semester  String   @map("_id")
   Week      Week[]
   Classes   Class[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([semester])
 }

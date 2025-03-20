@@ -3,6 +3,7 @@ import {load} from "cheerio";
 import {prisma} from "@/lib/service/prismaClient";
 import {getClassDataFromRaw, getSubjectDataFromRaw} from "@/lib/utils/data";
 import {NextResponse} from "next/server";
+import {error} from "@/lib/utils/logging.util";
 
 export async function GET() {
     await scrapData()
@@ -31,7 +32,9 @@ async function saveYearStudy(year: string[]) {
 
 async function scrapData() {
     console.log("Đang lấy thông tin thời khóa biểu")
-    const rawData = await axios.get("https://portal.huflit.edu.vn/public/tracuuthoikhoabieu")
+    const rawData = await axios.get("https://portal.huflit.edu.vn/public/tracuuthoikhoabieu", {
+        httpsAgent: new (require("https").Agent)({rejectUnauthorized: false})
+    })
     let term = await loadTerm(rawData.data)
     await saveTerm(term)
     const year = await loadYearStudy(rawData.data)
@@ -43,7 +46,9 @@ async function scrapData() {
 }
 
 async function loadClassStudent(yearStudy: string, term: string) {
-    const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetClassStudentByTerm/${yearStudy}$${term}`)
+    const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetClassStudentByTerm/${yearStudy}$${term}`, {
+        httpsAgent: new (require("https").Agent)({rejectUnauthorized: false})
+    })
     return result.data;
 }
 
@@ -85,7 +90,9 @@ async function loadWeek(yearStudy: string[], termList: string[]) {
         console.log(`Đang lấy tuần của năm học ${year}`)
         for (const term of termList) {
             try {
-                const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetWeek/${year}$${term}`) as {
+                const result = await axios.get(`https://portal.huflit.edu.vn/Public/GetWeek/${year}$${term}`, {
+                    httpsAgent: new (require("https").Agent)({rejectUnauthorized: false})
+                }) as {
                     data: {
                         Week: number,
                         DisPlayWeek: number,
@@ -206,7 +213,10 @@ async function loadSubject(yearStudy: string[], term: string[]) {
 
                 const weekDatum = weekData[3]
                 const result = await axios.get(
-                    `https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem + "03"}`)
+                    `https://portal.huflit.edu.vn/public/DrawingClassStudentSchedules_Mau2?YearStudy=${yearItem}&TermID=${semester}&Week=${weekDatum.weekValue}&ClassStudentID=${studentClassItem + "03"}`,
+                    {
+                        httpsAgent: new (require("https").Agent)({rejectUnauthorized: false})
+                    })
                 const $ = load(result.data)
 
                 const tr = $("tr:not(:first-child)")
@@ -220,8 +230,6 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                             prisma.subject.findFirst({
                                 where: {
                                     id: subjectData.id,
-                                    yearStudyId: yearItem,
-                                    semesterId: semester
                                 }
                             }).then(value => {
                                 if (!value) {
@@ -229,26 +237,6 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                         data: {
                                             id: subjectData.id,
                                             name: subjectData.name,
-                                            Semester: {
-                                                connectOrCreate: {
-                                                    where: {
-                                                        semester: semester
-                                                    },
-                                                    create: {
-                                                        semester: semester
-                                                    }
-                                                }
-                                            },
-                                            YearStudy: {
-                                                connectOrCreate: {
-                                                    where: {
-                                                        year: yearItem
-                                                    },
-                                                    create: {
-                                                        year: yearItem,
-                                                    }
-                                                }
-                                            },
                                             Major: {
                                                 connectOrCreate: {
                                                     where: {
@@ -260,7 +248,11 @@ async function loadSubject(yearStudy: string[], term: string[]) {
                                                 }
                                             }
                                         }
-                                    }).then()
+                                    }).then().catch((reason) => {
+                                        error(reason)
+                                        console.log(`founded: ${JSON.stringify(value)}`)
+                                        console.log(`newValue: ${JSON.stringify(subjectData)}`)
+                                    });
                                 }
 
                             })
@@ -301,7 +293,10 @@ async function loadClass(yearStudy: string[], term: string[]) {
 
             for (let subjectElement of subject) {
                 const result = await axios.get(
-                    `https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.id}&valueWeek=1&Week=${standardWeek.weekName}`)
+                    `https://portal.huflit.edu.vn/public/DrawingCurriculumSchedules_MauTruong?YearStudy=${year}&TermID=${s}&CurriculumId=${subjectElement.id}&valueWeek=1&Week=${standardWeek.weekName}`,
+                    {
+                        httpsAgent: new (require("https").Agent)({rejectUnauthorized: false})
+                    })
                 const classData = getClassDataFromRaw(result.data)
                 for (let {id, lectureName, room, subjectId, time, type, weekDay} of classData) {
 
@@ -324,8 +319,26 @@ async function loadClass(yearStudy: string[], term: string[]) {
                             Subject: {
                                 id: subjectId
                             }
+                        },
+                        include: {
+                            Lecturer: true
                         }
                     });
+
+                    if (data != null && data.Lecturer.name !== lectureName) {
+                        await prisma.class.update({
+                            where: {
+                                id: data.id
+                            },
+                            data: {
+                                Lecturer: {
+                                    connect: {
+                                        id: lecture.find(value => value.name === lectureName)!.id
+                                    }
+                                }
+                            }
+                        })
+                    }
 
                     if (data == null) {
                         // @ts-ignore
