@@ -7,7 +7,7 @@ import {useDroppable} from "@/hook/dnd/use-droppable";
 import {trim} from "lodash";
 import {TableClassCard} from './TableCardClass';
 import {debug} from "@/lib/utils/logging.util";
-import {loadClassFromLocal} from "@/lib/service/class.service";
+import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
 import {ClassRoot} from '@/lib/model/Class';
 
 const MAX_TIME_SECTION = 15;
@@ -26,9 +26,7 @@ function TimeLine() {
     const [classes, setClasses] = useState<ClassRoot[]>([]);
 
     useEffect(() => {
-        setClasses(() => {
-            return loadClassFromLocal();
-        })
+        setClasses(() => loadClassFromLocal())
     }, []);
 
     useEffect(() => {
@@ -68,13 +66,21 @@ function TimeLine() {
 
     useEffect(() => {
         if (droppedData) {
-            setClasses(prevState => [...prevState, droppedData])
+            setClasses(prevState => {
+                const newClassList = [...prevState, droppedData]
+                saveClassToLocal(newClassList)
+                return newClassList;
+            })
         }
     }, [droppedData]);
 
     const removeClass = useCallback(
         function removeClass(classId: string) {
-            setClasses(prevState => prevState.filter(value => value.id !== classId))
+            setClasses(prevState => {
+                const newClassList = prevState.filter(value => value.id !== classId);
+                saveClassToLocal(newClassList)
+                return newClassList;
+            })
         }
         , []);
 
