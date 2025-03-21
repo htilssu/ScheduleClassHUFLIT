@@ -1,5 +1,8 @@
+'use client'
+
 import React from 'react';
 import Loading from "@/app/(no-layout)/schedule/loading";
+
 
 const Page = () => {
     return (

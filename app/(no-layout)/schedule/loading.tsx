@@ -1,10 +1,16 @@
+'use client'
+
 import React from 'react';
-import {Atom} from "react-loading-indicators";
+import {HashLoader} from "react-spinners";
 
 const Loading = () => {
     return (
         <div>
-            <Atom color="#f44f3b" size="large" text="" textColor="#ee2e2e" />
+            <HashLoader
+                loading={true}
+                color="#FF6633"
+                speedMultiplier={1}
+            />
         </div>
     );
 };
