@@ -1,5 +1,5 @@
 import {load} from "cheerio";
-import {getSubjectDataFromRaw, getClassDataFromRaw} from "@/lib/utils/data";
+import {getSubjectDataFromRaw, getClassDataFromRaw, ClassExtractData} from "@/lib/utils/data";
 
 export class DataExtractor {
     // Trích xuất danh sách kỳ học từ HTML
@@ -43,7 +43,7 @@ export class DataExtractor {
     }
 
     // Trích xuất danh sách lớp học từ HTML
-    extractClassesFromHtml(html: string): any[] {
+    extractClassesFromHtml(html: string): ClassExtractData[] {
         return getClassDataFromRaw(html);
     }
 

@@ -1,13 +1,16 @@
 'use client'
 
-import {Button} from '@mantine/core';
-import React from 'react';
+import React, {useState} from 'react';
 import Link from "next/link";
 import {useAuth} from "@/context/AuthContext";
 import {post} from "@/lib/utils/request";
+import {Menu, X} from 'lucide-react'
+import Logo from '../public/images/LogoT&H.png';
+import Image from "next/image";
 
 function Navbar() {
 
+    const [mobileMenuOpen, setmMobileMenuOpen] = useState(false)
     const {user} = useAuth();
 
     function logout() {
@@ -18,25 +21,100 @@ function Navbar() {
     }
 
     return (
-        <div className="flex items-center justify-around gap-5 bg-white shadow-lg h-16 px-2 py-8">
-            <div className={""}></div>
-            <div className={"flex gap-5"}>
-                <Link
-                    className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    href={"/"}>Home</Link>
-                <Link
-                    className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    href={"/schedule"}>Xếp lịch</Link>
-                <Link
-                    className={"bg-transparent text-base hover:bg-transparent hover:text-lg hover:text-gray-600 transition-all ease-in-out text-black"}
-                    href={"/info"}>Thông tin</Link>
+        <header
+            className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-0'>
+            <div className=' max-w-7xl mx-auto flex h-14 lg:h-16 items-center'>
+                <div className="flex items-center justify-between w-full px-4 md:px-0">
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+                        <Image
+                            src={Logo}
+                            alt="Logo"
+                            className="w-11 md:w-14 lg:w-16 h-auto transition-all duration-300"
+                            priority
+                        />
+                    </Link>
+
+                    {/* Navigation */}
+                    <nav
+                        className="hidden md:flex items-center justify-center flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
+                        <Link
+                            href="/"
+                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                        >
+                            Trang Chủ
+                        </Link>
+                        <Link
+                            href="/schedule"
+                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                        >
+                            Xếp Lịch
+                        </Link>
+                        <Link
+                            href="/contact"
+                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                        >
+                            Liên Hệ
+                        </Link>
+                    </nav>
+
+                    {/* Auth Button */}
+                    <div className="flex-shrink-0">
+                        {user ? (
+                            <button
+                                onClick={logout}
+                                className="px-3 py-1 cursor-pointer rounded-md bg-red-600 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#000000,0_0_10px_#b91c1c,inset_0_0_2px_#f87171] border-2 border-red-700 transition-all hover:bg-gray-700 hover:shadow-[0_0_15px_#b91c1c,0_0_5px_#000000]"
+                            >
+                                Đăng xuất
+                            </button>
+                        ) : (
+                            <Link href="/auth">
+                                <button
+                                    className="px-3 py-1 cursor-pointer rounded-md bg-red-500 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#000000,0_0_10px_#b91c1c,inset_0_0_2px_#f87171] border-2 border-red-600 transition-all hover:bg-gray-700 hover:shadow-[0_0_15px_#b91c1c,0_0_5px_#000000]"
+                                >
+                                    Đăng nhập
+                                </button>
+                            </Link>
+                        )}
+                    </div>
+                </div>
+                <button className='inline-flex items-center justify-center rounded-md md:hidden'
+                        onClick={() => setmMobileMenuOpen(!mobileMenuOpen)}>
+                    <span className='sr-only'>Open main menu</span>
+                    {mobileMenuOpen ? (
+                        <X className='h-6 w-6' aria-hidden="true"/>
+                    ) : (
+                        <Menu className='h-6 w-6' aria-hidden="true"/>
+                    )}
+                </button>
             </div>
-            <div className={"flex gap-5"}>
-                {user ? <Button className={"hover:text-yellow-100"} onClick={logout}>Đăng xuất</Button> :
-                    <Button className={"hover:text-yellow-100"} component={Link} href={"/auth"}>Đăng nhập</Button>}
-            </div>
-        </div>
-    );
+            {mobileMenuOpen && (
+                <div className='md:hidden'>
+                    <div className='space-y-1 px-2 pb-3 pt-2'>
+                        <Link
+                            href="/"
+                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                        >
+                            Trang Chủ
+                        </Link>
+                        <Link
+                            href="/schedule"
+                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                        >
+                            Xếp Lịch
+                        </Link>
+                        <Link
+                            href="/contact"
+                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                        >
+                            Liên Hệ
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </header>
+    )
+        ;
 }
 
 export default Navbar;
