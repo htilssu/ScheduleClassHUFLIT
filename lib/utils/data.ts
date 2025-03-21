@@ -56,7 +56,19 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
             result.push({...prevClass});
             prevClass = null;
         }
-        let temp: ClassExtractData = {id: "", lectureName: "", subjectId: "", learningSection: []}
+        let temp: ClassExtractData = {
+            id: "", 
+            lectureName: "", 
+            subjectId: "", 
+            learningSection: [],
+            classId: "",
+            type: "",
+            yearStudyId: "",
+            semesterId: "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lecturerId: ""
+        }
         const td = $(element).find("td");
         if (td.length < 10) return;
         td.each((index, element) => {
@@ -99,7 +111,5 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
         });
     });
 
-
     return result as ClassExtractData[];
 }
-
