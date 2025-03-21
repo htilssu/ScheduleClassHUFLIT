@@ -39,7 +39,7 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.456.0",
     "mongodb": "^6.14.2",
-    "next": "^15.2.2",
+    "next": "^15.2.3",
     "qss": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
