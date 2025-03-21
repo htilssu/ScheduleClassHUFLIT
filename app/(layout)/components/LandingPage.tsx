@@ -1,6 +1,7 @@
 import React from 'react';
 import Intro from "@/app/(layout)/components/Intro";
 import ImgHuflit from "@/app/(layout)/components/ImgHuflit";
+import SliderRunNavBar from "@/components/SliderRunNavBar";
 
 const LandingPage = () => {
     return (
@@ -26,6 +27,7 @@ const LandingPage = () => {
                     </div>
                     <ImgHuflit/>
                 </div>
+                <SliderRunNavBar/>
             </div>
         </div>
     );
