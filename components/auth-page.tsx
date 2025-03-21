@@ -1,11 +1,10 @@
 "use client"
 
-import {ChangeEvent, FormEvent, useState} from "react"
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
-import {cn} from "@/lib/utils/TwMerge"
-import {post} from "@/lib/utils/request";
+import { ChangeEvent, FormEvent, useState } from "react"
+import { cn } from "@/lib/utils/TwMerge"
+import { post } from "@/lib/utils/request"
+import {RegisterForm} from "@/app/(no-layout)/auth/components/RegisterForm";
+import {LoginForm} from "@/app/(no-layout)/auth/components/LoginForm";
 
 interface LoginParam {
     username: string
@@ -53,7 +52,7 @@ export function AuthPageComponent() {
                         <button
                             className={cn(
                                 "flex-1 py-2 text-sm font-medium transition-colors duration-200",
-                                isLogin ? "text-primary" : "text-gray-500"
+                                isLogin ? "text-orange-500" : "text-gray-500"
                             )}
                             onClick={() => setIsLogin(true)}
                         >
@@ -62,7 +61,7 @@ export function AuthPageComponent() {
                         <button
                             className={cn(
                                 "flex-1 py-2 text-sm font-medium transition-colors duration-200",
-                                !isLogin ? "text-primary" : "text-gray-500"
+                                !isLogin ? "text-orange-500" : "text-gray-500"
                             )}
                             onClick={() => setIsLogin(false)}
                         >
@@ -70,7 +69,7 @@ export function AuthPageComponent() {
                         </button>
                     </div>
                     <div
-                        className="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ease-in-out"
+                        className="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 ease-in-out"
                         style={{
                             width: "50%",
                             transform: `translateX(${isLogin ? "0%" : "100%"})`,
@@ -79,41 +78,15 @@ export function AuthPageComponent() {
                 </div>
 
                 {isLogin ? (
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" onChange={handleChangeUserName} required/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Mật khẩu</Label>
-                            <Input id="password" onChange={handleChangePassword} type="password" required/>
-                        </div>
-                        <Button type="submit" className="w-full">
-                            Đăng nhập
-                        </Button>
-                    </form>
+                    <LoginForm
+                        username={username}
+                        password={password}
+                        onUsernameChange={handleChangeUserName}
+                        onPasswordChange={handleChangePassword}
+                        onSubmit={handleLogin}
+                    />
                 ) : (
-                    <form className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Họ tên</Label>
-                            <Input id="name" type="text" required/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" required/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Mật khẩu</Label>
-                            <Input id="password" type="password" required/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
-                            <Input id="confirmPassword" type="password" required/>
-                        </div>
-                        <Button type="submit" className="w-full">
-                            Đăng ký
-                        </Button>
-                    </form>
+                    <RegisterForm />
                 )}
             </div>
         </div>
