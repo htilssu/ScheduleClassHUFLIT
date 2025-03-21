@@ -36,7 +36,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.456.0",
     "mongodb": "^6.14.2",
-    "next": "^15.2.2",
+    "next": "^15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",
