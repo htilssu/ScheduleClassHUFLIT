@@ -2,25 +2,34 @@ import React from 'react';
 import {ComboboxItem, Flex, Input, Select} from "@mantine/core";
 import {useDispatch} from "react-redux";
 import {filterSlice} from '@/lib/state/filter';
+import {debounce} from 'lodash';
 
 const FilterBar = () => {
     const dispatch = useDispatch();
     const actions = filterSlice.actions
 
+    const debouncedSearchChange = debounce((value: string) => {
+        dispatch(actions.setClassName(value.toLowerCase()));
+    }, 500);
+
+    const debouncedTeacherChange = debounce((value: string) => {
+        dispatch(actions.setTeacherName(value.toLowerCase()));
+    }, 500);
+
     function handleTypeChange(e: string | null, _: ComboboxItem) {
-        dispatch(actions.setClassType(e))
+        dispatch(actions.setClassType(e));
     }
 
     function handleDayChange(e: string | null, _: ComboboxItem) {
-        dispatch(actions.setWeekDay(e))
+        dispatch(actions.setWeekDay(e));
     }
 
     function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-        dispatch(actions.setClassName(e.target.value))
+        debouncedSearchChange(e.target.value);
     }
 
     function handleSearchByTeacher(e: React.ChangeEvent<HTMLInputElement>) {
-        dispatch(actions.setTeacherName(e.target.value))
+        debouncedTeacherChange(e.target.value);
     }
 
     return (
@@ -32,7 +41,7 @@ const FilterBar = () => {
                         data={["Tất cả", "Lý thuyết", "Thực hành"]}
                         placeholder={"Chọn loại"}/>
                 <Select className={''} defaultValue={"Tất cả các ngày"} onChange={handleDayChange}
-                        data={["Tất cả các ngày", "T2", "T3", "T4", "T5", "T6", "T7", "CN"]}
+                        data={["Tất cả các ngày", "T2", "T3", "T4", "T5", "T6", "T7"]}
                         placeholder={"Chọn ngày"}/>
             </Flex>
         </div>

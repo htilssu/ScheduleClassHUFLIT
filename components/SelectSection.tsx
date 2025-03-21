@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {debounce} from 'lodash';
 import ClassCard from "@/components/ClassCard";
 import {ClassRoot} from '@/lib/model/Class';
@@ -15,53 +15,45 @@ interface SelectSectionProps {
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const filter = useSelector<RootState, ClassFilter>(state => state.filter);
 
-    const [limit, setLimit] = useState(300)
+    const [limit, setLimit] = useState(150)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
-    const debouncedSearch = useCallback(
-        () => debounce(
-            () => {
-                setSearchList(
-                    classes.filter((classSection) => {
-                        const matchesSubject = filter.className === ""
-                            || classSection.Subject.name
-                                           .toLowerCase()
-                                           .includes(
-                                               filter.className.toLowerCase());
-                        const matchesType =
-                            filter.classType === "Tất cả" || classSection.type === filter.classType;
-                        const matchesTeacher =
-                            filter.teacherName === "" ||
-                            classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
+    // Hàm lọc chính
+    const filterClasses = useCallback(() => {
+        return classes.filter((classSection) => {
+            const matchesSubject = filter.className === ""
+                || classSection.Subject.name.toLowerCase().includes(filter.className);
+            const matchesType = filter.classType === "Tất cả" || classSection.type === filter.classType;
+            const matchesTeacher = filter.teacherName === ""
+                || classSection.Lecturer.name.toLowerCase().includes(filter.teacherName);
+            const matchesWeekDay = filter.weekDay === "Tất cả các ngày"
+                || classSection.learningSection.some(value => value.weekDay === filter.weekDay[1]);
 
-                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.learningSection.some(
-                            (section) => {
-                                return section.weekDay.includes(
-                                    filter.weekDay)
-                            });
+            return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
+        });
+    }, [classes, filter]);
 
-                        return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
-                    })
-                );
-            },
-            500,
-            {leading: false, trailing: true}
-        ),
-        [filter]
+    const debouncedSetSearchList = useCallback(
+        // eslint-disable-next-line react-compiler/react-compiler
+        debounce((filteredList: ClassRoot[]) => {
+            setSearchList(filteredList);
+        }, 500, { leading: false, trailing: true }),
+        []
     );
 
-    useEffect(() => {
-        debouncedSearch()
+    const filteredClasses = useMemo(() => filterClasses(), [filterClasses]);
 
-        return debouncedSearch().cancel
-    }, [debouncedSearch]);
+    useEffect(() => {
+        debouncedSetSearchList(filteredClasses);
+        return () => debouncedSetSearchList.cancel();
+    }, [filteredClasses, debouncedSetSearchList]);
 
 
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>
                 {searchList.slice(0, limit).map((value, index) => (
-                    <ClassCard key={value.classId} classData={value}/>
+                    <ClassCard key={index} classData={value}/>
                 ))}
             </div>
         </div>

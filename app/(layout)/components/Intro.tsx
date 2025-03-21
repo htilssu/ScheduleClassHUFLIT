@@ -7,7 +7,7 @@ const Intro = () => {
         <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
             <div className="sm:text-center lg:text-left">
                 <h1 className="text-4xl tracking-tight sm:text-5xl md:text-6xl">
-                    <span className="block xl:inline text-gray-800 font-extrabold">Welcom...<br/></span>{' '}
+                    <span className="block xl:inline text-gray-800 font-extrabold">Welcome...<br/></span>{' '}
                     <span className={`block text-orange-500 xl:inline font-extrabold`}>
             Schedule Huflit
           </span>
@@ -22,7 +22,7 @@ const Intro = () => {
                             className={`w-full flex items-center justify-center px-8 py-3 border border-orange-500 text-white font-medium rounded-md bg-orange-400 hover:bg-orange-500 hover:text-gray-50 md:py-4 md:text-lg md:px-10`}
                         >
                             <FaCalendarAlt className="mr-2" />
-                            Schedule Now
+                            Lập Lịch Ngay
                         </a>
                     </div>
                     <div className="mt-3 sm:mt-0 sm:ml-3">

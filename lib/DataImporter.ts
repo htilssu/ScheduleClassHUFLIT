@@ -2,6 +2,7 @@ import {prisma} from "@/lib/service/prismaClient";
 import {PortalScraper} from "@/lib/PortalScraper";
 import {DataExtractor} from "@/lib/DataExtractor";
 import {DatabaseManager} from "@/lib/DatabaseManager";
+import {debug} from "@/lib/utils/logging";
 
 export class DataImporter {
     private scraper: PortalScraper;
@@ -51,6 +52,8 @@ export class DataImporter {
             }
         }
 
+        const subjects = await prisma.subject.findMany();
+
         for (const year of scrapYears) {
             for (const term of terms) {
                 const week = await prisma.week.findMany({
@@ -61,13 +64,35 @@ export class DataImporter {
                 });
 
                 const weekTarget = week[3]; // Tuần thứ 4
-                const subjects = await prisma.subject.findMany();
                 for (const subject of subjects) {
                     const classHtml = await this.scraper.getClassData(year, term, subject.id, 1, weekTarget.weekName);
                     const classes = this.extractor.extractClassesFromHtml(classHtml);
                     await this.dbManager.saveClasses(classes, year, term);
                 }
             }
+        }
+    }
+
+    async importClasses(year: string, term: string) {
+        const week = await prisma.week.findMany({
+            where: {
+                semesterId: term,
+                yearStudyId: year
+            }
+        });
+
+        if (week.length === 0) {
+            console.error(`Không tìm thấy tuần học cho năm ${year} và kỳ ${term}`);
+            return;
+        }
+
+        const weekTarget = week[3]; // Tuần thứ 4
+        const subjects = await prisma.subject.findMany();
+        for (const subject of subjects) {
+            const classHtml = await this.scraper.getClassData(year, term, subject.id, 1, weekTarget.weekName);
+            const classes = this.extractor.extractClassesFromHtml(classHtml);
+            debug(classes);
+            await this.dbManager.saveClasses(classes, year, term);
         }
     }
 }
