@@ -12,7 +12,7 @@ const initialState: ClassFilter = {
     className: '',
     teacherName: '',
     classType: 'Tất cả',
-    weekDay: '',
+    weekDay: 'Tất cả các ngày',
 }
 
 export const filterSlice = createSlice({

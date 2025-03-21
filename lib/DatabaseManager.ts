@@ -94,7 +94,7 @@ export class DatabaseManager {
 
             const existingClass = await prisma.class.findFirst({
                 where: {
-                    classId: classItem.id,
+                    classId: classItem.classId,
                     learningSection: {
                         some: {
                             weekDay: {in: weekDays},
@@ -107,21 +107,36 @@ export class DatabaseManager {
             });
 
             if (!existingClass) {
-                await prisma.class.create({
-                    data: {
-                        classId: classItem.id,
-                        Subject: {connect: {id: classItem.subjectId}},
-                        type: classItem.type,
-                        YearStudy: {connect: {year}},
-                        Semester: {connect: {semester: term}},
-                        Lecturer: {connect: {id: lecturer.id}}
-                    }
-                });
+                try {
+                    const {subjectId, classId, type, learningSection} = classItem;
+                    await prisma.class.create({
+                        data: {
+                            classId,
+                            type,
+                            learningSection,
+                            Subject: {connect: {id: subjectId}},
+                            YearStudy: {connect: {year}},
+                            Semester: {connect: {semester: term}},
+                            Lecturer: {connect: {id: lecturer.id}}
+                        }
+                    });
+                    info("Lưu lớp học thành công: " + classId);
+                } catch (e) {
+                    error("Lỗi khi lưu lớp học: " + classItem.classId);
+                    error(e);
+                }
             } else if (existingClass.Lecturer.name !== classItem.lectureName) {
-                await prisma.class.update({
-                    where: {id: existingClass.id},
-                    data: {Lecturer: {connect: {id: lecturer.id}}}
-                });
+                try {
+                    await prisma.class.update({
+                        where: {id: existingClass.id},
+                        data: {Lecturer: {connect: {id: lecturer.id}}}
+                    });
+                    info(
+                        "Cập nhật giảng viên thành công cho lớp học: " + classItem.classId + ` | ${existingClass.Lecturer.name}-->${classItem.lectureName}`);
+                } catch (e) {
+                    error("Lỗi khi cập nhật giảng viên cho lớp học: " + classItem.classId);
+                    error(e);
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Badge, Card, Group, Stack, Text} from "@mantine/core";
+import {Badge, Card, Flex, Group, Stack, Text} from "@mantine/core";
 import {useDraggable} from "@/hook/dnd/use-draggable";
 import {ClassRoot} from '@/lib/model/Class';
 
@@ -12,12 +12,19 @@ function ClassCard({classData}: Readonly<{ classData: ClassRoot }>) {
         >
             <Card shadow="sm" padding="md" radius="md" withBorder>
                 <Stack gap={"xs"}>
-                    <Group>
-                        <Badge color="green">{classData.learningSection[0].weekDay}</Badge>
-                        <Badge color="blue">{classData.learningSection[0].time}</Badge>
-                        <Badge color="pink">{classData.learningSection[0].room}</Badge>
-                        <Badge color="pink">{classData.type}</Badge>
-                    </Group>
+                    <Flex justify={'space-between'}>
+                        <Stack>
+                            {classData.learningSection.map((item) => (
+                                <Flex key={item.weekDay} gap={5}>
+                                    <Badge color="green">{"T" + item.weekDay}</Badge>
+                                    <Badge color="blue">{item.time}</Badge>
+                                </Flex>
+                            ))}
+                        </Stack>
+                        <Flex justify={'end'}>
+                            <Badge color="pink">{`${classData.learningSection[0].room} / ${classData.type}`}</Badge>
+                        </Flex>
+                    </Flex>
                     <Text fw={500}>{classData.Subject.name}</Text>
                     <Text size="sm" c="dimmed">
                         {classData.Lecturer.name}
