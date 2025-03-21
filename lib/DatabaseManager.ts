@@ -1,6 +1,7 @@
 import {prisma} from "@/lib/service/prismaClient";
 import {error, info} from "@/lib/utils/logging";
 import {WeekResponse} from "./types";
+import {ClassExtractData} from "@/lib/utils/data";
 
 export class DatabaseManager {
     // Lưu danh sách kỳ học
@@ -81,39 +82,42 @@ export class DatabaseManager {
     }
 
     // Lưu danh sách lớp học
-    async saveClasses(classes: any[], year: string, term: string) {
-        for (const classData of classes) {
-            const {id, lectureName, room, subjectId, time, type, weekDay} = classData;
-            let lecturer = await prisma.lecturer.findFirst({where: {name: lectureName}});
+    async saveClasses(classes: ClassExtractData[], year: string, term: string) {
+        for (const classItem of classes) {
+            let lecturer = await prisma.lecturer.findFirst({where: {name: classItem.lectureName}});
+
             if (!lecturer) {
-                lecturer = await prisma.lecturer.create({data: {name: lectureName}});
+                lecturer = await prisma.lecturer.create({data: {name: classItem.lectureName}});
             }
+
+            const weekDays = classItem.learningSection.map(section => section.weekDay);
+
             const existingClass = await prisma.class.findFirst({
                 where: {
-                    classId: id,
-                    time: time,
-                    weekDay: "T" + weekDay,
-                    yearStudyId: year,
+                    classId: classItem.id,
+                    learningSection: {
+                        some: {
+                            weekDay: {in: weekDays},
+                        },
+                    },
                     semesterId: term,
-                    Subject: {id: subjectId}
+                    yearStudyId: year,
                 },
-                include: {Lecturer: true}
+                include: {Lecturer: true},
             });
+
             if (!existingClass) {
                 await prisma.class.create({
                     data: {
-                        classId: id,
-                        Subject: {connect: {id: subjectId}},
-                        room: room,
-                        time: time,
-                        weekDay: "T" + weekDay,
-                        type: type,
+                        classId: classItem.id,
+                        Subject: {connect: {id: classItem.subjectId}},
+                        type: classItem.type,
                         YearStudy: {connect: {year}},
                         Semester: {connect: {semester: term}},
                         Lecturer: {connect: {id: lecturer.id}}
                     }
                 });
-            } else if (existingClass.Lecturer.name !== lectureName) {
+            } else if (existingClass.Lecturer.name !== classItem.lectureName) {
                 await prisma.class.update({
                     where: {id: existingClass.id},
                     data: {Lecturer: {connect: {id: lecturer.id}}}

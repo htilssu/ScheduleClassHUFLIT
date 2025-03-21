@@ -1,6 +1,6 @@
 'use client'
 
-import React, {Profiler, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {DndContext} from "@/hook/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
