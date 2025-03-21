@@ -14,7 +14,7 @@ const Footer = () => {
                                 alt="Logo"
                                 className="w-16 h-16 rounded-full shadow-lg border-2 border-orange-400"
                             />
-                            <span className="text-2xl font-bold ml-3 text-orange-700">xeplichhuflit.edu.vn</span>
+                            <span className="text-2xl font-bold ml-3 text-gray-300">xeplichhuflit.edu.vn</span>
                         </div>
                         <p className="text-gray-300">
                             Công TTHH 2 thành viên Hieu Tuan Junior @huflit quản lý bởi TH True Company.
@@ -22,7 +22,7 @@ const Footer = () => {
                     </div>
 
                     <div className="w-full md:w-1/2 lg:w-1/4 p-4">
-                        <h3 className="text-xl font-bold mb-4 text-orange-700">Điều khoản</h3>
+                        <h3 className="text-xl font-bold mb-4 text-orange-600">Điều khoản</h3>
                         <ul className="space-y-2">
                             {["Thỏa thuận người dùng", "Quyền riêng tư", "Quy định - chính sách"].map((item) => (
                                 <li key={item}>
@@ -39,7 +39,7 @@ const Footer = () => {
                     </div>
 
                     <div className="w-full md:w-1/2 lg:w-1/4 p-4">
-                        <h3 className="text-xl font-bold mb-4 text-orange-700">Hotline</h3>
+                        <h3 className="text-xl font-bold mb-4 text-orange-600">Hotline</h3>
                         <ul className="space-y-2">
                             {[
                                 "Email: devgenZhuflit@gmail.com",
@@ -55,7 +55,7 @@ const Footer = () => {
                     </div>
 
                     <div className="w-full md:w-1/2 lg:w-1/4 p-4">
-                        <h3 className="text-xl font-bold mb-4 text-orange-700">Giới thiệu</h3>
+                        <h3 className="text-xl font-bold mb-4 text-orange-600">Giới thiệu</h3>
                         <ul className="space-y-2">
                             {["Về chúng tôi", "Tin tức", "Liên hệ"].map((item) => (
                                 <li key={item}>
@@ -73,7 +73,7 @@ const Footer = () => {
                 </div>
 
                 <div className="mt-2 md:mt-4 text-center">
-                    <h3 className="text-xl font-bold mb-2 text-orange-700">Follow Me</h3>
+                    <h3 className="text-xl font-bold mb-2 text-gray-300">Follow Me</h3>
                     <div className="flex md:mt-4 mt-2 justify-center space-x-6">
                         <a
                             href="https://facebook.com"
@@ -112,8 +112,8 @@ const Footer = () => {
 
                 <div className="text-center mt-6 border-t border-gray-700 pt-4">
                     <p className="text-gray-400 text-sm">
-                        Bản quyền © 2024-2035 devgenZhuflit.com . Hệ thống trực tuyến bảo vệ người dùng hàng đầu
-                        Việt Nam.
+                        Bản quyền © 2024-2035<span className="text-orange-400 font-medium"> devgenZhuflit.com</span>. Hệ
+                        thống trực tuyến bảo vệ người dùng hàng đầu Việt Nam.
                     </p>
                 </div>
             </div>
