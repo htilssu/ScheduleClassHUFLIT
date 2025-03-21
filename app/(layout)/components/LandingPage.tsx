@@ -5,7 +5,7 @@ import SliderRunNavBar from "@/components/SliderRunNavBar";
 
 const LandingPage = () => {
     return (
-        <div>
+        <div className={"mt-9"}>
             <div className={`bg-background`}>
                 <div className="max-w-7xl mx-auto relative">
                     <div
