@@ -39,20 +39,20 @@ function Navbar() {
                     <nav
                         className="hidden md:flex items-center justify-center flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
                         <Link
-                            href="/"
-                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                            href="/home"
+                            className="text-gray-900 hover:text-orange-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
                         >
                             Trang Chủ
                         </Link>
                         <Link
                             href="/schedule"
-                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                            className="text-gray-900 hover:text-orange-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
                         >
                             Xếp Lịch
                         </Link>
                         <Link
                             href="/contact"
-                            className="text-red-500 hover:text-red-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
+                            className="text-gray-900 hover:text-orange-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
                         >
                             Liên Hệ
                         </Link>
@@ -62,15 +62,18 @@ function Navbar() {
                     <div className="flex-shrink-0">
                         {user ? (
                             <button
-                                onClick={logout}
-                                className="px-3 py-1 cursor-pointer rounded-md bg-red-600 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#000000,0_0_10px_#b91c1c,inset_0_0_2px_#f87171] border-2 border-red-700 transition-all hover:bg-gray-700 hover:shadow-[0_0_15px_#b91c1c,0_0_5px_#000000]"
+                                className="px-3 py-1 cursor-pointer rounded-md bg-orange-500 text-white hover:text-white flex items-center gap-1
+               shadow-[0_0_5px_#FFA500,0_0_10px_#ffffff,inset_0_0_2px_#FFDAB9] border-2 border-orange-700 transition-all
+               hover:bg-orange-600 hover:shadow-[0_0_15px_#FFA500,0_0_5px_#ffffff]"
                             >
                                 Đăng xuất
                             </button>
                         ) : (
                             <Link href="/auth">
                                 <button
-                                    className="px-3 py-1 cursor-pointer rounded-md bg-red-500 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#000000,0_0_10px_#b91c1c,inset_0_0_2px_#f87171] border-2 border-red-600 transition-all hover:bg-gray-700 hover:shadow-[0_0_15px_#b91c1c,0_0_5px_#000000]"
+                                    className="px-3 py-1 cursor-pointer rounded-md bg-orange-500 text-white hover:text-white flex items-center gap-1
+               shadow-[0_0_5px_#FFA500,0_0_10px_#ffffff,inset_0_0_2px_#FFDAB9] border-2 border-orange-700 transition-all
+               hover:bg-orange-600 hover:shadow-[0_0_15px_#FFA500,0_0_5px_#ffffff]"
                                 >
                                     Đăng nhập
                                 </button>
@@ -93,19 +96,19 @@ function Navbar() {
                     <div className='space-y-1 px-2 pb-3 pt-2'>
                         <Link
                             href="/"
-                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                            className='block rounded-md px-3 py-2 text-base font-medium text-orange-500 hover:bg-gray-800 hover:text-red-400'
                         >
                             Trang Chủ
                         </Link>
                         <Link
                             href="/schedule"
-                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                            className='block rounded-md px-3 py-2 text-base font-medium text-orange-500 hover:bg-gray-800 hover:text-red-400'
                         >
                             Xếp Lịch
                         </Link>
                         <Link
                             href="/contact"
-                            className='block rounded-md px-3 py-2 text-base font-medium text-red-500 hover:bg-gray-800 hover:text-red-400'
+                            className='block rounded-md px-3 py-2 text-base font-medium text-orange-500 hover:bg-gray-800 hover:text-red-400'
                         >
                             Liên Hệ
                         </Link>
