@@ -15,10 +15,11 @@ interface SelectSectionProps {
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const filter = useSelector<RootState, ClassFilter>(state => state.filter);
 
-    const [limit, setLimit] = useState(100)
+    const [limit, setLimit] = useState(300)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
-    const debouncedSearch = useCallback(() => debounce(
+    const debouncedSearch = useCallback(
+        () => debounce(
             () => {
                 setSearchList(
                     classes.filter((classSection) => {
@@ -33,8 +34,11 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
                             filter.teacherName === "" ||
                             classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
 
-                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.weekDay.includes(
-                            filter.weekDay);
+                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.learningSection.some(
+                            (section) => {
+                                return section.weekDay.includes(
+                                    filter.weekDay)
+                            });
 
                         return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
                     })
@@ -49,7 +53,7 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
     useEffect(() => {
         debouncedSearch()
 
-        return debouncedSearch.cancel
+        return debouncedSearch().cancel
     }, [debouncedSearch]);
 
 

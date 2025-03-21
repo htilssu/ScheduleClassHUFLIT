@@ -1,16 +1,10 @@
-import {Subject} from "@prisma/client";
+import {Class, LearningSection, Subject} from "@prisma/client";
 import {load} from "cheerio";
 
-type ClassData = {
+export type ClassExtractData = Class & {
     id: string;
-    name: string;
     subjectId: string;
-    subjectName: string;
     lectureName: string;
-    type: string,
-    weekDay: string;
-    room: string;
-    time: string;
 }
 
 function getSubjectIdFromSubjectName(subjectName: string) {
@@ -38,38 +32,52 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
     return data
 }
 
-export function getClassDataFromRaw(rawData: string): ClassData[] {
+export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
     const $ = load(rawData);
     let result: {}[] = [];
 
     const tr = $("tbody tr");
-    let prevClass: ClassData | null = null;
+    let prevClass: ClassExtractData | null = null;
     tr.each((_, element) => {
         if (prevClass !== null) {
             const td = $(element).find("td");
             if (td.length < 4) return;
+            const learningSection: LearningSection = {
+                weekDay: "",
+                time: "",
+                room: ""
+            }
 
             prevClass = {...prevClass}
-            prevClass.time = td.eq(0).text().trim();
-            prevClass.weekDay = td.eq(1).text().trim();
+            learningSection.time = td.eq(0).text().trim();
+            learningSection.weekDay = td.eq(1).text().trim();
+            learningSection.room = td.eq(2).text().trim();
+            prevClass.learningSection.push(learningSection);
             result.push({...prevClass});
             prevClass = null;
         }
-        let temp: ClassData = {
-            id: "",
-            name: "",
-            subjectId: "",
-            subjectName: "",
-            lectureName: "",
+        let temp: ClassExtractData = {
+            id: "", 
+            lectureName: "", 
+            subjectId: "", 
+            learningSection: [],
+            classId: "",
             type: "",
-            weekDay: "",
-            room: "",
-            time: ""
+            yearStudyId: "",
+            semesterId: "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lecturerId: ""
         }
         const td = $(element).find("td");
         if (td.length < 10) return;
         td.each((index, element) => {
             const currentElement = $(element);
+            const learningSection: LearningSection = {
+                weekDay: "",
+                time: "",
+                room: ""
+            }
             switch (index) {
                 case 1:
                     temp.subjectId = currentElement.text().trim()
@@ -85,25 +93,23 @@ export function getClassDataFromRaw(rawData: string): ClassData[] {
                     temp.type = currentElement.text().trim();
                     break;
                 case 7:
-                    temp.time = currentElement.text().trim();
+                    learningSection.time = currentElement.text().trim();
                     break;
                 case 8:
-                    temp.weekDay = currentElement.text().trim()
+                    learningSection.weekDay = currentElement.text().trim()
                     break;
                 case 10:
-                    temp.room = currentElement.text().trim()
+                    learningSection.room = currentElement.text().trim()
                     break;
                 case 11:
                     temp.lectureName = currentElement.text().trim()
                                                      .replace("  ", " ")
                     break;
             }
-        });
 
-        result.push(temp);
+            temp.learningSection.push(learningSection)
+        });
     });
 
-
-    return result as ClassData[];
+    return result as ClassExtractData[];
 }
-

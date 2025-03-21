@@ -13,9 +13,9 @@ function ClassCard({classData}: Readonly<{ classData: ClassRoot }>) {
             <Card shadow="sm" padding="md" radius="md" withBorder>
                 <Stack gap={"xs"}>
                     <Group>
-                        <Badge color="green">{classData.weekDay}</Badge>
-                        <Badge color="blue">{classData.time}</Badge>
-                        <Badge color="pink">{classData.room}</Badge>
+                        <Badge color="green">{classData.learningSection[0].weekDay}</Badge>
+                        <Badge color="blue">{classData.learningSection[0].time}</Badge>
+                        <Badge color="pink">{classData.learningSection[0].room}</Badge>
                         <Badge color="pink">{classData.type}</Badge>
                     </Group>
                     <Text fw={500}>{classData.Subject.name}</Text>

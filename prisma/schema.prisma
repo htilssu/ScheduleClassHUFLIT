@@ -46,23 +46,27 @@ model Lecturer {
   Classes   Class[]
 }
 
+type LearningSection {
+  weekDay String
+  time    String
+  room    String
+}
+
 model Class {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  classId     String
-  weekDay     String
-  time        String
-  type        String
-  room        String
-  subjectId   String
-  Subject     Subject   @relation(fields: [subjectId], references: [id])
-  yearStudyId String
-  YearStudy   YearStudy @relation(fields: [yearStudyId], references: [year])
-  semesterId  String
-  Semester    Semester  @relation(fields: [semesterId], references: [semester])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  Lecturer    Lecturer  @relation(fields: [lecturerId], references: [id])
-  lecturerId  String    @db.ObjectId
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  classId         String
+  type            String
+  learningSection LearningSection[]
+  subjectId       String
+  Subject         Subject           @relation(fields: [subjectId], references: [id])
+  yearStudyId     String
+  YearStudy       YearStudy         @relation(fields: [yearStudyId], references: [year])
+  semesterId      String
+  Semester        Semester          @relation(fields: [semesterId], references: [semester])
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Lecturer        Lecturer          @relation(fields: [lecturerId], references: [id])
+  lecturerId      String            @db.ObjectId
 }
 
 model ClassSecret {

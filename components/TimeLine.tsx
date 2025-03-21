@@ -34,8 +34,8 @@ function TimeLine() {
     }, [classes]);
 
     function handleAddClass(classData: Class) {
-        const weekDay = Number(classData.weekDay[1]);
-        const time = classData.time.split('-').map(trim).map(Number);
+        const weekDay = Number(classData.learningSection[0].weekDay[1]);
+        const time = classData.learningSection[0].time.split('-').map(trim).map(Number);
         const start = time[0];
         const end = time[1];
         setMergeMark(prevState => {
@@ -87,8 +87,8 @@ function TimeLine() {
 
     function getTableClassCard(row: number, col: number) {
         const classData = classes?.find(value => {
-            const weekDay = Number(value.weekDay[1]);
-            const time = value.time.split('-').map(trim).map(Number);
+            const weekDay = Number(value.learningSection[0].weekDay[1]);
+            const time = value.learningSection[0].time.split('-').map(trim).map(Number);
             const start = time[0];
             return weekDay - 2 === col && start - 1 == row
         })
