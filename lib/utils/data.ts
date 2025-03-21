@@ -1,10 +1,15 @@
 import {Class, LearningSection, Subject} from "@prisma/client";
 import {load} from "cheerio";
 
-export type ClassExtractData = Class & {
-    id: string;
+export type ClassExtractData = {
+    classId: string;
+    type: string;
     subjectId: string;
+    yearStudyId: string;
+    semesterId: string;
+    lecturerId: string;
     lectureName: string;
+    learningSection: LearningSection[];
 }
 
 function getSubjectIdFromSubjectName(subjectName: string) {
@@ -34,10 +39,11 @@ export function getSubjectDataFromRaw(htmlInner: string): Subject {
 
 export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
     const $ = load(rawData);
-    let result: {}[] = [];
+    let result: ClassExtractData[] = [];
 
     const tr = $("tbody tr");
     let prevClass: ClassExtractData | null = null;
+
     tr.each((_, element) => {
         if (prevClass !== null) {
             const td = $(element).find("td");
@@ -48,36 +54,34 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
                 room: ""
             }
 
-            prevClass = {...prevClass}
             learningSection.time = td.eq(0).text().trim();
             learningSection.weekDay = td.eq(1).text().trim();
             learningSection.room = td.eq(2).text().trim();
             prevClass.learningSection.push(learningSection);
-            result.push({...prevClass});
             prevClass = null;
         }
+
         let temp: ClassExtractData = {
-            id: "", 
-            lectureName: "", 
-            subjectId: "", 
+            lectureName: "",
+            subjectId: "",
             learningSection: [],
             classId: "",
             type: "",
             yearStudyId: "",
             semesterId: "",
-            createdAt: new Date(),
-            updatedAt: new Date(),
             lecturerId: ""
         }
+
         const td = $(element).find("td");
+
         if (td.length < 10) return;
+        const learningSection: LearningSection = {
+            weekDay: "",
+            time: "",
+            room: ""
+        }
         td.each((index, element) => {
             const currentElement = $(element);
-            const learningSection: LearningSection = {
-                weekDay: "",
-                time: "",
-                room: ""
-            }
             switch (index) {
                 case 1:
                     temp.subjectId = currentElement.text().trim()
@@ -87,7 +91,7 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
                     }
                     break;
                 case 2:
-                    temp.id = currentElement.text().trim();
+                    temp.classId = currentElement.text().trim();
                     break;
                 case 5:
                     temp.type = currentElement.text().trim();
@@ -107,8 +111,9 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
                     break;
             }
 
-            temp.learningSection.push(learningSection)
         });
+        temp.learningSection.push(learningSection)
+        result.push(temp)
     });
 
     return result as ClassExtractData[];
