@@ -1,4 +1,4 @@
-import { ClassRoot } from "@/lib/model/Class";
+import {ClassRoot} from "@/lib/model/Class";
 import {Badge, Menu} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {IoTrash} from "react-icons/io5";
@@ -35,8 +35,8 @@ export const TableClassCard = ({classData, onRemoveClass}: {
                     <h1 className={'font-bold text-base'}>{classData.Subject.name}</h1>
                     <div className={'flex text-center flex-wrap gap-2 items-center justify-center'}>
                         <Badge color={'teal'}>{classData.type}</Badge>
-                        <Badge color={'red'}>{classData.room}</Badge>
-                        <Badge color={'yellow'}>{classData.time}</Badge>
+                        <Badge color={'red'}>{classData.learningSection[0].room}</Badge>
+                        <Badge color={'yellow'}>{classData.learningSection[0].time}</Badge>
                     </div>
                     <h2 className={'text-base'}>{classData.Lecturer.name}</h2>
                     <p className={'select-text'}>{classData.classId}</p>

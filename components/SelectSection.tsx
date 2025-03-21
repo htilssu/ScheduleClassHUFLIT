@@ -34,8 +34,11 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
                             filter.teacherName === "" ||
                             classSection.Lecturer.name.toLowerCase().includes(filter.teacherName.toLowerCase());
 
-                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.weekDay.includes(
-                            filter.weekDay);
+                        const matchesWeekDay = filter.weekDay === "Tất cả các ngày" || classSection.learningSection.some(
+                            (section) => {
+                                return section.weekDay.includes(
+                                    filter.weekDay)
+                            });
 
                         return matchesSubject && matchesType && matchesTeacher && matchesWeekDay;
                     })
@@ -48,7 +51,7 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
     );
 
     useEffect(() => {
-        debouncedSearch()()
+        debouncedSearch()
 
         return debouncedSearch().cancel
     }, [debouncedSearch]);
