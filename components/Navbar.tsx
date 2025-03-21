@@ -39,7 +39,7 @@ function Navbar() {
                     <nav
                         className="hidden md:flex items-center justify-center flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
                         <Link
-                            href="/"
+                            href="/home"
                             className="text-gray-900 hover:text-orange-400 transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700"
                         >
                             Trang Chủ
