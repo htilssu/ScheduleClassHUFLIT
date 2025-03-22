@@ -1,11 +1,14 @@
 'use client'
 
 import React, {useState} from 'react';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
 import {FaFacebook, FaInstagramSquare, FaGithub} from "react-icons/fa";
 import contact from "./Contact.json";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+
+// Tải Lottie chỉ trên client-side
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 type ContactProps = {};
 
