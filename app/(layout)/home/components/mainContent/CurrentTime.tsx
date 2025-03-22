@@ -1,22 +1,22 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
+import { FaClock } from "react-icons/fa";
 
 const CurrentTime = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    // Cập nhật thời gian mỗi giây
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
-        }, 60000);
+        }, 1000);
         return () => clearInterval(timer);
     }, []);
 
-    // Định dạng thời gian
     const formattedTime = currentTime.toLocaleTimeString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
+        second: "2-digit",
         hour12: false,
     });
 
@@ -28,26 +28,56 @@ const CurrentTime = () => {
     });
 
     return (
-        <div className="w-72 bg-gradient-to-br from-orange-200 via-orange-400 to-orange-500 p-6 rounded-xl shadow-lg shadow-orange-400/50 text-white transform hover:scale-105 transition-all duration-300">
-            {/* Tiêu đề */}
-            <h2 className="text-lg font-semibold tracking-wide mb-3 flex items-center gap-2">
-                <span className="text-2xl animate-pulse">⏰</span> Thời Gian Hiện Tại
-            </h2>
+        <div className="relative w-80 bg-orange-500 p-6 rounded-2xl overflow-hidden shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+            {/* Gradient background động */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-500 to-blue-500 opacity-75 animate-gradient-x"></div>
 
-            {/* Thời gian */}
-            <div className="text-4xl font-bold tracking-tight mb-2">
-                {formattedTime}
+            {/* Layer overlay */}
+            <div className="absolute inset-0 bg-orange-500/80 backdrop-blur-sm"></div>
+
+            {/* Nội dung */}
+            <div className="relative z-10">
+                {/* Tiêu đề */}
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2 tracking-wider">
+                    <FaClock/>
+                    Thời Gian Hiện Tại
+                </h2>
+
+                {/* Thời gian */}
+                <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200 mb-3 tracking-tight">
+                    {formattedTime}
+                </div>
+
+                {/* Ngày tháng */}
+                <div className="text-base font-medium text-gray-200 capitalize opacity-90 border-t border-gray-700/50 pt-2">
+                    {formattedDate}
+                </div>
             </div>
 
-            {/* Ngày tháng */}
-            <div className="text-sm font-medium capitalize opacity-90">
-                {formattedDate}
-            </div>
-
-            {/* Hiệu ứng ánh sáng */}
-            <div className="absolute inset-0 rounded-xl bg-orange-300 opacity-0 hover:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
+            {/* Hiệu ứng hover */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"></div>
         </div>
     );
 };
+
+// Thêm animation trong CSS (cần thêm vào file CSS hoặc thẻ style)
+const styles = `
+    @keyframes gradient-x {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-gradient-x {
+        background-size: 200% 200%;
+        animation: gradient-x 15s ease infinite;
+    }
+    .animate-spin-slow {
+        animation: spin-slow 10s linear infinite;
+    }
+`;
 
 export default CurrentTime;
