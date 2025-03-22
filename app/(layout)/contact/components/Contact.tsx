@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, {useState} from 'react';
 import Lottie from 'lottie-react';
 import {FaFacebook, FaInstagramSquare, FaGithub} from "react-icons/fa";
 import contact from "./Contact.json";
@@ -10,14 +10,28 @@ import {Input} from "@/components/ui/input";
 type ContactProps = {};
 
 const Contact: React.FC<ContactProps> = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [id]: value
+        }));
+    };
+
     const handleSendMessage = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const name = (document.getElementById('name') as HTMLInputElement)?.value;
-        const email = (document.getElementById('email') as HTMLInputElement)?.value;
-        const message = (document.getElementById('message') as HTMLTextAreaElement)?.value;
+        const { name, email, message } = formData;
 
         if (name && email && message) {
             window.location.href = `mailto:tuanmeo980provip@gmail.com?subject=New Message from ${name}&body=${message} (Email: ${email})`;
+            // Optional: Reset form after submission
+            setFormData({ name: '', email: '', message: '' });
         }
     };
 
@@ -55,6 +69,8 @@ const Contact: React.FC<ContactProps> = () => {
                                 id='name'
                                 placeholder='Full Name'
                                 className='mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
+                                value={formData.name}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className='mb-4'>
@@ -65,6 +81,8 @@ const Contact: React.FC<ContactProps> = () => {
                                 id='email'
                                 placeholder='Email'
                                 className='mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
+                                value={formData.email}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <div className='mb-4'>
@@ -74,6 +92,8 @@ const Contact: React.FC<ContactProps> = () => {
                                 id='message'
                                 placeholder='Enter Your Message'
                                 className='mt-1 p-2 block w-full rounded-md border-orange-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
+                                value={formData.message}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <Button
