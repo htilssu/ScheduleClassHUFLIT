@@ -2,7 +2,7 @@ import React from "react";
 import QuickSchedule from "./QuickSchedule";
 import CourseRegistration from "./ScheduleRegistration";
 import KeyFeatures from "./KeyFeatures";
-import CurrentTime from "@/app/(layout)/home/components/mainContent/CurrentTime";
+import CurrentTime from "@/app/(layout)/home/components/CurrentTime";
 
 const MainContent = () => {
     return (

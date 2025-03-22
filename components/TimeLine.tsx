@@ -3,19 +3,20 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
 import {Class} from "@prisma/client";
-import {useDroppable} from "@/hook/dnd/use-droppable";
+import {useDroppable} from "@/lib/hook/use-droppable";
 import {trim} from "lodash";
-import {TableClassCard} from './TableCardClass';
+import {TableClassCard, TableClassData} from './TableCardClass';
 import {debug} from "@/lib/utils/logging";
 import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
 import {ClassRoot} from '@/lib/model/Class';
+import {SortedSet} from '@/lib/SortedSet';
 
 const MAX_TIME_SECTION = 15;
 
 const defaultMark = [0, 3, 6, 9, 12]
 const mm = Array.from({
     length: 7
-}).map(() => new Set<number>(defaultMark))
+}).map(() => new SortedSet<number>(defaultMark))
 
 
 function TimeLine() {
@@ -34,32 +35,26 @@ function TimeLine() {
     }, [classes]);
 
     function handleAddClass(classData: Class) {
-        const weekDay = Number(classData.learningSection[0].weekDay[1]);
-        const time = classData.learningSection[0].time.split('-').map(trim).map(Number);
-        const start = time[0];
-        const end = time[1];
-        setMergeMark(prevState => {
-            return prevState.map((value, index) => {
-                if (index === weekDay - 2) {
-                    for (let i = start; i < end; i++) {
-                        value.delete(i)
-                    }
-                    value.add(start - 1)
-                    value.add(end)
-                }
-                return new Set<number>(Array.from(value).sort((a, b) => a - b))
-            })
-        })
+        classData.learningSection.forEach(({weekDay, time}) => {
+            const [start, end] = time.split('-').map(trim).map(Number);
+            const dayOfWeekMarkSplit = mergeMark[Number(weekDay) - 2];
+
+            dayOfWeekMarkSplit.add(start - 1)
+            dayOfWeekMarkSplit.add(end);
+            for (let i = start; i < end; i++) dayOfWeekMarkSplit.remove(i);
+        });
+
+        setMergeMark(prevState => prevState);
     }
 
-    const getRowSpan = useCallback((col: number, i: number) => {
-        const arr = Array.from(mergeMark[col]);
-        const indexOfi = arr.indexOf(i);
+    const getRowSpan = useCallback((dayInWeek: number, section: number) => {
+        const arr = Array.from(mergeMark[dayInWeek]);
+        const indexOfi = arr.indexOf(section);
         if (indexOfi !== -1) {
             if (indexOfi === arr.length - 1) {
-                return MAX_TIME_SECTION - i
+                return MAX_TIME_SECTION - section
             }
-            return arr[indexOfi + 1] - i
+            return arr[indexOfi + 1] - section
         }
         return 1
     }, [mergeMark]);
@@ -86,16 +81,20 @@ function TimeLine() {
 
 
     function getTableClassCard(row: number, col: number) {
-        const classData = classes?.find(value => {
-            const weekDay = Number(value.learningSection[0].weekDay[1]);
-            const time = value.learningSection[0].time.split('-').map(trim).map(Number);
-            const start = time[0];
-            return weekDay - 2 === col && start - 1 == row
-        })
-        if (classData) {
-            return <TableClassCard onRemoveClass={removeClass} classData={classData}/>
-        }
+        const classData = classes?.find(classItem =>
+            classItem.learningSection.some(({weekDay, time}) => {
+                const [start] = time.split('-').map(trim).map(Number);
+                return Number(weekDay) - 2 === col && start - 1 === row;
+            })
+        );
+
+        if (!classData) return null;
+
+        const learningSection = classData.learningSection.find(({weekDay}) => Number(weekDay) - 2 === col)!;
+
+        return <TableClassCard onRemoveClass={removeClass} classData={{...classData, learningSection}}/>;
     }
+
 
     return (
         <div ref={setNodeRef} className="w-full ml-2">

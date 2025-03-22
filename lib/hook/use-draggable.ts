@@ -1,6 +1,6 @@
 'use client'
 import {useEffect, useRef, useState} from "react";
-import {useDndContext} from "@/hook/use-dnd-context";
+import {useDndContext} from "@/lib/hook/use-dnd-context";
 
 const RefEvent = (data: any) => {
     const ref = useRef<HTMLElement>({} as HTMLElement);
