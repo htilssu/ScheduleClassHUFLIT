@@ -1,25 +1,28 @@
 name: Build
 run-name: Build
 on:
-
   push:
     branches:
       - main
   pull_request:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: download env
-        run: |
-          echo "${{ secrets.ENV }}" > ${{github.workspace}}/.env
+
+      - name: Download env
+        run: echo "${{ secrets.ENV }}" > ${{ github.workspace }}/.env
+
       - uses: actions/setup-node@v4
         with:
           node-version: 23
+
       - run: sudo npm install -g pnpm
+
       - name: Get pnpm store directory
         id: pnpm-cache-dir
         run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
@@ -31,5 +34,14 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+
+      - uses: actions/cache@v4
+        id: next-cache
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('src/**', 'pages/**', 'components/**', 'package.json', 'pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-next-
+
       - run: pnpm i
       - run: pnpm run build
