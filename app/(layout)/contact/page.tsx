@@ -1,4 +1,3 @@
-'use client'
 
 import React from 'react';
 import Contact from "@/app/(layout)/contact/components/Contact";
