@@ -14,6 +14,11 @@ const nextConfig = {
     },
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
+  images: {
+    remotePatterns: [{
+      hostname: 'via.placeholder.com'
+    }],
+  },
 };
 
 export default nextConfig;
