@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "set NODE_OPTIONS=--inspect && set NODE_TLS_REJECT_UNAUTHORIZED=0 && next dev --turbo",
+    "dev": "set NODE_OPTIONS=--inspect && next dev --turbo",
     "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",

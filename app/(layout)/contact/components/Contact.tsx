@@ -1,15 +1,15 @@
 'use client'
 
 import React, {useState} from 'react';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import {FaFacebook, FaInstagramSquare, FaGithub} from "react-icons/fa";
 import contact from "./Contact.json";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+import Link from 'next/link';
 
-type ContactProps = {};
-
-const Contact: React.FC<ContactProps> = () => {
+const Contact = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -17,7 +17,7 @@ const Contact: React.FC<ContactProps> = () => {
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { id, value } = e.target;
+        const {id, value} = e.target;
         setFormData(prevState => ({
             ...prevState,
             [id]: value
@@ -26,7 +26,7 @@ const Contact: React.FC<ContactProps> = () => {
 
     const handleSendMessage = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const { name, email, message } = formData;
+        const {name, email, message} = formData;
 
         if (name && email && message) {
             window.location.href = `mailto:tuanmeo980provip@gmail.com?subject=New Message from ${name}&body=${message} (Email: ${email})`;
@@ -41,21 +41,24 @@ const Contact: React.FC<ContactProps> = () => {
                 <div className='flex flex-col md:flex-row justify-between items-center'>
                     <div className='md:w-1/2 mb-8 ml-2 md:mb-0'>
                         <h2 className='text-3xl font-extrabold mb-3 text-gray-800'>Get in Touch</h2>
-                        <p className='mb-4 text-gray-600'>We are always open to new opportunities and collaboration. Feel
+                        <p className='mb-4 text-gray-600'>We are always open to new opportunities and collaboration.
+                            Feel
                             free to reach out!</p>
                         <div className='flex space-x-4'>
-                            <a href="https://www.facebook.com/htilssu.88" className='text-foreground/60 hover:text-foreground/80'>
+                            <Link href="https://www.facebook.com/htilssu.88"
+                                  className='text-foreground/60 hover:text-foreground/80'>
                                 <FaFacebook size={40}
                                             className='w-12 text-blue-500 cursor-pointer transition-transform transform hover:scale-110'/>
-                            </a>
-                            <a href="#" className='text-foreground/60 hover:text-foreground/80'>
+                            </Link>
+                            <Link href="#" className='text-foreground/60 hover:text-foreground/80'>
                                 <FaInstagramSquare size={40}
                                                    className='w-12 text-red-500 cursor-pointer transition-transform transform hover:scale-110'/>
-                            </a>
-                            <a href="https://github.com/Tuan980Blue" className='text-foreground/60 hover:text-foreground/80'>
+                            </Link>
+                            <Link href="https://github.com/Tuan980Blue"
+                                  className='text-foreground/60 hover:text-foreground/80'>
                                 <FaGithub size={40}
-                                            className='w-12 text-gray-800 cursor-pointer transition-transform transform hover:scale-110'/>
-                            </a>
+                                          className='w-12 text-gray-800 cursor-pointer transition-transform transform hover:scale-110'/>
+                            </Link>
                         </div>
                         <Lottie animationData={contact} className='w-[350px] mx-auto lg:w-[500px]'/>
                     </div>
