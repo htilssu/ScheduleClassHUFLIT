@@ -56,7 +56,7 @@ export function getClassDataFromRaw(rawData: string): ClassExtractData[] {
 
             learningSection.time = td.eq(0).text().trim();
             learningSection.weekDay = td.eq(1).text().trim();
-            learningSection.room = td.eq(2).text().trim();
+            learningSection.room = td.eq(3).text().trim();
             prevClass.learningSection.push(learningSection);
             prevClass = null;
         }
