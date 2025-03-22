@@ -44,7 +44,7 @@ const CurrentTime = () => {
                 </h2>
 
                 {/* Thời gian */}
-                <div className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200 mb-3 tracking-tight">
+                <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200 mb-3 tracking-tight">
                     {formattedTime}
                 </div>
 
