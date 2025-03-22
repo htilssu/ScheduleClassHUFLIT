@@ -14,6 +14,9 @@ const nextConfig = {
     },
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
+  images: {
+    domains: ["via.placeholder.com"],
+  },
 };
 
 export default nextConfig;
