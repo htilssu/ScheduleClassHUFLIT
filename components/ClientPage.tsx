@@ -4,15 +4,13 @@ import React, {useEffect} from 'react';
 
 
 interface ClientPageProps {
-    title?: string;
+    title: string;
     children?: React.ReactNode;
 }
 
 const ClientPage = (props: ClientPageProps) => {
     useEffect(() => {
-        if (typeof props.title === "string") {
-            document.title = props.title;
-        }
+        document.title = props.title;
     });
 
     return (
