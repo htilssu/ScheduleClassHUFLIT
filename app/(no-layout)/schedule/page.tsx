@@ -1,10 +1,10 @@
-import ScheduleMain from "@/app/(no-layout)/schedule/components/ScheduleMain";
-import {prisma} from "@/lib/service/prismaClient";
-import {cookies} from "next/headers";
-import {ClassConfig} from "@/lib/utils/class";
-import {redirect} from "next/navigation";
 import {Metadata} from "next";
-import {cacheLife} from "next/dist/server/use-cache/cache-life";
+import ScheduleMain from "./components/ScheduleMain";
+import { cookies } from "next/headers";
+import { ClassConfig } from "@/lib/utils";
+import { redirect } from "next/navigation";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
+import { prisma } from "@/lib/service/prismaClient";
 
 export async function generateMetadata(): Promise<Metadata> {
     return {

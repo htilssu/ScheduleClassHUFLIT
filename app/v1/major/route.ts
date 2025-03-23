@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {Major, PrismaClient} from "@prisma/client";
-import {unstable_cache} from "next/cache";
+import {unstable_cacheLife as cacheLife} from 'next/cache'
 
 const prisma = new PrismaClient();
 
@@ -15,11 +15,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newMajor);
 }
 
-const getMajor = unstable_cache(async () => {
+const getMajor = async () => {
+    'use cache';
+    cacheLife("minutes")
+
     return prisma.major.findMany();
-}, ['major'], {
-    revalidate: 3600 * 24 * 7,
-})
+}
 
 async function createMajor(major: Major) {
     return prisma.major.create({

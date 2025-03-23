@@ -16,7 +16,6 @@ export class DataImporter {
     }
 
     async importData() {
-        console.log("Đang lấy thông tin thời khóa biểu");
         const initialHtml = await this.scraper.getInitialPage();
         const terms = this.extractor.extractTerms(initialHtml);
         const yearStudies = this.extractor.extractYearStudies(initialHtml);

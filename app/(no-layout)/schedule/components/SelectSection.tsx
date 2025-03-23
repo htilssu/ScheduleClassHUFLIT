@@ -1,12 +1,11 @@
-'use client'
-
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {debounce} from 'lodash';
-import ClassCard from "@/components/ClassCard";
+import ClassCard from "@/app/(no-layout)/schedule/components/ClassCard";
 import {ClassRoot} from '@/lib/model/Class';
 import {useSelector} from "react-redux";
 import {RootState} from "@/lib/state";
 import {ClassFilter} from "@/lib/state/filter";
+import {getClass} from "@/lib/actions/class";
 
 interface SelectSectionProps {
     classes: ClassRoot[]
@@ -15,7 +14,7 @@ interface SelectSectionProps {
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const filter = useSelector<RootState, ClassFilter>(state => state.filter);
 
-    const [limit, setLimit] = useState(150)
+    const [limit, setLimit] = useState(100)
     const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
 
     // Hàm lọc chính
@@ -37,7 +36,7 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
         // eslint-disable-next-line react-compiler/react-compiler
         debounce((filteredList: ClassRoot[]) => {
             setSearchList(filteredList);
-        }, 500, { leading: false, trailing: true }),
+        }, 500, {leading: false, trailing: true}),
         []
     );
 

@@ -2,10 +2,10 @@
 
 import React, {useCallback, useState} from 'react';
 import {DndContext} from "@/lib/hook/use-dnd-context";
-import SelectSection from "@/components/SelectSection";
-import TimeLine from "@/components/TimeLine";
+import TimeLine from "@/app/(no-layout)/schedule/components/TimeLine";
 import {ClassRoot} from '@/lib/model/Class';
 import FilterBar from './FilterBar';
+import SelectSection from '@/app/(no-layout)/schedule/components/SelectSection';
 
 const ScheduleMain = ({classes}: {
     classes?: ClassRoot[]
@@ -22,7 +22,7 @@ const ScheduleMain = ({classes}: {
     }, [selectedClass]);
 
     return (
-        <div className={'select-none'}>
+        <div className={"select-none"}>
             <div className={"relative"}>
                 <FilterBar/>
                 <DndContext onDragEnd={handleOnDragEnd}>
@@ -37,4 +37,3 @@ const ScheduleMain = ({classes}: {
 };
 
 export default ScheduleMain;
-
