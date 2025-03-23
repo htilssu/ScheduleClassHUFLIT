@@ -11,9 +11,8 @@ const QuickSchedule = () => {
                 <Image
                     src="/images/bgSchedule.png"
                     alt="Background"
-                    layout="fill"
+                    fill
                     loading={'lazy'}
-                    objectFit="cover"
                     className="opacity-100 blur-sm"
                 />
                 <div className="absolute inset-0 bg-gray-900/10"></div> {/* Overlay để nội dung nổi bật */}

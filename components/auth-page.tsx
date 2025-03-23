@@ -141,7 +141,6 @@ export function AuthPageComponent() {
                     zIndex: 0
                 }}
             />
-
             {/* Nội dung chính */}
             <div className="relative z-10 flex w-full max-w-6xl px-3 md:px-1">
                 <div className="w-full flex   md:pl-8 lg:pl-12">
@@ -216,5 +215,5 @@ export function AuthPageComponent() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
