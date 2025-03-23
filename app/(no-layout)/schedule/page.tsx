@@ -1,10 +1,10 @@
 import {Metadata} from "next";
 import ScheduleMain from "./components/ScheduleMain";
-import { cookies } from "next/headers";
-import { ClassConfig } from "@/lib/utils";
-import { redirect } from "next/navigation";
-import { cacheLife } from "next/dist/server/use-cache/cache-life";
-import { prisma } from "@/lib/service/prismaClient";
+import {cookies} from "next/headers";
+import {ClassConfig} from "@/lib/utils";
+import {redirect} from "next/navigation";
+import {cacheLife} from "next/dist/server/use-cache/cache-life";
+import {prisma} from "@/lib/service/prismaClient";
 
 export async function generateMetadata(): Promise<Metadata> {
     return {
@@ -18,15 +18,10 @@ async function Page() {
 
     const cookie = await cookies();
     const classConfigCookie = cookie.get("classConfig");
-    let year,
-        semester = "",
-        major = ""
 
     if (classConfigCookie) {
         const classConfig: ClassConfig = JSON.parse(classConfigCookie.value);
-        year = classConfig.year;
-        semester = classConfig.semester;
-        major = classConfig.major;
+        var {year, semester, major} = classConfig;
         if (year === "" && semester === "" && major === "") {
             redirect("/schedule/setup")
         }
@@ -34,7 +29,7 @@ async function Page() {
         redirect("/schedule/setup")
     }
 
-    const classCacheFunction = async () => {
+    async function classCacheFunction() {
         'use cache'
         cacheLife('minutes')
 
@@ -46,17 +41,13 @@ async function Page() {
             include: {
                 Subject: true,
                 Lecturer: true,
-                YearStudy: true,
-                Semester: true,
             }
         })
     }
 
     const classes = await classCacheFunction();
 
-    return (<div>
-        <ScheduleMain classes={classes}/>
-    </div>);
+    return <ScheduleMain classes={classes}/>;
 }
 
 export default Page;
