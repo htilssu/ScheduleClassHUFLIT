@@ -1,3 +1,5 @@
+'use client'
+
 import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import {debounce} from 'lodash';
 import ClassCard from "@/app/(no-layout)/schedule/components/ClassCard";

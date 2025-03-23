@@ -1,0 +1,41 @@
+'use server'
+
+import {cookies} from "next/headers";
+import {ClassConfig} from "@/lib/utils";
+import {redirect} from "next/navigation";
+import {cacheLife} from "next/dist/server/use-cache/cache-life";
+import {prisma} from "@/lib/service/prismaClient";
+
+
+async function classCacheFunction(year: string, semester: string) {
+    'use cache'
+    cacheLife('minutes')
+
+    return prisma.class.findMany({
+        where: {
+            yearStudyId: year,
+            semesterId: semester,
+        },
+        include: {
+            Subject: true,
+            Lecturer: true,
+        }
+    })
+}
+
+export async function getClass() {
+    const cookie = await cookies();
+    const classConfigCookie = cookie.get("classConfig");
+
+    if (classConfigCookie) {
+        const classConfig: ClassConfig = JSON.parse(classConfigCookie.value);
+        var {year, semester, major} = classConfig;
+        if (year === "" && semester === "" && major === "") {
+            redirect("/schedule/setup")
+        }
+    } else {
+        redirect("/schedule/setup")
+    }
+
+    return classCacheFunction(year, semester)
+}
