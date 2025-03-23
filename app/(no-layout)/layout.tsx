@@ -10,8 +10,8 @@ import {store} from '@/lib/state'
 
 const Layout = ({children}: Readonly<{ children: ReactNode }>) => {
     return (
-        <html lang={"en"} suppressHydrationWarning>
-        <body>
+        <html lang={"en"}>
+        <body suppressHydrationWarning={true}>
         <Provider store={store}>
             <CacheProvider>
                 <MantineProvider>
