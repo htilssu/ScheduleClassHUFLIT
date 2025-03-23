@@ -12,6 +12,7 @@ const QuickSchedule = () => {
                     src="/images/bgSchedule.png"
                     alt="Background"
                     layout="fill"
+                    loading={'lazy'}
                     objectFit="cover"
                     className="opacity-100 blur-sm"
                 />
@@ -20,8 +21,8 @@ const QuickSchedule = () => {
 
             {/* Nội dung */}
             <div className="relative z-10">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <AiOutlineSchedule className="text-orange-500 text-2xl" />
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <AiOutlineSchedule className="text-white text-2xl" />
                     Lịch Học Nhanh
                 </h2>
                 <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-inner">

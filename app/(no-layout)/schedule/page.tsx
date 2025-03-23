@@ -45,7 +45,7 @@ async function Page() {
             }
         })
     }, [`${year}-${semester}`], {
-        revalidate: 60 * 60,
+        revalidate: 60,
     });
 
     const classes = await classCacheFunction();
