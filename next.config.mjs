@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
+    dynamicIO: true,
+    useCache: true,
     turbo: {
       resolveExtensions: [
         '.mdx',
@@ -15,9 +17,11 @@ const nextConfig = {
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
   images: {
-    remotePatterns: [{
-      hostname: 'via.placeholder.com'
-    }],
+    remotePatterns: [
+      {
+        hostname: 'via.placeholder.com',
+      },
+    ],
   },
 };
 
