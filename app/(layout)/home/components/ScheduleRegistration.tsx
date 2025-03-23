@@ -5,15 +5,15 @@ const ScheduleRegistration = () => {
     const courses = [
         {
             name: "Lập trình Web",
+            type: "Ly thuyet",
             lecturer: "Tran Trung Hieu",
-            time: "T2, 8:00 - 10:00",
-            credits: 3,
+            time: "T2, 7 - 9",
         },
         {
             name: "Cơ sở dữ liệu",
+            type: "Thuc Hanh",
             lecturer: "Nguyen Anh Tuan",
-            time: "T4, 13:00 - 15:00",
-            credits: 3,
+            time: "T4, 10 - 12",
         },
     ];
 
@@ -26,27 +26,27 @@ const ScheduleRegistration = () => {
             </h2>
 
             {/* Bộ lọc */}
-            <div className="flex items-center gap-4 mb-6">
-        <span className="text-sm font-medium text-gray-600 bg-orange-100 px-3 py-1 rounded-full">
-          Gợi ý
-        </span>
-                <div className="flex gap-3">
+            <div className="flex items-center justify-center gap-4 mb-6">
+                <span className="text-sm w-16 font-medium text-gray-600 bg-orange-100 px-3 py-1 rounded-full">
+                    Gợi ý
+                </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <select
-                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
+                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-0 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
                     >
                         <option>Khoa</option>
                         <option>Công nghệ thông tin</option>
                         <option>Kinh tế</option>
                     </select>
                     <select
-                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
+                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-0 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
                     >
                         <option>Chuyên ngành</option>
                         <option>Công nghệ thông tin</option>
                         <option>Kinh tế</option>
                     </select>
                     <select
-                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
+                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-0 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
                     >
                         <option>Kỳ học</option>
                         <option>Kỳ 01</option>
@@ -54,7 +54,7 @@ const ScheduleRegistration = () => {
                         <option>Kỳ 03</option>
                     </select>
                     <select
-                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
+                        className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-0 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
                     >
                         <option>Năm học</option>
                         <option>2025-2026</option>
@@ -81,7 +81,7 @@ const ScheduleRegistration = () => {
                             <span className="font-medium">Thời gian:</span> {course.time}
                         </p>
                         <p className="text-sm text-gray-600">
-                            <span className="font-medium">Tín chỉ:</span> {course.credits}
+                            <span className="font-medium">Loại:</span> {course.type}
                         </p>
                         <Link href={"/schedule"} className={"flex"}>
                             <button
