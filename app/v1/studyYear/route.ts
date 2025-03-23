@@ -3,7 +3,7 @@ import {prisma} from "@/lib/service/prismaClient";
 import {unstable_cache} from "next/cache";
 
 const getYearStudy = unstable_cache(async () => {
-    return await prisma.yearStudy.findMany();
+    return prisma.yearStudy.findMany();
 }, ['yearStudy'], {
     revalidate: 3600 * 24 * 7,
 });

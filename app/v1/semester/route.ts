@@ -3,7 +3,7 @@ import {prisma} from "@/lib/service/prismaClient";
 import {unstable_cache} from "next/cache";
 
 const getSemester = unstable_cache(async () => {
-    return await prisma.semester.findMany();
+    return prisma.semester.findMany();
 }, ['semester'], {
     revalidate: 3600 * 24 * 30,
 })

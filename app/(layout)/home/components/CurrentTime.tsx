@@ -36,13 +36,10 @@ const CurrentTime = () => {
         year: "numeric",
     });
 
-
     return (
-        <div
-            className="relative w-80 bg-orange-500 p-6 rounded-2xl overflow-hidden shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+        <div className="relative w-80 bg-orange-500 p-6 rounded-2xl overflow-hidden shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
             {/* Gradient background động */}
-            <div
-                className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-500 to-blue-500 opacity-75 animate-gradient-x"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-pink-500 to-blue-500 opacity-75 animate-gradient-x"></div>
 
             {/* Layer overlay */}
             <div className="absolute inset-0 bg-orange-500/80 backdrop-blur-sm"></div>
@@ -56,21 +53,18 @@ const CurrentTime = () => {
                 </h2>
 
                 {/* Thời gian */}
-                <div
-                    className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200 mb-3 tracking-tight">
+                <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200 mb-3 tracking-tight">
                     {formattedTime}
                 </div>
 
                 {/* Ngày tháng */}
-                <div
-                    className="text-base font-medium text-gray-200 capitalize opacity-90 border-t border-gray-700/50 pt-2">
+                <div className="text-base font-medium text-gray-200 capitalize opacity-90 border-t border-gray-700/50 pt-2">
                     {formattedDate}
                 </div>
             </div>
 
             {/* Hiệu ứng hover */}
-            <div
-                className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"></div>
         </div>
     );
 };

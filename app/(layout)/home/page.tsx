@@ -1,6 +1,12 @@
 import React from 'react';
 import MainContent from "@/app/(layout)/home/components/MainContent";
 import Notify from "@/app/(layout)/home/components/Notify";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: 'Trang chủ',
+    description: 'Trang chủ của ứng dụng',
+}
 
 const Page = () => {
     return (
