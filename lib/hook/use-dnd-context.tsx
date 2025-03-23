@@ -31,7 +31,6 @@ type DroppedCallback = (dropped: any) => void;
 
 interface DndContextProps {
     children?: ReactNode;
-    onDragEnd: (() => void) | DroppedCallback | null;
 }
 
 const Context = createContext<DndContext>({} as DndContext);

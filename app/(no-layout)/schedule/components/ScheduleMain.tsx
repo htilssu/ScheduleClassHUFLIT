@@ -1,11 +1,11 @@
 'use client'
 
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {DndContext} from "@/lib/hook/use-dnd-context";
 import TimeLine from "@/app/(no-layout)/schedule/components/TimeLine";
 import FilterBar from './FilterBar';
 import SelectSection from '@/app/(no-layout)/schedule/components/SelectSection';
-import { ClassData } from '@/lib/types';
+import {ClassData} from '@/lib/types';
 
 const ScheduleMain = ({classes}: {
     classes?: ClassData[]

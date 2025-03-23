@@ -45,7 +45,11 @@ function TimeLine() {
 
 
     function handleAddClass(classData: ClassData) {
-        setClasses((prevClasses) => [...prevClasses, classData]);
+        setClasses((prevClasses) => {
+            const newClasses = [...prevClasses, classData];
+            saveClassToLocal(newClasses);
+            return newClasses;
+        });
         handleUpdateMergeSplit(classData);
     }
 
