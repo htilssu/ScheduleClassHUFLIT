@@ -1,10 +1,15 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
-import { FaClock } from "react-icons/fa";
+import React, {useEffect, useLayoutEffect, useState} from "react";
+import {FaClock} from "react-icons/fa";
 
 const CurrentTime = () => {
-    const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentTime, setCurrentTime] = useState<Date | null>(null);
+
+    useLayoutEffect(() => {
+        setCurrentTime(new Date())
+    }, []);
+
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -13,14 +18,18 @@ const CurrentTime = () => {
         return () => clearInterval(timer);
     }, []);
 
-    const formattedTime = currentTime.toLocaleTimeString("vi-VN", {
+    if (currentTime == null) {
+        return
+    }
+
+    const formattedTime = currentTime!.toLocaleTimeString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
     });
 
-    const formattedDate = currentTime.toLocaleDateString("vi-VN", {
+    const formattedDate = currentTime!.toLocaleDateString("vi-VN", {
         weekday: "long",
         day: "2-digit",
         month: "long",
