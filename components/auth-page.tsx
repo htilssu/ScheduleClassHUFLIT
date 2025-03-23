@@ -160,6 +160,9 @@ export function AuthPageComponent() {
                                         className="w-11 md:w-14 lg:w-16 h-auto transition-all duration-300"
                                         priority
                                     />
+                                    <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
+                                        SCHEDULE
+                                    </h2>
                                 </Link>
                             </div>
                             <div
