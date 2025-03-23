@@ -15,7 +15,9 @@ const nextConfig = {
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
   images: {
-    domains: ["via.placeholder.com"],
+    remotePatterns: [{
+      hostname: 'via.placeholder.com'
+    }],
   },
 };
 

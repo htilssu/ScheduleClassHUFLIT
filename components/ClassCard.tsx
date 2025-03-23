@@ -1,6 +1,6 @@
 import React from 'react';
 import {Badge, Card, Flex, Group, Stack, Text} from "@mantine/core";
-import {useDraggable} from "@/hook/dnd/use-draggable";
+import {useDraggable} from "@/lib/hook/use-draggable";
 import {ClassRoot} from '@/lib/model/Class';
 
 function ClassCard({classData}: Readonly<{ classData: ClassRoot }>) {

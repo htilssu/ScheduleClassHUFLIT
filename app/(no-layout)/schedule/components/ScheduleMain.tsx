@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useCallback, useState} from 'react';
-import {DndContext} from "@/hook/use-dnd-context";
+import {DndContext} from "@/lib/hook/use-dnd-context";
 import SelectSection from "@/components/SelectSection";
 import TimeLine from "@/components/TimeLine";
 import {ClassRoot} from '@/lib/model/Class';

@@ -1,6 +1,6 @@
 import React from 'react';
-import MainContent from "@/app/(layout)/home/components/mainContent/MainContent";
-import Notify from "@/app/(layout)/home/components/notify/Notify";
+import MainContent from "@/app/(layout)/home/components/MainContent";
+import Notify from "@/app/(layout)/home/components/Notify";
 
 const HomePage = () => {
     return (

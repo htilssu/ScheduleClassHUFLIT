@@ -1,6 +1,6 @@
 'use client'
 
-import {useDndContext} from "@/hook/use-dnd-context";
+import {useDndContext} from "@/lib/hook/use-dnd-context";
 
 import {useCallback, useEffect, useRef, useState} from "react";
 
