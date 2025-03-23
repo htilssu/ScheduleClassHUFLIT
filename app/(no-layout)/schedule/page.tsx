@@ -4,10 +4,13 @@ import {cookies} from "next/headers";
 import {ClassConfig} from "@/lib/utils/class";
 import {redirect} from "next/navigation";
 import {Metadata} from "next";
-import {unstable_cache} from "next/cache";
+import {cacheLife} from "next/dist/server/use-cache/cache-life";
 
-export const metadata: Metadata = {
-    title: "Xếp lịch học",
+export async function generateMetadata(): Promise<Metadata> {
+    return {
+        title: 'Xếp lịch học',
+        description: 'Xếp lịch học',
+    }
 }
 
 
@@ -31,7 +34,10 @@ async function Page() {
         redirect("/schedule/setup")
     }
 
-    const classCacheFunction = unstable_cache(() => {
+    const classCacheFunction = async () => {
+        'use cache'
+        cacheLife('minutes')
+
         return prisma.class.findMany({
             where: {
                 yearStudyId: year,
@@ -44,9 +50,7 @@ async function Page() {
                 Semester: true,
             }
         })
-    }, [`${year}-${semester}`], {
-        revalidate: 60,
-    });
+    }
 
     const classes = await classCacheFunction();
 
