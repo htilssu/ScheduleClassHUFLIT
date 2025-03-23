@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'; // Thêm import này
 import { useAuth } from "@/context/AuthContext";
 import { post } from "@/lib/utils/request";
 import { Menu, X } from 'lucide-react'
-import Logo from '../public/images/LogoT&H.png';
+import Logo from '../public/images/LogoT&H1.png';
 import Image from "next/image";
 
 function Navbar() {
@@ -33,13 +33,17 @@ function Navbar() {
                         <Image
                             src={Logo}
                             alt="Logo"
-                            className="w-11 md:w-14 lg:w-16 h-auto transition-all duration-300"
+                            className="w-10 md:w-12 lg:w-14 h-auto transition-all duration-300"
                             priority
                         />
+                        <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
+                            SCHEDULE
+                        </h2>
                     </Link>
 
                     {/* Navigation */}
-                    <nav className="hidden md:flex items-center justify-center flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
+                    <nav
+                        className="hidden md:flex items-center justify-end lg:mr-20 mr-10 flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
                         <Link
                             href="/home"
                             className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
@@ -55,6 +59,14 @@ function Navbar() {
                             }`}
                         >
                             Xếp Lịch
+                        </Link>
+                        <Link
+                            href="/direction"
+                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
+                                isActive('/direction') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
+                            }`}
+                        >
+                            Hướng Dẫn
                         </Link>
                         <Link
                             href="/contact"

@@ -39,8 +39,18 @@ const Contact: React.FC<ContactProps> = () => {
     };
 
     return (
-        <section id='contact' className="z-50 relative py-10 px-5 md:px-0 ">
-            <div className='mb-16 max-w-7xl mx-auto'>
+        <section id='contact' className="z-50 py-10 px-5 md:px-0 ">
+            {/* Background image */}
+            <div
+                className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+                style={{
+                    backgroundImage: 'url(/images/bg-white-orange-and-blue.png)',
+                    backgroundAttachment: 'fixed',
+                    opacity: 0.8,
+                    zIndex: 0,
+                }}
+            />
+            <div className='mb-16 max-w-7xl mx-auto relative'>
                 <div className='flex flex-col md:flex-row justify-between items-center'>
                     <div className='md:w-1/2 mb-8 ml-2 md:mb-0'>
                         <h2 className='text-3xl font-extrabold mb-3 text-gray-800'>Get in Touch</h2>
