@@ -46,7 +46,7 @@ const Notify = () => {
     };
 
     return (
-        <div className="w-[30%] bg-white p-6 rounded-xl shadow-lg border-t-2 border-orange-500 shadow-orange-300/50 transition-all duration-300 hover:shadow-orange-400/70">
+        <div className="w-full bg-white hidden lg:block p-6 rounded-xl shadow-lg border-t-2 border-orange-500 shadow-orange-300/50 transition-all duration-300 hover:shadow-orange-400/70">
             {/* Tiêu đề với icon */}
             <div className="flex items-center gap-3 mb-5">
                 <FaBell className="text-orange-500 text-2xl animate-pulse" />

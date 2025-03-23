@@ -6,7 +6,7 @@ import CurrentTime from "@/app/(layout)/home/components/CurrentTime";
 
 const MainContent = () => {
     return (
-        <div className="flex flex-col gap-5 w-[70%]">
+        <div className="flex flex-col gap-5">
             <QuickSchedule/>
             <CourseRegistration/>
             <KeyFeatures/>

@@ -11,9 +11,13 @@ export const metadata: Metadata = {
 const Page = () => {
     return (
         <div className={"mb-20"}>
-            <div className="flex justify-center items-start max-w-7xl mx-auto mt-5 gap-5">
-                <MainContent/>
-                <Notify/>
+            <div className="flex max-w-7xl 2xl:justify-center xl:justify-start mx-auto mt-5 lg:gap-5 gap-0">
+                <div className="w-full lg:w-[68%] xl:w-[72%]">
+                    <MainContent/>
+                </div>
+                <div className="xl:w-[26%] w-[28%] fixed xl:right-16 right-8 top-22">
+                    <Notify/>
+                </div>
             </div>
         </div>
     );
