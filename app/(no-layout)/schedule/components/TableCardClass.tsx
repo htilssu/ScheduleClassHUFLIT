@@ -1,10 +1,10 @@
-import {ClassRoot} from "@/lib/model/Class";
 import {Badge, Menu} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {IoTrash} from "react-icons/io5";
 import {LearningSection} from "@prisma/client";
+import { ClassData } from "@/lib/types";
 
-export type TableClassData = Omit<ClassRoot, "learningSection"> & {
+export type TableClassData = Omit<ClassData, "learningSection"> & {
     learningSection: LearningSection;
 };
 

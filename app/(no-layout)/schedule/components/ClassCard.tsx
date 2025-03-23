@@ -1,9 +1,9 @@
 import React from 'react';
-import {Badge, Card, Flex, Group, Stack, Text} from "@mantine/core";
+import {Badge, Card, Flex, Stack, Text} from "@mantine/core";
 import {useDraggable} from "@/lib/hook/use-draggable";
-import {ClassRoot} from '@/lib/model/Class';
+import {ClassData} from '@/lib/types';
 
-function ClassCard({classData}: Readonly<{ classData: ClassRoot }>) {
+function ClassCard({classData}: Readonly<{ classData: ClassData }>) {
     const {setNodeRef, isDragging} = useDraggable(classData)
 
 

@@ -2,14 +2,13 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
-import {Class} from "@prisma/client";
 import {useDroppable} from "@/lib/hook/use-droppable";
 import {trim} from "lodash";
 import {debug} from "@/lib/utils/logging";
 import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
-import {ClassRoot} from '@/lib/model/Class';
 import {SortedSet} from '@/lib/SortedSet';
 import {TableClassCard} from './TableCardClass';
+import {ClassData} from '@/lib/types';
 
 const MAX_TIME_SECTION = 15;
 
@@ -21,20 +20,11 @@ const mm = Array.from({
 
 function TimeLine() {
     debug('TimeLine render')
-
-    const {setNodeRef, droppedData} = useDroppable();
+    const [classes, setClasses] = useState<ClassData[]>([]);
     const [mergeMark, setMergeMark] = useState(mm);
-    const [classes, setClasses] = useState<ClassRoot[]>([]);
+    const {setNodeRef} = useDroppable({setDroppedData: handleAddClass});
 
-    useEffect(() => {
-        setClasses(() => loadClassFromLocal())
-    }, []);
-
-    useEffect(() => {
-        classes?.map(value => handleAddClass(value))
-    }, [classes]);
-
-    function handleAddClass(classData: Class) {
+    const handleUpdateMergeSplit = useCallback((classData: ClassData) => {
         classData.learningSection.forEach(({weekDay, time}) => {
             const [start, end] = time.split('-').map(trim).map(Number);
             const dayOfWeekMarkSplit = mergeMark[Number(weekDay) - 2];
@@ -45,7 +35,24 @@ function TimeLine() {
         });
 
         setMergeMark(prevState => prevState);
+    }, [mergeMark])
+
+    useEffect(() => {
+        const localData = loadClassFromLocal();
+        setClasses(() => localData)
+        localData.map(value => handleUpdateMergeSplit(value))
+    }, [handleUpdateMergeSplit]);
+
+
+    function handleAddClass(classData: ClassData) {
+        setClasses((prevClasses) => {
+            const newClasses = [...prevClasses, classData];
+            saveClassToLocal(newClasses);
+            return newClasses;
+        });
+        handleUpdateMergeSplit(classData);
     }
+
 
     const getRowSpan = useCallback((dayInWeek: number, section: number) => {
         const arr = Array.from(mergeMark[dayInWeek]);
@@ -59,15 +66,6 @@ function TimeLine() {
         return 1
     }, [mergeMark]);
 
-    useEffect(() => {
-        if (droppedData) {
-            setClasses(prevState => {
-                const newClassList = [...prevState, droppedData]
-                saveClassToLocal(newClassList)
-                return newClassList;
-            })
-        }
-    }, [droppedData]);
 
     const removeClass = useCallback(
         function removeClass(classId: string) {

@@ -6,11 +6,9 @@ export interface WeekResponse {
     WeekOfYear: number
 }
 
-export type ClassRoot = Prisma.ClassGetPayload<{
+export type ClassData = Prisma.ClassGetPayload<{
     include: {
         Subject: true,
         Lecturer: true,
-        Semester: true,
-        YearStudy: true,
     }
 }>

@@ -2,12 +2,12 @@
 
 import {useDndContext} from "@/lib/hook/use-dnd-context";
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef} from "react";
+import {ClassData} from "@/lib/types";
 
-export function useDroppable() {
+export function useDroppable({setDroppedData}: { setDroppedData: (data: ClassData) => void }) {
     const dndContext = useDndContext();
     const ref = useRef<HTMLElement>({} as HTMLElement);
-    const [droppedData, setDroppedData] = useState<any>()
     if (!dndContext) throw new Error("This hook must call inside DndContext")
 
     function setNodeRef(node: HTMLElement | null) {
@@ -27,12 +27,8 @@ export function useDroppable() {
         if (e.clientX >= refBound.left && e.clientX <= refBound.right
             && e.clientY > refBound.top && e.clientY <= refBound.bottom) {
             setDroppedData(dndContext.dataRef.current.data)
-            if (typeof dndContext.onDragEnd === "function") {
-                dndContext.onDragEnd(dndContext.dataRef.current.data)
-            }
-            dndContext.setContextValue(prevState => ({...prevState, data: null}))
         }
-    }, []);
+    }, [dndContext.dataRef]);
 
     useEffect(() => {
         document.addEventListener('mouseup', handleMouseUp, {
@@ -47,18 +43,11 @@ export function useDroppable() {
     }, [handleMouseUp]);
 
 
-    useEffect(() => {
-        if (droppedData) {
-            setDroppedData(null)
-        }
-    }, [droppedData]);
-
     return {
         data: dndContext.data,
         isDragging: dndContext.dataRef.current.data !== null,
         setNodeRef,
         draggingData: dndContext.dataRef.current.data !== null,
-        droppedData: droppedData
     }
 }
 

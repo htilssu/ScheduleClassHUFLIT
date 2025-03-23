@@ -24,7 +24,6 @@ interface DndContext {
     data: any;
     setContextValue: Dispatch<SetStateAction<DndContext>>;
     droppableList: Droppable[];
-    onDragEnd: (() => void) | DroppedCallback | null;
     dataRef: { current: { data: any, refDragging: RefObject<HTMLElement> | null } };
 }
 
@@ -32,7 +31,6 @@ type DroppedCallback = (dropped: any) => void;
 
 interface DndContextProps {
     children?: ReactNode;
-    onDragEnd: (() => void) | DroppedCallback | null;
 }
 
 const Context = createContext<DndContext>({} as DndContext);
@@ -43,8 +41,6 @@ export const DndContext: FC<DndContextProps> = props => {
         data: null,
         droppableList: [],
         setContextValue: () => {
-        },
-        onDragEnd: () => {
         },
         dataRef: {current: {data: null, refDragging: null}}
     } as DndContext)
@@ -79,17 +75,18 @@ export const DndContext: FC<DndContextProps> = props => {
 
     useEffect(() => {
 
-        ref.current?.addEventListener("mousemove", handleMouseMove)
+        const current = ref.current;
+        current?.addEventListener("mousemove", handleMouseMove)
 
 
         return () => {
-            ref.current?.removeEventListener("mousemove", handleMouseMove)
+            current?.removeEventListener("mousemove", handleMouseMove)
         }
     }, [handleMouseMove]);
 
 
     return (
-        <Context.Provider value={{...contextValue, setContextValue, dataRef: refData, onDragEnd: props.onDragEnd}}>
+        <Context.Provider value={{...contextValue, setContextValue, dataRef: refData}}>
             <div ref={ref} className={'relative z-10'}>
                 {props.children}
             </div>
