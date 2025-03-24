@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import {ComboboxItem, Flex, Input, Select} from "@mantine/core";
 import {useDispatch} from "react-redux";
