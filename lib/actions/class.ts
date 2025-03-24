@@ -5,11 +5,13 @@ import {ClassConfig} from "@/lib/utils";
 import {redirect} from "next/navigation";
 import {cacheLife} from "next/dist/server/use-cache/cache-life";
 import {prisma} from "@/lib/service/prismaClient";
+import {cacheTag} from "next/dist/server/use-cache/cache-tag";
 
 
 async function classCacheFunction(year: string, semester: string) {
     'use cache'
     cacheLife('minutes')
+    cacheTag(`class-${year}-${semester}`)
 
     return prisma.class.findMany({
         where: {
