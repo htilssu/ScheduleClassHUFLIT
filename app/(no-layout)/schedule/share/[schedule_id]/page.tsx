@@ -1,5 +1,6 @@
 import React from 'react';
 import ShareTimelinePage from "@/app/(no-layout)/schedule/share/components/ShareTimelinePage";
+import {Metadata} from 'next';
 
 
 export const metadata: Metadata = {
@@ -7,7 +8,9 @@ export const metadata: Metadata = {
     description: 'Chia sẻ lịch học',
 }
 
-function Page() {
+async function Page({params}: { params: Promise<{ schedule_id: string }> }) {
+    const {schedule_id} = await params;
+
     return (
         <ShareTimelinePage/>
     );
