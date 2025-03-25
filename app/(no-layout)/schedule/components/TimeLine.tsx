@@ -30,7 +30,6 @@ function TimeLine(props: TimeLineProps) {
         classData.learningSection.forEach(({weekDay, time}) => {
             const [start, end] = time.split('-').map(trim).map(Number);
             const dayOfWeekMarkSplit = mergeMark[Number(weekDay) - 2];
-            console.log(JSON.stringify(mergeMark));
 
             dayOfWeekMarkSplit.add(start - 1)
             dayOfWeekMarkSplit.add(end);

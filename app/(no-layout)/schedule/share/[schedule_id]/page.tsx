@@ -12,7 +12,9 @@ async function Page({params}: { params: Promise<{ schedule_id: string }> }) {
     const {schedule_id} = await params;
 
     return (
-        <ShareTimelinePage/>
+        <>
+            <ShareTimelinePage scheduleId={schedule_id}/>
+        </>
     );
 }
 
