@@ -1,31 +1,21 @@
 'use client'
 
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {DndContext} from "@/lib/hook/use-dnd-context";
-import SelectSection from "@/components/SelectSection";
-import TimeLine from "@/components/TimeLine";
-import {ClassRoot} from '@/lib/model/Class';
+import TimeLine from "@/app/(no-layout)/schedule/components/TimeLine";
 import FilterBar from './FilterBar';
+import SelectSection from '@/app/(no-layout)/schedule/components/SelectSection';
+import {ClassData} from '@/lib/types';
 
 const ScheduleMain = ({classes}: {
-    classes?: ClassRoot[]
+    classes?: ClassData[]
 }) => {
-    const [selectedClass, setSelectedClass] = useState<ClassRoot[]>([])
-
-    const handleOnDragEnd = useCallback((data: ClassRoot) => {
-        if (data !== null) {
-            if (!selectedClass.includes(data)) {
-                setSelectedClass(prevState => [...prevState, data])
-            }
-        }
-
-    }, [selectedClass]);
 
     return (
-        <div className={'select-none'}>
+        <div className={"select-none"}>
             <div className={"relative"}>
                 <FilterBar/>
-                <DndContext onDragEnd={handleOnDragEnd}>
+                <DndContext>
                     <div className={"flex p-2 relative z-10 max-h-screen"}>
                         <SelectSection classes={classes || []}/>
                         <TimeLine/>
@@ -37,4 +27,3 @@ const ScheduleMain = ({classes}: {
 };
 
 export default ScheduleMain;
-

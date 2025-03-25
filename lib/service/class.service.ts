@@ -1,6 +1,6 @@
 import {get} from "@/lib/utils/request";
 import {Class} from "@prisma/client";
-import {ClassRoot} from "@/lib/model/Class";
+import { ClassData } from "../types";
 
 /**
  * Fetches class data from the server.
@@ -24,6 +24,6 @@ export function saveClassToLocal(classes: Class[]) {
 /**
  * Load scheduled classes from local storage.
  */
-export function loadClassFromLocal(): ClassRoot[] {
+export function loadClassFromLocal(): ClassData[] {
     return JSON.parse(localStorage.getItem("classes") ?? "[]");
 }

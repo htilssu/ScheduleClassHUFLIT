@@ -1,5 +1,4 @@
-'use client'
-import SetupSection from "@/components/SetupSection";
+import SetupSection from "@/app/(no-layout)/schedule/setup/components/SetupSection";
 import ClientPage from "@/components/ClientPage";
 
 export default function Page() {

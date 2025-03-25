@@ -1,22 +1,22 @@
 'use client'
 
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import {debounce} from 'lodash';
-import ClassCard from "@/components/ClassCard";
-import {ClassRoot} from '@/lib/model/Class';
+import ClassCard from "@/app/(no-layout)/schedule/components/ClassCard";
 import {useSelector} from "react-redux";
 import {RootState} from "@/lib/state";
 import {ClassFilter} from "@/lib/state/filter";
+import {ClassData} from '@/lib/types';
 
 interface SelectSectionProps {
-    classes: ClassRoot[]
+    classes: ClassData[]
 }
 
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
     const filter = useSelector<RootState, ClassFilter>(state => state.filter);
 
-    const [limit, setLimit] = useState(150)
-    const [searchList, setSearchList] = useState<ClassRoot[]>([...classes])
+    const [limit, setLimit] = useState(100)
+    const [searchList, setSearchList] = useState<ClassData[]>([...classes])
 
     // Hàm lọc chính
     const filterClasses = useCallback(() => {
@@ -35,9 +35,9 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
 
     const debouncedSetSearchList = useCallback(
         // eslint-disable-next-line react-compiler/react-compiler
-        debounce((filteredList: ClassRoot[]) => {
+        debounce((filteredList: ClassData[]) => {
             setSearchList(filteredList);
-        }, 500, { leading: false, trailing: true }),
+        }, 500, {leading: false, trailing: true}),
         []
     );
 
@@ -48,12 +48,16 @@ function SelectSection({classes}: Readonly<SelectSectionProps>) {
         return () => debouncedSetSearchList.cancel();
     }, [filteredClasses, debouncedSetSearchList]);
 
+    const ClassCardMemo = memo(function ClassCardMemo({classData}: { classData: ClassData }) {
+        return <ClassCard classData={classData}/>
+    });
+
 
     return (
         <div className={"w-1/3 max-h-[100vh] flex flex-col p-2 bg-gray-100 rounded-md z-10"}>
             <div className={"mt-2 overflow-y-auto overflow-x-visible"}>
                 {searchList.slice(0, limit).map((value, index) => (
-                    <ClassCard key={index} classData={value}/>
+                    <ClassCardMemo key={index} classData={value}/>
                 ))}
             </div>
         </div>

@@ -54,7 +54,7 @@ function SetupSection() {
             </Group>
             <Button onClick={() => {
                 handleSaveClassConfig();
-                router.replace('/schedule');
+                router.push('/schedule');
             }} rightSection={<ChevronsRight/>} color="blue" className="text-center"
                     variant="filled">Tiếp tục</Button>
         </div>

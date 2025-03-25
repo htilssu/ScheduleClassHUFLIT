@@ -1,21 +1,21 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Link from "next/link";
-import { usePathname } from 'next/navigation'; // Thêm import này
-import { useAuth } from "@/context/AuthContext";
-import { post } from "@/lib/utils/request";
-import { Menu, X } from 'lucide-react'
+import {usePathname} from 'next/navigation'; // Thêm import này
+import {useAuth} from "@/context/AuthContext";
+import {post} from "@/lib/utils/request";
+import {Menu, X} from 'lucide-react'
 import Logo from '../public/images/LogoT&H1.png';
 import Image from "next/image";
 
 function Navbar() {
     const [mobileMenuOpen, setmMobileMenuOpen] = useState(false)
-    const { user } = useAuth();
+    const {user} = useAuth();
     const pathname = usePathname(); // Lấy đường dẫn hiện tại
 
     function logout() {
-        post(origin + '/v1/auth/logout', { action: 'logout' }).then(() => {
+        post(origin + '/v1/auth/logout', {action: 'logout'}).then(() => {
             localStorage.setItem("token", "")
             window.location.href = '/';
         });
@@ -25,7 +25,8 @@ function Navbar() {
     const isActive = (href: string) => pathname === href;
 
     return (
-        <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-0'>
+        <header
+            className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-0'>
             <div className='max-w-7xl mx-auto flex h-14 lg:h-16 items-center'>
                 <div className="flex items-center justify-between w-full px-4 md:px-0">
                     {/* Logo */}
@@ -54,6 +55,7 @@ function Navbar() {
                         </Link>
                         <Link
                             href="/schedule"
+                            prefetch
                             className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
                                 isActive('/schedule') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
                             }`}
@@ -116,7 +118,8 @@ function Navbar() {
                         <Link
                             href="/home"
                             className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive('/home') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
+                                isActive(
+                                    '/home') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
                             }`}
                         >
                             Trang Chủ
@@ -124,7 +127,8 @@ function Navbar() {
                         <Link
                             href="/schedule"
                             className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive('/schedule') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
+                                isActive(
+                                    '/schedule') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
                             }`}
                         >
                             Xếp Lịch
@@ -132,7 +136,8 @@ function Navbar() {
                         <Link
                             href="/contact"
                             className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive('/contact') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
+                                isActive(
+                                    '/contact') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
                             }`}
                         >
                             Liên Hệ
