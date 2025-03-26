@@ -1,18 +1,9 @@
-import {Metadata} from "next";
-import ScheduleMain from "./components/ScheduleMain";
-import {getClass} from "@/lib/actions/class";
+import React from 'react';
 
-export const metadata: Metadata = {
-    title: "Xếp lịch Học - HUFLIT",
-    description: "Trang hiển thị lịch học của HUFLIT",
-};
-
-async function Page() {
-
-
-    const classes = await getClass();
-
-    return <ScheduleMain classes={classes}/>;
+function Page() {
+    return (
+        <div></div>
+    );
 }
 
 export default Page;

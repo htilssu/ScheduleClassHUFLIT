@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 }
 */
 
-const getMajor = async () => {
+const getMajor = async (): Promise<Major[]> => {
     'use cache';
     cacheLife("minutes")
     cacheTag('major')
