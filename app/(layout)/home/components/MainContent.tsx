@@ -3,6 +3,7 @@ import QuickSchedule from "./QuickSchedule";
 import CourseRegistration from "./ScheduleRegistration";
 import KeyFeatures from "./KeyFeatures";
 import CurrentTime from "@/app/(layout)/home/components/CurrentTime";
+import Feedback from "@/components/Feedback";
 
 const MainContent = () => {
     return (
@@ -10,7 +11,7 @@ const MainContent = () => {
             <QuickSchedule/>
             <CourseRegistration/>
             <KeyFeatures/>
-            <CurrentTime/>
+            <Feedback/>
         </div>
     );
 };

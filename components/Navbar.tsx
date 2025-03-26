@@ -47,7 +47,7 @@ function Navbar() {
                         className="hidden md:flex items-center justify-end lg:mr-20 mr-10 flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
                         <Link
                             href="/home"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
+                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
                                 isActive('/home') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
                             }`}
                         >
@@ -56,7 +56,7 @@ function Navbar() {
                         <Link
                             href="/schedule"
                             prefetch
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
+                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
                                 isActive('/schedule') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
                             }`}
                         >
@@ -64,7 +64,7 @@ function Navbar() {
                         </Link>
                         <Link
                             href="/direction"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
+                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
                                 isActive('/direction') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
                             }`}
                         >
@@ -72,7 +72,7 @@ function Navbar() {
                         </Link>
                         <Link
                             href="/contact"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-700 ${
+                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
                                 isActive('/contact') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
                             }`}
                         >
