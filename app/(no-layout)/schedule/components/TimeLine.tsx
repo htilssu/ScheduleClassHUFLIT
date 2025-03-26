@@ -2,10 +2,8 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {Table} from "@mantine/core";
-import {useDroppable} from "@/lib/hook/use-droppable";
 import {trim} from "lodash";
 import {debug} from "@/lib/utils/logging";
-import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
 import {SortedSet} from '@/lib/SortedSet';
 import {TableClassCard} from './TableCardClass';
 import {ClassData} from '@/lib/types';
@@ -18,11 +16,15 @@ const mm = Array.from({
 }).map(() => new SortedSet<number>(defaultMark))
 
 
-function TimeLine() {
+type TimeLineProps = {
+    classes: ClassData[]
+    removeClass?: (classId: string) => void
+}
+
+function TimeLine(props: TimeLineProps) {
     debug('TimeLine render')
-    const [classes, setClasses] = useState<ClassData[]>([]);
-    const [mergeMark, setMergeMark] = useState(mm);
-    const {setNodeRef} = useDroppable({setDroppedData: handleAddClass});
+    const [mergeMark] = useState(mm);
+    const [classes, setClasses] = useState(props.classes)
 
     const handleUpdateMergeSplit = useCallback((classData: ClassData) => {
         classData.learningSection.forEach(({weekDay, time}) => {
@@ -34,24 +36,14 @@ function TimeLine() {
             for (let i = start; i < end; i++) dayOfWeekMarkSplit.remove(i);
         });
 
-        setMergeMark(prevState => prevState);
     }, [mergeMark])
 
     useEffect(() => {
-        const localData = loadClassFromLocal();
-        setClasses(() => localData)
-        localData.map(value => handleUpdateMergeSplit(value))
-    }, [handleUpdateMergeSplit]);
-
-
-    function handleAddClass(classData: ClassData) {
-        setClasses((prevClasses) => {
-            const newClasses = [...prevClasses, classData];
-            saveClassToLocal(newClasses);
-            return newClasses;
-        });
-        handleUpdateMergeSplit(classData);
-    }
+        setClasses(() => {
+            props.classes.map(value => handleUpdateMergeSplit(value))
+            return props.classes;
+        })
+    }, [handleUpdateMergeSplit, props.classes]);
 
 
     const getRowSpan = useCallback((dayInWeek: number, section: number) => {
@@ -67,17 +59,6 @@ function TimeLine() {
     }, [mergeMark]);
 
 
-    const removeClass = useCallback(
-        function removeClass(classId: string) {
-            setClasses(prevState => {
-                const newClassList = prevState.filter(value => value.id !== classId);
-                saveClassToLocal(newClassList)
-                return newClassList;
-            })
-        }
-        , []);
-
-
     function getTableClassCard(row: number, col: number) {
         const classData = classes?.find(classItem =>
             classItem.learningSection.some(({weekDay, time}) => {
@@ -90,12 +71,12 @@ function TimeLine() {
 
         const learningSection = classData.learningSection.find(({weekDay}) => Number(weekDay) - 2 === col)!;
 
-        return <TableClassCard onRemoveClass={removeClass} classData={{...classData, learningSection}}/>;
+        return <TableClassCard onRemoveClass={props.removeClass} classData={{...classData, learningSection}}/>;
     }
 
 
     return (
-        <div ref={setNodeRef} className="w-full ml-2">
+        <div className="w-full">
             <Table className={"border-[1px] border-gray-400"}>
                 <Table.Thead className={"bg-amber-50"}>
                     <Table.Tr>

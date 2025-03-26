@@ -4,8 +4,9 @@ import React, {useEffect} from 'react';
 
 
 interface ClientPageProps {
-    title: string;
-    children?: React.ReactNode;
+    title: string,
+    children?: React.ReactNode,
+    description?: string
 }
 
 const ClientPage = (props: ClientPageProps) => {

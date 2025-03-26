@@ -1,24 +1,20 @@
-'use client'
-
 import React, {ReactNode} from 'react';
 import "@/app/globals.css"
 import "@mantine/core/styles.css"
-import CacheProvider from "@/components/CacheProvider";
-import {MantineProvider} from '@mantine/core';
-import {Provider} from "react-redux";
-import {store} from '@/lib/state'
+import RootWrapper from "@/components/RootWrapper";
+import {Metadata} from "next";
 
-const Layout = ({children}: Readonly<{ children: ReactNode }>) => {
+export const metadata: Metadata = {
+    title: 'Xếp lịch học',
+}
+
+const Layout = async ({children}: Readonly<{ children: ReactNode }>) => {
     return (
         <html lang={"en"}>
-        <body suppressHydrationWarning={true}>
-        <Provider store={store}>
-            <CacheProvider>
-                <MantineProvider>
-                    {children}
-                </MantineProvider>
-            </CacheProvider>
-        </Provider>
+        <body suppressHydrationWarning>
+        <RootWrapper>
+            {children}
+        </RootWrapper>
         </body>
         </html>
     );
