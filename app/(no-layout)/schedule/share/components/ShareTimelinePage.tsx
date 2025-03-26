@@ -8,7 +8,7 @@ interface ShareTimelinePageProps {
     classes: ClassData[]
 }
 
-function ShareTimelinePage({classes}: ShareTimelinePageProps) {
+function ShareTimeLinePage({classes}: ShareTimelinePageProps) {
 
     return (
         <>
@@ -17,4 +17,4 @@ function ShareTimelinePage({classes}: ShareTimelinePageProps) {
     );
 }
 
-export default ShareTimelinePage;
+export default ShareTimeLinePage;

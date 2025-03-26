@@ -1,6 +1,4 @@
 import {ReactNode} from 'react';
-import "@/app/globals.css"
-import "@mantine/core/styles.css"
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
