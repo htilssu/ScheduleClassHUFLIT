@@ -35,5 +35,3 @@ export const filterSlice = createSlice({
 })
 
 export const {setTeacherName, setClassName, setClassType, setWeekDay} = filterSlice.actions
-
-export default filterSlice.reducer
