@@ -5,7 +5,7 @@ import {debounce} from 'lodash';
 import ClassCard from "@/app/(no-layout)/schedule/components/ClassCard";
 import {useSelector} from "react-redux";
 import {RootState} from "@/lib/state";
-import {ClassFilter} from "@/lib/state/filter";
+import {ClassFilterState} from "@/lib/state/filter";
 import {ClassData} from '@/lib/types';
 
 interface SelectSectionProps {
@@ -13,7 +13,7 @@ interface SelectSectionProps {
 }
 
 function SelectSection({classes}: Readonly<SelectSectionProps>) {
-    const filter = useSelector<RootState, ClassFilter>(state => state.filter);
+    const filter = useSelector<RootState, ClassFilterState>(state => state.filter);
 
     const [limit, setLimit] = useState(100)
     const [searchList, setSearchList] = useState<ClassData[]>([...classes])

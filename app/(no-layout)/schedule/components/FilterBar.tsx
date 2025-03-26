@@ -2,19 +2,25 @@
 
 import React, {useState} from 'react';
 import {ComboboxItem, Flex, Input, Menu, Select} from "@mantine/core";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {IconRefresh, IconShare3} from '@tabler/icons-react';
-import {filterSlice} from '@/lib/state/filter';
+import {ClassFilterState, filterSlice} from '@/lib/state/filter';
 import {debounce} from 'lodash';
 import {HomeIcon, MenuIcon, SettingsIcon} from 'lucide-react';
 import Link from "next/link";
 import {timeLineSlice} from "@/lib/state/timeline";
+import {RootState, UserState} from "@/lib/state";
+import {usePathname, useRouter} from 'next/navigation';
 
 const FilterBar = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
+    const pathName = usePathname();
+    const user = useSelector<RootState, UserState>(state => state.user)
+    const filter = useSelector<RootState, ClassFilterState>(state => state.filter)
     const {resetTimeLine} = timeLineSlice.actions
     const actions = filterSlice.actions
-    const [openeMenu, setOpeneMenu] = useState(false);
+    const [isOpenMenu, setIsOpenMenu] = useState(false);
 
     const debouncedSearchChange = debounce((value: string) => {
         dispatch(actions.setClassName(value.toLowerCase()));
@@ -25,10 +31,12 @@ const FilterBar = () => {
     }, 500);
 
     function handleTypeChange(e: string | null, _: ComboboxItem) {
+        if (!e) return;
         dispatch(actions.setClassType(e));
     }
 
     function handleDayChange(e: string | null, _: ComboboxItem) {
+        if (!e) return;
         dispatch(actions.setWeekDay(e));
     }
 
@@ -41,7 +49,11 @@ const FilterBar = () => {
     }
 
     function handleResetTimeLine() {
-        dispatch(resetTimeLine(""));
+        dispatch(resetTimeLine());
+    }
+
+    function handleShareTimeLine() {
+        if (!user) router.push(`/auth?redirect=${pathName}`);
     }
 
     return (
@@ -50,8 +62,8 @@ const FilterBar = () => {
                 <Menu
                     shadow="md"
                     width={200}
-                    opened={openeMenu}
-                    onChange={setOpeneMenu}
+                    opened={isOpenMenu}
+                    onChange={setIsOpenMenu}
                 >
                     <Menu.Target>
                         <MenuIcon
@@ -82,6 +94,7 @@ const FilterBar = () => {
                             Đặt lại lịch
                         </Menu.Item>
                         <Menu.Item
+                            onClick={handleShareTimeLine}
                             leftSection={<IconShare3 stroke={2}/>}
                         >
                             Chia sẻ
@@ -95,11 +108,13 @@ const FilterBar = () => {
                     <Select
                         defaultValue="Tất cả"
                         onChange={handleTypeChange}
+                        value={filter.classType}
                         data={["Tất cả", "Lý thuyết", "Thực hành"]}
                         placeholder="Chọn loại"
                     />
                     <Select
                         defaultValue="Tất cả các ngày"
+                        value={filter.weekDay}
                         onChange={handleDayChange}
                         data={["Tất cả các ngày", "T2", "T3", "T4", "T5", "T6", "T7"]}
                         placeholder="Chọn ngày"
