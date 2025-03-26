@@ -21,10 +21,16 @@ model User {
   username  String     @unique
   password  String     @map("password")
   email     String     @unique
-  role      String     @default("USER")
+  role      Role       @default(DEFAULT_USER)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   TimeLine  TimeLine[]
+}
+
+enum Role {
+  DEFAULT_USER
+  PREMIUM_USER
+  ADMIN
 }
 
 model Lecturer {
