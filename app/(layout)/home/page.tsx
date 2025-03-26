@@ -4,7 +4,7 @@ import Notify from "@/app/(layout)/home/components/Notify";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Trang chủ',
+    title: 'Trang chủ - Xếp lịch học',
     description: 'Trang chủ của ứng dụng',
 }
 

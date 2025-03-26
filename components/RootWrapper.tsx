@@ -19,8 +19,7 @@ const RootWrapper = ({children}: Readonly<{ children: ReactNode }>) => {
             </Provider>
             <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
-    )
-        ;
+    );
 };
 
 export default RootWrapper;
