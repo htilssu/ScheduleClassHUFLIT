@@ -1,12 +1,20 @@
-import React from 'react';
-import {ComboboxItem, Flex, Input, Select} from "@mantine/core";
+'use client'
+
+import React, {useState} from 'react';
+import {ComboboxItem, Flex, Input, Menu, Select} from "@mantine/core";
 import {useDispatch} from "react-redux";
+import {IconRefresh, IconShare3} from '@tabler/icons-react';
 import {filterSlice} from '@/lib/state/filter';
 import {debounce} from 'lodash';
+import {HomeIcon, MenuIcon, SettingsIcon} from 'lucide-react';
+import Link from "next/link";
+import {timeLineSlice} from "@/lib/state/timeline";
 
 const FilterBar = () => {
     const dispatch = useDispatch();
+    const {resetTimeLine} = timeLineSlice.actions
     const actions = filterSlice.actions
+    const [openeMenu, setOpeneMenu] = useState(false);
 
     const debouncedSearchChange = debounce((value: string) => {
         dispatch(actions.setClassName(value.toLowerCase()));
@@ -32,17 +40,71 @@ const FilterBar = () => {
         debouncedTeacherChange(e.target.value);
     }
 
+    function handleResetTimeLine() {
+        dispatch(resetTimeLine(""));
+    }
+
     return (
-        <div>
-            <Flex gap={4} justify={'center'} className={"mt-2 px-5"}>
-                <Input onChange={handleSearchChange} placeholder={"Tìm kiếm"}/>
-                <Input onChange={handleSearchByTeacher} placeholder={"Tên giáo viên"}/>
-                <Select className={''} defaultValue={"Tất cả"} onChange={handleTypeChange}
+        <div className="mt-2 px-5">
+            <Flex align="center" gap={8}>
+                <Menu
+                    shadow="md"
+                    width={200}
+                    opened={openeMenu}
+                    onChange={setOpeneMenu}
+                >
+                    <Menu.Target>
+                        <MenuIcon
+                            size={22}
+                            className="cursor-pointer hover:text-orange-500"
+                        />
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                        <Menu.Item
+                            leftSection={<SettingsIcon size={18}/>}
+                            component={Link}
+                            href="/schedule/setup"
+                        >
+                            Cài đặt
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={<HomeIcon size={18}/>}
+                        >
+                            <Link href={'/home'} prefetch>
+                                Trang chủ
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconRefresh stroke={2}/>}
+                            onClick={handleResetTimeLine}
+                        >
+                            Đặt lại lịch
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconShare3 stroke={2}/>}
+                        >
+                            Chia sẻ
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
+
+                <Flex gap={4} justify="center" flex={1}>
+                    <Input onChange={handleSearchChange} placeholder="Tìm kiếm"/>
+                    <Input onChange={handleSearchByTeacher} placeholder="Tên giáo viên"/>
+                    <Select
+                        defaultValue="Tất cả"
+                        onChange={handleTypeChange}
                         data={["Tất cả", "Lý thuyết", "Thực hành"]}
-                        placeholder={"Chọn loại"}/>
-                <Select className={''} defaultValue={"Tất cả các ngày"} onChange={handleDayChange}
+                        placeholder="Chọn loại"
+                    />
+                    <Select
+                        defaultValue="Tất cả các ngày"
+                        onChange={handleDayChange}
                         data={["Tất cả các ngày", "T2", "T3", "T4", "T5", "T6", "T7"]}
-                        placeholder={"Chọn ngày"}/>
+                        placeholder="Chọn ngày"
+                    />
+                </Flex>
             </Flex>
         </div>
     );

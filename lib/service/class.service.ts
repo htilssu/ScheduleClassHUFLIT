@@ -13,5 +13,12 @@ export function saveClassToLocal(classes: Class[]) {
  * Load scheduled classes from local storage.
  */
 export function loadClassFromLocal(): ClassData[] {
-    return JSON.parse(localStorage.getItem("classes") ?? "[]");
+    if (typeof window !== "undefined") {
+        const classes = localStorage.getItem("classes");
+        if (classes) {
+            return JSON.parse(classes);
+        }
+    }
+
+    return [];
 }

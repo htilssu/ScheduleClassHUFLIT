@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import {Badge, Card, Flex, Stack, Text} from "@mantine/core";
 import {useDraggable} from "@/lib/hook/use-draggable";

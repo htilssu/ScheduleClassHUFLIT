@@ -3,12 +3,12 @@ import React from 'react';
 const StepTimeline = () => {
     const steps = [
         {
-            title: 'Bước 1: Khởi tạo',
-            body: 'Hạn chế thay đổi số ngày học, buổi học, tiết học.',
-            imgSrc: 'https://via.placeholder.com/150?text=Step+1',
+            title: 'Bước 1: Đăng ký & Đăng nhập',
+            body: 'Để lịch học của bạn có thể lưu lại.',
+            imgSrc: 'images/step01.png',
         },
         {
-            title: 'Bước 2: Thêm môn học',
+            title: 'Bước 2: Chọn các chức năng',
             body: (
                 <>
                     <p>- Nhập tên rút gọn.</p>
@@ -18,43 +18,29 @@ const StepTimeline = () => {
                 </>
             ),
             inverted: true,
-            imgSrc: 'https://via.placeholder.com/150?text=Step+2',
+            imgSrc: 'images/step02.png',
         },
         {
-            title: 'Bước 3: Tổ chuyên môn',
+            title: 'Bước 3: Thiết lập cài đặt',
             body: 'Đặt số tiết học của cả tổ.',
-            imgSrc: 'https://via.placeholder.com/150?text=Step+3',
+            imgSrc: 'images/step03.png',
         },
         {
-            title: 'Bước 4: Giáo viên',
+            title: 'Bước 4: Kéo thả các lớp học',
             body: 'Đặt số tiết/ngày nghỉ của giáo viên.',
             inverted: true,
-            imgSrc: 'https://via.placeholder.com/150?text=Step+4',
+            imgSrc: 'images/step03.png',
         },
         {
-            title: 'Bước 5: Danh sách khối',
+            title: 'Bước 5: Lịch học',
             body: (
                 <>
                     <p>- Thêm các khối/nhóm lớp có chương trình tương tự nhau.</p>
                     <p>- Đặt tiết nghỉ cho toàn khối nếu cần thiết.</p>
                 </>
             ),
-            imgSrc: 'https://via.placeholder.com/150?text=Step+5',
-        },
-        {
-            title: 'Bước 6: Danh sách lớp',
-            body: (
-                <>
-                    <p>- Điều chỉnh chương trình của lớp dựa trên chương trình của khối.</p>
-                    <p>
-                        - Đảm bảo số tiết của chương trình{' '}
-                        <span className="text-orange-600 font-medium">không</span> nhiều hơn số tiết trống.
-                    </p>
-                </>
-            ),
-            inverted: true,
-            imgSrc: 'https://via.placeholder.com/150?text=Step+6',
-        },
+            imgSrc: 'images/step04.png',
+        }
     ];
 
     return (
@@ -66,7 +52,7 @@ const StepTimeline = () => {
                 {steps.map((step, index) => (
                     <div
                         key={index}
-                        className={`flex items-center mb-12 ${
+                        className={`flex items-center mb-8 ${
                             step.inverted ? 'flex-row-reverse' : 'flex-row'
                         } justify-center`}
                     >
@@ -84,7 +70,7 @@ const StepTimeline = () => {
                             <img
                                 src={step.imgSrc}
                                 alt={step.title}
-                                className="mt-4 w-36 h-36 object-cover rounded-lg border border-gray-200"
+                                className="mt-4 w-full h-auto object-cover rounded-lg border border-gray-200"
                             />
                         </div>
 
