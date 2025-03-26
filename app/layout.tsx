@@ -1,6 +1,7 @@
-import {ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 import "@/app/globals.css"
 import "@mantine/core/styles.css"
+import RootWrapper from "@/components/RootWrapper";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
@@ -9,9 +10,13 @@ export const metadata: Metadata = {
 
 const Layout = async ({children}: Readonly<{ children: ReactNode }>) => {
     return (
-        <>
+        <html lang={"en"}>
+        <body suppressHydrationWarning>
+        <RootWrapper>
             {children}
-        </>
+        </RootWrapper>
+        </body>
+        </html>
     );
 };
 
