@@ -1,13 +1,13 @@
-export interface ClassConfig {
+export interface ScheduleConfig {
     major: string;
     semester: string;
     year: string;
 }
 
 
-export function loadClassConfig(): ClassConfig {
+export function loadScheduleConfig(): ScheduleConfig {
     if (typeof window !== 'undefined') {
-        const config = localStorage.getItem("classConfig");
+        const config = localStorage.getItem("schedule_config");
         if (config) {
             return JSON.parse(config);
         }

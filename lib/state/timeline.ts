@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {ClassData} from "../types";
-import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class.service";
+import {loadClassFromLocal, saveClassToLocal} from "@/lib/service/class";
 
 export type TimeLineState = {
     classes: ClassData[]

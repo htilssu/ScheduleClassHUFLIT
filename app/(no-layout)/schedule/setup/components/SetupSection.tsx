@@ -4,13 +4,13 @@ import React, { useCallback, useEffect } from 'react';
 import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import { get } from '@/lib/utils/request';
-import { loadClassConfig } from '@/lib/utils/class';
+import { loadScheduleConfig } from '@/lib/utils/schedule_config';
 import { FaGraduationCap, FaCalendarAlt, FaBook, FaArrowRight } from 'react-icons/fa';
 import {Button} from "@/components/ui/button";
 
 function SetupSection() {
     const form = useForm({
-        initialValues: loadClassConfig(), // Load cấu hình mặc định
+        initialValues: loadScheduleConfig(), // Load cấu hình mặc định
     });
     const router = useRouter();
 
