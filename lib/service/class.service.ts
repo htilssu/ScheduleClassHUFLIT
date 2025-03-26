@@ -1,17 +1,5 @@
-import {get} from "@/lib/utils/request";
 import {Class} from "@prisma/client";
-import { ClassData } from "../types";
-
-/**
- * Fetches class data from the server.
- * @param major major name
- * @param semester semester name
- * @param year year name
- */
-export async function getClass(major: string, semester: string,
-                               year: string) {
-    return (await get(`/v1/class?studyYear=${year}&semester=${semester}&major=${major}`)).data;
-}
+import {ClassData} from "../types";
 
 /**
  * Save scheduled classes to local storage.
@@ -25,5 +13,12 @@ export function saveClassToLocal(classes: Class[]) {
  * Load scheduled classes from local storage.
  */
 export function loadClassFromLocal(): ClassData[] {
-    return JSON.parse(localStorage.getItem("classes") ?? "[]");
+    if (typeof window !== "undefined") {
+        const classes = localStorage.getItem("classes");
+        if (classes) {
+            return JSON.parse(classes);
+        }
+    }
+
+    return [];
 }

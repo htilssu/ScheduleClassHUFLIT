@@ -6,6 +6,7 @@ import TimeLine from "@/app/(no-layout)/schedule/components/TimeLine";
 import FilterBar from './FilterBar';
 import SelectSection from '@/app/(no-layout)/schedule/components/SelectSection';
 import {ClassData} from '@/lib/types';
+import ScheduleTimeLine from "@/app/(no-layout)/schedule/components/ScheduleTimeLine";
 
 const ScheduleMain = ({classes}: {
     classes?: ClassData[]
@@ -18,7 +19,7 @@ const ScheduleMain = ({classes}: {
                 <DndContext>
                     <div className={"flex p-2 relative z-10 max-h-screen"}>
                         <SelectSection classes={classes || []}/>
-                        <TimeLine/>
+                        <ScheduleTimeLine/>
                     </div>
                 </DndContext>
             </div>

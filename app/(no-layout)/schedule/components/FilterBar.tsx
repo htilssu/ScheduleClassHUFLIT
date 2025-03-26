@@ -1,15 +1,18 @@
 'use client'
 
 import React, {useState} from 'react';
-import {ComboboxItem, Flex, Input, Select,Menu} from "@mantine/core";
+import {ComboboxItem, Flex, Input, Menu, Select} from "@mantine/core";
 import {useDispatch} from "react-redux";
+import {IconRefresh, IconShare3} from '@tabler/icons-react';
 import {filterSlice} from '@/lib/state/filter';
 import {debounce} from 'lodash';
-import { HomeIcon, MenuIcon, SettingsIcon } from 'lucide-react';
+import {HomeIcon, MenuIcon, SettingsIcon} from 'lucide-react';
 import Link from "next/link";
+import {timeLineSlice} from "@/lib/state/timeline";
 
 const FilterBar = () => {
     const dispatch = useDispatch();
+    const {resetTimeLine} = timeLineSlice.actions
     const actions = filterSlice.actions
     const [openeMenu, setOpeneMenu] = useState(false);
 
@@ -37,6 +40,10 @@ const FilterBar = () => {
         debouncedTeacherChange(e.target.value);
     }
 
+    function handleResetTimeLine() {
+        dispatch(resetTimeLine(""));
+    }
+
     return (
         <div className="mt-2 px-5">
             <Flex align="center" gap={8}>
@@ -55,18 +62,29 @@ const FilterBar = () => {
 
                     <Menu.Dropdown>
                         <Menu.Item
-                            leftSection={<SettingsIcon size={18} />}
+                            leftSection={<SettingsIcon size={18}/>}
                             component={Link}
                             href="/schedule/setup"
                         >
                             Cài đặt
                         </Menu.Item>
                         <Menu.Item
-                            leftSection={<HomeIcon size={18} />}
-                            component={Link}
-                            href="/home"
+                            leftSection={<HomeIcon size={18}/>}
                         >
-                            Trang chủ
+                            <Link href={'/home'} prefetch>
+                                Trang chủ
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconRefresh stroke={2}/>}
+                            onClick={handleResetTimeLine}
+                        >
+                            Đặt lại lịch
+                        </Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconShare3 stroke={2}/>}
+                        >
+                            Chia sẻ
                         </Menu.Item>
                     </Menu.Dropdown>
                 </Menu>

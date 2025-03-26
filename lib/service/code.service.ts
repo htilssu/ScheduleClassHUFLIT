@@ -30,12 +30,12 @@ export namespace CodeService {
      * @param code The code object to create.
      */
     export async function createCode(code: Code) {
-        return await prisma.code.create({
+        /*return await prisma.code.create({
             data: {
                 code: code.code,
                 expiredAt: new Date(code.expiredAt),
                 codeTypeId: code.codeTypeId,
             }
-        });
+        });*/
     }
 }
