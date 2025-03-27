@@ -76,13 +76,13 @@ const FilterBar = () => {
                             </Link>
                         </Menu.Item>
                         <Menu.Item
-                            leftSection={<IconRefresh stroke={2}/>}
+                            leftSection={<IconRefresh size={18}/>}
                             onClick={handleResetTimeLine}
                         >
                             Đặt lại lịch
                         </Menu.Item>
                         <Menu.Item
-                            leftSection={<IconShare3 stroke={2}/>}
+                            leftSection={<IconShare3 size={18}/>}
                         >
                             Chia sẻ
                         </Menu.Item>
@@ -90,7 +90,7 @@ const FilterBar = () => {
                 </Menu>
 
                 <Flex gap={4} justify="center" flex={1}>
-                    <Input onChange={handleSearchChange} placeholder="Tìm kiếm"/>
+                    <Input onChange={handleSearchChange} placeholder="Tìm kiếm tên môn học"/>
                     <Input onChange={handleSearchByTeacher} placeholder="Tên giáo viên"/>
                     <Select
                         defaultValue="Tất cả"
