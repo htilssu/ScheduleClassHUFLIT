@@ -7,9 +7,9 @@ import { FaStar, FaThumbsUp } from "react-icons/fa";
 const feedbackData = [
     { id: 1, name: "Nguyen Anh Tuan", rating: 5, comment: "Xếp lịch rất nhanh!", date: "2024-03-25", likes: 4 },
     { id: 2, name: "Tran Trung Hieu", rating: 4, comment: "Xếp lịch nhanh nhưng giao diện chưa đẹp.", date: "2024-03-24", likes: 1 },
-    { id: 3, name: "Ho Le Anh Toan", rating: 4, comment: "Cần hỗ trợ thêm tool đăng kí môn =)).", date: "2024-03-23", likes: 10 },
+    { id: 3, name: "Toan Dong 123", rating: 4, comment: "Cần hỗ trợ thêm tool đăng kí môn =)).", date: "2024-03-23", likes: 10 },
     { id: 4, name: "Anh Dao", rating: 5, comment: "Tôi muốn kết nối với bạn.", date: "2024-03-23", likes: 1 },
-    { id: 5, name: "Le Toan", rating: 3, comment: "Cũng tạm được.", date: "2024-03-23", likes: 2 },
+    { id: 5, name: "Le Bong", rating: 3, comment: "Cũng tạm được.", date: "2024-03-23", likes: 2 },
 ];
 
 // StarRating Component
@@ -79,7 +79,7 @@ const FeedbackList = ({ feedbacks, onLike }: { feedbacks: { id: number; name: st
 
     return (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-            <h2 className="text-lg font-bold">Phản hồi từ khách hàng</h2>
+            <h2 className="text-lg font-bold">Phản hồi Người dùng</h2>
             <div className="flex gap-2 my-2">
                 <button
                     className={`px-3 py-1 rounded border hover:border-orange-500 ${filter === null ? "bg-orange-500 text-white" : "bg-gray-100"}`}
