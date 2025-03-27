@@ -90,7 +90,7 @@ const FilterBar = () => {
                 </Menu>
 
                 <Flex gap={4} justify="center" flex={1}>
-                    <Input onChange={handleSearchChange} placeholder="Tìm kiếm"/>
+                    <Input onChange={handleSearchChange} placeholder="Tìm kiếm tên môn học"/>
                     <Input onChange={handleSearchByTeacher} placeholder="Tên giáo viên"/>
                     <Select
                         defaultValue="Tất cả"
