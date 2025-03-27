@@ -68,7 +68,7 @@ const Notify = () => {
                                 alt={slide.alt}
                                 width={300}
                                 height={150}
-                                className="w-full h-[200px] object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                                className="w-full h-[200px] object-cover rounded-lg transition-transform duration-300"
                             />
                         </Link>
                     </div>
