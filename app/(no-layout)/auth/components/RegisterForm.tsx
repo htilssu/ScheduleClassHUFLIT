@@ -12,8 +12,8 @@ export function RegisterForm() {
                 <Input id="name" type="text" required />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" required />
+                <Label htmlFor="username">Email</Label>
+                <Input id="username" type="username" required />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="password">Mật khẩu</Label>
