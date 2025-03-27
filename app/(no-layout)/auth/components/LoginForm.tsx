@@ -28,7 +28,6 @@ export function LoginForm() {
                 password: form.values.password,
                 redirect: false
             }).then(value => {
-                console.log(value);
             });
         }} className="space-y-6">
             <div className="space-y-2">

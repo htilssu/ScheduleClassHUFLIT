@@ -1,9 +1,10 @@
 import {CredentialsSignin} from "next-auth";
+import {AuthenticateErrorCode} from "@/lib/types";
 
 export class UserNotFoundException extends CredentialsSignin {
-    code: string = "user-not-found"
+    code: string = "user_not_found"
 }
 
 export class WrongPasswordException extends CredentialsSignin {
-    code: string = "wrong-password"
+    code: AuthenticateErrorCode = "invalid_password"
 }
