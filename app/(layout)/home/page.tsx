@@ -15,7 +15,7 @@ const Page = () => {
                 <div className="w-full lg:w-[70%] xl:w-[70%] 2xl:w-[70%]">
                     <MainContent/>
                 </div>
-                <div className="xl:w-[25%] 2xl:[29%] w-[26%] fixed xl:right-16 right-8 2xl:left-2/3 top-22">
+                <div className="xl:w-[25%] 2xl:w-[29%] w-[26%] fixed xl:right-16 right-8 2xl:left-2/3 top-22">
                     <Notify/>
                 </div>
             </div>
