@@ -27,8 +27,8 @@ const RefEvent = (data: any) => {
         // info("mouse up")
         setIsDragging(false)
         ref.current.style.transform = "none"
-        dndContext.dataRef.current.data = null;
-        dndContext.dataRef.current.refDragging = null;
+        dndContext.refData.current.data = null;
+        dndContext.refData.current.refDragging = null;
     }
 
     function setNodeRef(target: HTMLElement | null) {
@@ -38,8 +38,8 @@ const RefEvent = (data: any) => {
 
     function handleMouseDown(e: MouseEvent) {
         setIsDragging(true)
-        dndContext.dataRef.current.data = data;
-        dndContext.dataRef.current.refDragging = ref;
+        dndContext.refData.current.data = data;
+        dndContext.refData.current.refDragging = ref;
     }
 
 
