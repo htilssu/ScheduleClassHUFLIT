@@ -90,7 +90,7 @@ const Contact: React.FC<ContactProps> = () => {
                             <label htmlFor="username" className='block text-sm font-medium text-gray-800'>Your
                                 Email</label>
                             <Input
-                                type="username"
+                                type="email"
                                 id='username'
                                 placeholder='Email'
                                 className='mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
