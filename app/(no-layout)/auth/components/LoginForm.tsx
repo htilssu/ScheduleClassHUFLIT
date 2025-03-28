@@ -3,8 +3,10 @@
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
+import {loadingSlice} from "@/lib/state"
 import {useForm} from "@mantine/form"
 import {signIn} from "next-auth/react"
+import {useDispatch} from "react-redux"
 
 interface LoginParam {
     username: string
@@ -19,15 +21,21 @@ export function LoginForm() {
         }
     });
 
+    const loadingAction = loadingSlice.actions
+    const dispatch = useDispatch()
+
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
+            dispatch(loadingAction.setLoading(true))
 
             signIn("credentials", {
                 username: form.values.username,
                 password: form.values.password,
                 redirect: false
             }).then(value => {
+                //TODO: handle login error
+                dispatch(loadingAction.setLoading(false))
             });
         }} className="space-y-6">
             <div className="space-y-2">
