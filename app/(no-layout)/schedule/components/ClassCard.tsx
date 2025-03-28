@@ -8,6 +8,7 @@ import {ClassData} from '@/lib/types';
 function ClassCard({classData}: Readonly<{ classData: ClassData }>) {
     const {setNodeRef, isDragging} = useDraggable(classData)
 
+    const badgeColor = classData.type === "Lý thuyết" ? "blue" : "green";
 
     return (
         <div ref={setNodeRef} className={"mt-2 hover:cursor-grabbing"}
@@ -24,7 +25,7 @@ function ClassCard({classData}: Readonly<{ classData: ClassData }>) {
                             ))}
                         </Stack>
                         <Flex justify={'end'}>
-                            <Badge color="pink">{`${classData.learningSection[0].room} / ${classData.type}`}</Badge>
+                            <Badge color={badgeColor}>{`${classData.learningSection[0].room} / ${classData.type}`}</Badge>
                         </Flex>
                     </Flex>
                     <Text fw={500}>{classData.Subject.name}</Text>
