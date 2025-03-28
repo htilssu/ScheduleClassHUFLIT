@@ -13,7 +13,7 @@ export function RegisterForm() {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="username">Email</Label>
-                <Input id="username" type="username" required />
+                <Input id="username" type="email" required />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="password">Mật khẩu</Label>
