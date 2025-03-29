@@ -1,7 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/lib/service/prismaClient";
 import {hashPassword} from "@/lib/utils/password";
-import {nanoid} from "nanoid";
 
 export async function POST(req: NextRequest) {
     const body = await req.json() as { [a: string]: string };
@@ -9,7 +8,6 @@ export async function POST(req: NextRequest) {
         where: {
             OR: [
                 {username: body.username},
-                {email: body.username}
             ]
         }
     });
@@ -23,10 +21,9 @@ export async function POST(req: NextRequest) {
     const {email, password, name} = body;
     const createdUser = await prisma.user.create({
         data: {
-            email,
-            username: nanoid(8),
+            name,
+            username: email,
             password: hash,
-            name
         }
     })
 }
