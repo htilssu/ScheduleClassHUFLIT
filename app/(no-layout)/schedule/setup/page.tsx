@@ -3,7 +3,7 @@ import {Metadata} from "next";
 
 
 export const metadata: Metadata = {
-    title: "Xếp lịch học - HUFLIT",
+    title: "Thiết lập cài đặt xếp lịch học HUFLIT",
     description: "Trang thiết lập xếp lịch học của HUFLIT",
 }
 

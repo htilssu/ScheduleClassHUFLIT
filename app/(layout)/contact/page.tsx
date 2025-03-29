@@ -4,7 +4,7 @@ import Contact from "@/app/(layout)/contact/components/Contact";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Liên hệ',
+    title: 'Liên hệ với chúng tôi',
     description: 'Liên hệ của ứng dụng',
 }
 
