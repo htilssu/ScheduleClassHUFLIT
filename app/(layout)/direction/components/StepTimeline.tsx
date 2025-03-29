@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from "next/link";
+import {FaPlayCircle} from "react-icons/fa";
 
 const StepTimeline = () => {
     const steps = [
@@ -57,7 +59,8 @@ const StepTimeline = () => {
                         } justify-center`}
                     >
                         {/* Timeline Badge */}
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-500 border-4 border-white z-10 transition-transform transform hover:scale-125"></div>
+                        <div
+                            className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-500 border-4 border-white z-10 transition-transform transform hover:scale-125"></div>
 
                         {/* Timeline Panel */}
                         <div
@@ -78,6 +81,16 @@ const StepTimeline = () => {
                         <div className="w-5/12"></div>
                     </div>
                 ))}
+
+                <div className="flex items-center justify-center animate-pulse hover:animate-none">
+                    <Link
+                        href="https://www.youtube.com/watch?v=r_v401nG0mg"
+                        className="relative inline-flex items-center px-4 py-2 text-lg font-semibold text-white bg-orange-500 rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:shadow-xl hover:bg-orange-500"
+                    >
+                        <FaPlayCircle className="mr-3 text-2xl text-white animate-pulse hover:animate-none"/>
+                        Watch Demo
+                    </Link>
+                </div>
             </div>
         </div>
     );
