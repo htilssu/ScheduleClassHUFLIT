@@ -1,9 +1,9 @@
 'use client'
 
 import React, {useState} from 'react';
-import {ComboboxItem, Flex, Input, Menu, Select} from "@mantine/core";
+import {Button, ComboboxItem, Drawer, Flex, Input, Menu, Select} from "@mantine/core";
 import {useDispatch, useSelector} from "react-redux";
-import {IconRefresh, IconShare3} from '@tabler/icons-react';
+import {IconBrandOpenai, IconRefresh, IconShare3} from '@tabler/icons-react';
 import {ClassFilterState, filterSlice} from '@/lib/state/filter';
 import {debounce} from 'lodash';
 import {HomeIcon, MenuIcon, SettingsIcon} from 'lucide-react';
@@ -11,11 +11,13 @@ import Link from "next/link";
 import {timeLineSlice} from "@/lib/state/timeline";
 import {RootState, UserState} from "@/lib/state";
 import {usePathname, useRouter} from 'next/navigation';
+import ChatBox from './ChatBox';
 
 const FilterBar = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const pathName = usePathname();
+    const [isOpenChat, setIsOpenChat] = useState(false)
     const user = useSelector<RootState, UserState>(state => state.user)
     const filter = useSelector<RootState, ClassFilterState>(state => state.filter)
     const {resetTimeLine} = timeLineSlice.actions
@@ -120,6 +122,23 @@ const FilterBar = () => {
                         placeholder="Chọn ngày"
                     />
                 </Flex>
+                <Drawer classNames={{
+                    body: "h-full"
+                }} withCloseButton={false} flex={1} position={'bottom'} size={'lg'} opened={isOpenChat}
+                        onClose={() => {
+                            setIsOpenChat(false);
+                        }}>
+                    <ChatBox/>
+                </Drawer>
+                <Button onClick={() => {
+                    setIsOpenChat(true)
+                }} classNames={
+                    {
+                        root: "!bg-orange-500 !hover:bg-orange-600",
+                    }
+                }>
+                    <IconBrandOpenai stroke={2}/>
+                </Button>
             </Flex>
         </div>
     );

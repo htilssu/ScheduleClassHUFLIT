@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useCallback, useEffect } from 'react';
-import { useForm } from '@mantine/form';
-import { useRouter } from 'next/navigation';
-import { get } from '@/lib/utils/request';
-import { loadScheduleConfig } from '@/lib/utils/schedule_config';
-import { FaGraduationCap, FaCalendarAlt, FaBook, FaArrowRight } from 'react-icons/fa';
+import React, {useCallback, useEffect} from 'react';
+import {useForm} from '@mantine/form';
+import {useRouter} from 'next/navigation';
+import {get} from '@/lib/utils/request';
+import {loadScheduleConfig} from '@/lib/utils/schedule_config';
+import {FaArrowRight, FaBook, FaCalendarAlt, FaGraduationCap} from 'react-icons/fa';
 import {Button} from "@/components/ui/button";
 
 function SetupSection() {
     const form = useForm({
-        initialValues: loadScheduleConfig(), // Load cấu hình mặc định
+        initialValues: loadScheduleConfig(),
     });
     const router = useRouter();
 
@@ -44,7 +44,8 @@ function SetupSection() {
             />
 
             {/* Form container với hiệu ứng mờ và trong suốt */}
-            <div className="relative bg-gray-800/90 shadow-2xl rounded-2xl p-8 w-full max-w-lg transform transition-all  border border-orange-200/50 z-10">
+            <div
+                className="relative bg-gray-800/90 shadow-2xl rounded-2xl p-8 w-full max-w-lg transform transition-all  border border-orange-200/50 z-10">
                 {/* Tiêu đề */}
                 <h1 className="text-3xl font-bold text-center text-white mb-6 flex items-center justify-center gap-2">
                     <FaGraduationCap className="text-white"/> Thiết lập cài đặt
