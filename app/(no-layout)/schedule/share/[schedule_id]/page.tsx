@@ -1,5 +1,4 @@
 import React from 'react';
-import ShareTimeLinePage from "@/app/(no-layout)/schedule/share/components/ShareTimeLinePage";
 import {Metadata} from 'next';
 import {SearchParams} from '@/app/page.type';
 
@@ -15,7 +14,6 @@ async function Page({params}: { params: Promise<{ schedule_id: string }>, search
 
     return (
         <>
-            <ShareTimeLinePage classes={[]}/>
         </>
     );
 }

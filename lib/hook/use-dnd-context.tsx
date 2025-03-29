@@ -13,6 +13,7 @@ import {
     useRef,
     useState
 } from "react";
+
 import {debug} from "@/lib/utils/logging";
 
 interface Droppable {
@@ -24,10 +25,9 @@ interface DndContext {
     data: any;
     setContextValue: Dispatch<SetStateAction<DndContext>>;
     droppableList: Droppable[];
-    dataRef: { current: { data: any, refDragging: RefObject<HTMLElement> | null } };
+    refData: { current: { data: any, refDragging: RefObject<HTMLElement> | null } };
 }
 
-type DroppedCallback = (dropped: any) => void;
 
 interface DndContextProps {
     children?: ReactNode;
@@ -42,14 +42,15 @@ export const DndContext: FC<DndContextProps> = props => {
         droppableList: [],
         setContextValue: () => {
         },
-        dataRef: {current: {data: null, refDragging: null}}
+        refData: {current: {data: undefined, refDragging: null}}
     } as DndContext)
 
     const refData = useRef({
         data: null,
-        refDragging: {
-            current: null
-        }
+        refDragging: null,
+    } as {
+        data: any;
+        refDragging: RefObject<HTMLElement> | null;
     });
 
     const ref = useRef<HTMLDivElement>(null);
@@ -86,7 +87,7 @@ export const DndContext: FC<DndContextProps> = props => {
 
 
     return (
-        <Context.Provider value={{...contextValue, setContextValue, dataRef: refData}}>
+        <Context.Provider value={{...contextValue, setContextValue, refData: refData}}>
             <div ref={ref} className={'relative z-10'}>
                 {props.children}
             </div>

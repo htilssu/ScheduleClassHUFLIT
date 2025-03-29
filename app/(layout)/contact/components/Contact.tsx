@@ -15,7 +15,7 @@ type ContactProps = {};
 const Contact: React.FC<ContactProps> = () => {
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
+        username: '',
         message: ''
     });
 
@@ -29,12 +29,12 @@ const Contact: React.FC<ContactProps> = () => {
 
     const handleSendMessage = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const { name, email, message } = formData;
+        const { name, username, message } = formData;
 
-        if (name && email && message) {
-            window.location.href = `mailto:tuanmeo980provip@gmail.com?subject=New Message from ${name}&body=${message} (Email: ${email})`;
+        if (name && username && message) {
+            window.location.href = `mailto:tuanmeo980provip@gmail.com?subject=New Message from ${name}&body=${message} (Email: ${username})`;
             // Optional: Reset form after submission
-            setFormData({ name: '', email: '', message: '' });
+            setFormData({ name: '', username: '', message: '' });
         }
     };
 
@@ -87,14 +87,14 @@ const Contact: React.FC<ContactProps> = () => {
                             />
                         </div>
                         <div className='mb-4'>
-                            <label htmlFor="email" className='block text-sm font-medium text-gray-800'>Your
+                            <label htmlFor="username" className='block text-sm font-medium text-gray-800'>Your
                                 Email</label>
                             <Input
                                 type="email"
-                                id='email'
+                                id='username'
                                 placeholder='Email'
                                 className='mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50'
-                                value={formData.email}
+                                value={formData.username}
                                 onChange={handleInputChange}
                             />
                         </div>

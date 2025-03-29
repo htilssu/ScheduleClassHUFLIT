@@ -4,7 +4,7 @@ import "@mantine/core/styles.css"
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Xếp lịch học',
+    title: 'Xếp lịch học HUFLIT',
 }
 
 const Layout = async ({children}: Readonly<{ children: ReactNode }>) => {

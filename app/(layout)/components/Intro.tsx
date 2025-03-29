@@ -1,7 +1,7 @@
 import React from 'react';
 import {FaCalendarAlt, FaPlayCircle} from 'react-icons/fa';
 import Link from "next/link";
-import {gochiHand} from "@/lib/fonts";
+import {gochiHand} from "@/lib/font";
 
 const Intro = () => {
     return (

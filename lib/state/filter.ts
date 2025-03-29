@@ -1,14 +1,14 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 
-export interface ClassFilter {
+export interface ClassFilterState {
     className: string;
     teacherName: string;
     classType: string;
     weekDay: string;
 }
 
-const initialState: ClassFilter = {
+const initialState: ClassFilterState = {
     className: '',
     teacherName: '',
     classType: 'Tất cả',
@@ -33,5 +33,3 @@ export const filterSlice = createSlice({
         }
     }
 })
-
-export const {setTeacherName, setClassName, setClassType, setWeekDay} = filterSlice.actions

@@ -22,13 +22,13 @@ export function useDroppable({setDroppedData}: { setDroppedData: (data: ClassDat
     }, []);
 
     const handleMouseUp = useCallback(function (e: MouseEvent) {
-        if (dndContext.dataRef.current.data === null) return;
+        if (dndContext.refData.current.data === null) return;
         const refBound = ref.current.getBoundingClientRect();
         if (e.clientX >= refBound.left && e.clientX <= refBound.right
             && e.clientY > refBound.top && e.clientY <= refBound.bottom) {
-            setDroppedData(dndContext.dataRef.current.data)
+            setDroppedData(dndContext.refData.current.data)
         }
-    }, [dndContext.dataRef]);
+    }, [dndContext.refData]);
 
     useEffect(() => {
         document.addEventListener('mouseup', handleMouseUp, {
@@ -45,9 +45,9 @@ export function useDroppable({setDroppedData}: { setDroppedData: (data: ClassDat
 
     return {
         data: dndContext.data,
-        isDragging: dndContext.dataRef.current.data !== null,
+        isDragging: dndContext.refData.current.data !== null,
         setNodeRef,
-        draggingData: dndContext.dataRef.current.data !== null,
+        draggingData: dndContext.refData.current.data !== null,
     }
 }
 

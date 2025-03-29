@@ -1,51 +1,16 @@
 "use client"
 
-import React, {ChangeEvent, FormEvent, useState} from "react"
+import React, { useState } from "react"
 import {cn} from "@/lib/utils/TwMerge"
-import {post} from "@/lib/utils/request"
 import {RegisterForm} from "@/app/(no-layout)/auth/components/RegisterForm";
 import {LoginForm} from "@/app/(no-layout)/auth/components/LoginForm";
 import Image from "next/image";
 import Logo from "@/public/images/LogoT&H.png";
 import Link from "next/link";
 
-interface LoginParam {
-    username: string
-    password: string
-}
-
-function login(data: LoginParam) {
-    post("/v1/sign-in", data).then(r => {
-        location.href = "/"
-    })
-}
 
 export function AuthPageComponent() {
     const [isLogin, setIsLogin] = useState(true)
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-
-    const toggleAuth = () => setIsLogin(!isLogin)
-
-    function handleLogin(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        if (username === '' || password === '') {
-            return
-        }
-
-        login({
-            username,
-            password
-        })
-    }
-
-    function handleChangeUserName(e: ChangeEvent<HTMLInputElement>) {
-        setUsername(e.target.value)
-    }
-
-    function handleChangePassword(e: ChangeEvent<HTMLInputElement>) {
-        setPassword(e.target.value)
-    }
 
     return (
         // <div className="flex items-center justify-center min-h-screen">
@@ -204,13 +169,7 @@ export function AuthPageComponent() {
                         </div>
 
                         {isLogin ? (
-                            <LoginForm
-                                username={username}
-                                password={password}
-                                onUsernameChange={handleChangeUserName}
-                                onPasswordChange={handleChangePassword}
-                                onSubmit={handleLogin}
-                            />
+                            <LoginForm/>
                         ) : (
                             <RegisterForm/>
                         )}
