@@ -1,5 +1,7 @@
 import React from 'react';
 import StepTimeline from "@/app/(layout)/direction/components/StepTimeline";
+import Link from "next/link";
+import {FaPlayCircle} from "react-icons/fa";
 
 const DirectionPage = () => {
     return (
@@ -15,10 +17,9 @@ const DirectionPage = () => {
                         zIndex: 0,
                     }}
                 />
-                {/* Nội dung chính */}
-                <div className="relative z-10 flex items-center justify-center min-h-screen">
-                    <div className="w-full max-w-6xl py-8">
-                        <StepTimeline />
+                <div className="relative z-10 flex items-center min-h-screen">
+                    <div className="w-full max-w-6xl py-8 relative">
+                        <StepTimeline/>
                     </div>
                 </div>
             </div>
