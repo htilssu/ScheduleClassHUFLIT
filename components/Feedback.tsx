@@ -1,15 +1,15 @@
 'use client'
 
 import React, { useState } from "react";
-import { FaStar, FaThumbsUp } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
+import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 
-// Dummy feedback data
 const feedbackData = [
-    { id: 1, name: "Nguyen Anh Tuan", rating: 5, comment: "Xếp lịch rất nhanh!", date: "2024-03-25", likes: 4 },
-    { id: 2, name: "Tran Trung Hieu", rating: 4, comment: "Xếp lịch nhanh nhưng giao diện chưa đẹp.", date: "2024-03-24", likes: 1 },
-    { id: 3, name: "Toan Dong 123", rating: 4, comment: "Cần hỗ trợ thêm tool đăng kí môn =)).", date: "2024-03-23", likes: 10 },
-    { id: 4, name: "Anh Dao", rating: 5, comment: "Tôi muốn kết nối với bạn.", date: "2024-03-23", likes: 1 },
-    { id: 5, name: "Le Bong", rating: 3, comment: "Cũng tạm được.", date: "2024-03-23", likes: 2 },
+    { id: 1, name: "Nguyen Anh Tuan", rating: 5, comment: "Xếp lịch rất nhanh!", date: "2024-03-25", likes: 4, isLiked: false },
+    { id: 2, name: "Tran Trung Hieu", rating: 4, comment: "Xếp lịch nhanh nhưng giao diện chưa đẹp.", date: "2024-03-24", likes: 1, isLiked: false },
+    { id: 3, name: "Toan Dong 123", rating: 4, comment: "Cần hỗ trợ thêm tool đăng kí môn =)).", date: "2024-03-23", likes: 10, isLiked: false },
+    { id: 4, name: "Anh Dao", rating: 5, comment: "Tôi muốn kết nối với bạn.", date: "2024-03-23", likes: 1, isLiked: false },
+    { id: 5, name: "Le Bong", rating: 3, comment: "Cũng tạm được.", date: "2024-03-23", likes: 2, isLiked: false },
 ];
 
 // StarRating Component
@@ -43,24 +43,46 @@ const FeedbackSummary = ({ feedbacks }: { feedbacks: { rating: number }[] }) => 
 };
 
 // FeedbackItem Component
-const FeedbackItem = ({feedback, onLike }: { feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number }, onLike: (id: number) => void }) => {
+const FeedbackItem = ({ feedback, onLike }: {
+    feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number; isLiked: boolean },
+    onLike: (id: number) => void
+}) => {
     return (
         <div className="p-4 border-b flex justify-between items-start">
             <div>
                 <h3 className="font-semibold">{feedback.name}</h3>
-                <StarRating rating={feedback.rating} />
+                <StarRating rating={feedback.rating}/>
                 <p className="text-gray-700 mt-1">{feedback.comment}</p>
                 <span className="text-sm text-gray-500">{feedback.date}</span>
             </div>
-            <button onClick={() => onLike(feedback.id)} className="text-orange-500 flex items-center">
-                <FaThumbsUp className="mr-1" /> {feedback.likes}
+            <button
+                onClick={() => onLike(feedback.id)}
+                className={`flex items-center text-orange-500 cursor-pointer`}
+            >
+                {feedback.isLiked ? (
+                    <AiFillLike className="mr-1" size={20}/>
+                ) : (
+                    <AiOutlineLike className="mr-1" size={20}/>
+                )}
+                {feedback.likes}
             </button>
         </div>
     );
 };
 
 // FeedbackList Component with Filter and Show More
-const FeedbackList = ({ feedbacks, onLike }: { feedbacks: { id: number; name: string; rating: number; comment: string; date: string; likes: number }[], onLike: (id: number) => void }) => {
+const FeedbackList = ({feedbacks, onLike}: {
+    feedbacks: {
+        id: number;
+        name: string;
+        rating: number;
+        comment: string;
+        date: string;
+        likes: number;
+        isLiked: boolean
+    }[],
+    onLike: (id: number) => void
+}) => {
     const [filter, setFilter] = useState<number | null>(null);
     const [visibleCount, setVisibleCount] = useState(3);
 
@@ -117,14 +139,23 @@ const FeedbackList = ({ feedbacks, onLike }: { feedbacks: { id: number; name: st
 };
 
 // FeedbackForm Component
-const FeedbackForm = ({onSubmit}: {
-    onSubmit: (feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number }) => void }) => {
+const FeedbackForm = ({ onSubmit }: {
+    onSubmit: (feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number; isLiked: boolean }) => void
+}) => {
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ id: Date.now(), name: "Bạn", rating, comment, date: new Date().toISOString().split("T")[0], likes: 0 });
+        onSubmit({
+            id: Date.now(),
+            name: "Bạn",
+            rating,
+            comment,
+            date: new Date().toISOString().split("T")[0],
+            likes: 0,
+            isLiked: false // Thêm isLiked mặc định là false cho feedback mới
+        });
         setRating(5);
         setComment("");
     };
@@ -152,8 +183,9 @@ const FeedbackForm = ({onSubmit}: {
                     Gửi đánh giá
                 </button>
             </form>
-            <p className="text-sm text-orange-500 p-4 font-extralight italic">Sự đánh giá của bạn sẽ góp phần cải thiện chất lượng dịch vụ và
-                sản phẩm của chúng tôi.</p>
+            <p className="text-sm text-orange-500 p-4 font-extralight italic">
+                Sự đánh giá của bạn sẽ góp phần cải thiện chất lượng dịch vụ và sản phẩm của chúng tôi.
+            </p>
         </div>
     );
 };
@@ -165,12 +197,25 @@ export default function Feedback() {
     const addFeedback = (newFeedback: {
         id: number;
         name: string;
-        rating: number; comment: string; date: string; likes: number }) => {
+        rating: number;
+        comment: string;
+        date: string;
+        likes: number;
+        isLiked: boolean
+    }) => {
         setFeedbacks([newFeedback, ...feedbacks]);
     };
 
     const likeFeedback = (id: number) => {
-        setFeedbacks(feedbacks.map((fb) => (fb.id === id ? { ...fb, likes: fb.likes + 1 } : fb)));
+        setFeedbacks(feedbacks.map((fb) =>
+            fb.id === id
+                ? {
+                    ...fb,
+                    likes: fb.isLiked ? fb.likes - 1 : fb.likes + 1,
+                    isLiked: !fb.isLiked
+                }
+                : fb
+        ));
     };
 
     return (
