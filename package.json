@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
+    "@google/genai": "^0.7.0",
     "@mantine/charts": "^7.17.2",
     "@mantine/core": "^7.17.2",
     "@mantine/dates": "^7.17.2",
