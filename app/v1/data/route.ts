@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {DataImporter} from "@/lib/DataImporter";
+import {DataImporter} from "@/lib/data/DataImporter";
 
 export async function GET() {
     const importer = new DataImporter();

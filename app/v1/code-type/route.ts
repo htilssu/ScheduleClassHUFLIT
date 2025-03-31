@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {CodeTypeService} from "@/lib/service/codetype.service";
+import {CodeTypeService} from "@/lib/service/code_type";
 
 export async function POST(request: NextRequest) {
     /*const codeType: CodeType = await request.json();

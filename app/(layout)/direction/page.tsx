@@ -3,7 +3,7 @@ import DirectionPage from "@/app/(layout)/direction/components/DirectionPage";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-    title: 'Hướng dẫn',
+    title: 'Hướng dẫn sử dụng',
     description: 'Hướng dẫn của ứng dụng',
 }
 

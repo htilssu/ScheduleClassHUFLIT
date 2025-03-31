@@ -1,6 +1,6 @@
 import {prisma} from "@/lib/service/prismaClient";
 import {error, info} from "@/lib/utils/logging";
-import {WeekResponse} from "./types";
+import {WeekResponse} from "../types";
 import {ClassExtractData} from "@/lib/utils/data";
 
 export class DatabaseManager {

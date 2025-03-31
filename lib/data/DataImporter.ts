@@ -1,7 +1,7 @@
 import {prisma} from "@/lib/service/prismaClient";
-import {PortalScraper} from "@/lib/PortalScraper";
-import {DataExtractor} from "@/lib/DataExtractor";
-import {DatabaseManager} from "@/lib/DatabaseManager";
+import {PortalScraper} from "@/lib/data/PortalScraper";
+import {DataExtractor} from "@/lib/data/DataExtractor";
+import {DatabaseManager} from "@/lib/data/DatabaseManager";
 import {debug} from "@/lib/utils/logging";
 
 export class DataImporter {

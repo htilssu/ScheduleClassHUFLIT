@@ -1,7 +1,7 @@
 'use server'
 
 import {cookies} from "next/headers";
-import {ClassConfig} from "@/lib/utils";
+import {ScheduleConfig} from "@/lib/utils";
 import {redirect} from "next/navigation";
 import {cacheLife} from "next/dist/server/use-cache/cache-life";
 import {prisma} from "@/lib/service/prismaClient";
@@ -30,7 +30,7 @@ export async function getClass() {
     const classConfigCookie = cookie.get("classConfig");
 
     if (classConfigCookie) {
-        const classConfig: ClassConfig = JSON.parse(classConfigCookie.value);
+        const classConfig: ScheduleConfig = JSON.parse(classConfigCookie.value);
         var {year, semester, major} = classConfig;
         if (year === "" && semester === "" && major === "") {
             redirect("/schedule/setup")

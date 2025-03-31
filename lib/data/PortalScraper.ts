@@ -1,6 +1,6 @@
 import axios from "axios";
 import {WeekResponse} from "@/lib/types";
-import { debug } from "./utils/logging";
+import { debug } from "../utils/logging";
 
 export class PortalScraper {
     private readonly httpsAgent: any;

@@ -1,13 +1,16 @@
 import SetupSection from "@/app/(no-layout)/schedule/setup/components/SetupSection";
-import ClientPage from "@/components/ClientPage";
+import {Metadata} from "next";
+
+
+export const metadata: Metadata = {
+    title: "Thiết lập cài đặt xếp lịch học HUFLIT",
+    description: "Trang thiết lập xếp lịch học của HUFLIT",
+}
 
 export default function Page() {
-
     return (
-        <ClientPage title={"Lịch học - Thiết lập"}>
-            <div className={'h-screen'}>
-                <SetupSection/>
-            </div>
-        </ClientPage>
+        <div className={'h-screen'}>
+            <SetupSection/>
+        </div>
     );
 }

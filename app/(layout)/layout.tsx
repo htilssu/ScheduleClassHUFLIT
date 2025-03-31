@@ -7,8 +7,8 @@ import Footer from "@/components/Footer";
 
 
 export const metadata: Metadata = {
-    title: 'Trang chủ',
-    description: '',
+    title: 'Trang chủ tra cứu lịch học',
+    description: 'Tra cứu lịch học HUFLIT, khiến mọi thứ dễ dàng hơn với bạn',
 }
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {FaCalendarAlt, FaPlayCircle} from 'react-icons/fa';
 import Link from "next/link";
-import {gochiHand} from "@/lib/fonts";
+import {gochiHand} from "@/lib/font";
 
 const Intro = () => {
     return (
@@ -30,7 +30,7 @@ const Intro = () => {
                     </div>
                     <div className="mt-3 sm:mt-0 sm:ml-3">
                         <Link
-                            href={"https://www.youtube.com/watch?v=LJwUT_n_D5k&list=RDLJwUT_n_D5k&start_radio=1"}
+                            href={"https://www.youtube.com/watch?v=r_v401nG0mg"}
                             className={`w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md border-orange-500 text-orange-500 bg-background hover:bg-border hover:text-primary md:py-4 md:text-lg md:px-10`}
                         >
                             <FaPlayCircle className="mr-2"/>
