@@ -30,7 +30,7 @@ const ScheduleRegistration = () => {
                 <span className="text-sm w-16 font-medium text-gray-600 bg-orange-100 px-3 py-1 rounded-full">
                     Gợi ý
                 </span>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <select
                         className="p-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 focus:ring-0 focus:ring-orange-400 focus:border-orange-400 transition-all duration-200"
                     >

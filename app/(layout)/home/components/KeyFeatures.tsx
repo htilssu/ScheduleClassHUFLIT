@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import {FaRobot, FaBell, FaHeadset, FaSyncAlt} from "react-icons/fa"; // Import icon từ react-icons
 
@@ -8,6 +10,10 @@ const KeyFeatures = () => {
         {icon: <FaHeadset/>, text: "Hỗ trợ 24/7", color: "text-green-500"},
         {icon: <FaSyncAlt/>, text: "Đồng bộ hóa", color: "text-purple-500"},
     ];
+
+    const handleFeatureClick = () => {
+        alert(`Xin lỗi bạn. Tính năng đang được phát triển!`);
+    };
 
     return (
         <div
@@ -23,6 +29,7 @@ const KeyFeatures = () => {
                     <div
                         key={index}
                         className="cursor-pointer group flex flex-col items-center text-center p-4 rounded-lg bg-gray-100 hover:bg-orange-100 hover:shadow-md transition-all duration-300"
+                        onClick={() => handleFeatureClick()}
                     >
                         <span
                             className={`${feature.color} text-3xl mb-3 group-hover:scale-110 transition-transform duration-200`}>
