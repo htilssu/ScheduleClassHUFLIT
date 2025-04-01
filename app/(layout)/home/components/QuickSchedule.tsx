@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@mantine/core";
 import { AiOutlineSchedule } from "react-icons/ai";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,8 +32,8 @@ const QuickSchedule = () => {
             Đăng nhập để lịch học của bạn được lưu nhé!
           </p>
         </div>
-        <Link href={"/schedule"} className={""}>
-          <Button className="mt-6 bg-orange-500 hover:bg-orange-600">
+        <Link href={"/schedule"}>
+          <Button color="orange" size="md" mt={6}>
             Xem Lịch Đã Xếp
           </Button>
         </Link>

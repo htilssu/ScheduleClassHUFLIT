@@ -2,21 +2,29 @@
 
 import { useState } from "react";
 import {
+  Title,
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  TextInput,
+  Group,
+  Button,
+  Badge,
+  Table,
+  Text,
+  ActionIcon,
+  Tooltip,
+  Pagination,
+  Box,
+  Flex,
+} from "@mantine/core";
 import {
-  Search,
-  PlusCircle,
-  Trash2,
-  Edit,
-  MoreHorizontal,
-  Check,
-  X,
-} from "lucide-react";
+  IconSearch,
+  IconPlus,
+  IconTrash,
+  IconEdit,
+  IconDotsVertical,
+  IconCheck,
+  IconX,
+} from "@tabler/icons-react";
 
 const dummyUsers = [
   {
@@ -58,6 +66,7 @@ const dummyUsers = [
 
 export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activePage, setActivePage] = useState(1);
 
   const filteredUsers = dummyUsers.filter(
     (user) =>
@@ -65,121 +74,102 @@ export default function AdminUsersPage() {
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const getStatusBadge = (status: string) => {
+    if (status === "Hoạt động") {
+      return (
+        <Badge
+          color="green"
+          variant="light"
+          leftSection={<IconCheck size={14} />}
+        >
+          {status}
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge color="red" variant="light" leftSection={<IconX size={14} />}>
+          {status}
+        </Badge>
+      );
+    }
+  };
+
+  const rows = filteredUsers.map((user) => (
+    <Table.Tr key={user.id}>
+      <Table.Td>{user.id}</Table.Td>
+      <Table.Td>{user.name}</Table.Td>
+      <Table.Td>{user.email}</Table.Td>
+      <Table.Td>{user.role}</Table.Td>
+      <Table.Td>{getStatusBadge(user.status)}</Table.Td>
+      <Table.Td>
+        <Flex gap="xs">
+          <Tooltip label="Chỉnh sửa">
+            <ActionIcon color="blue" variant="subtle">
+              <IconEdit size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Xóa">
+            <ActionIcon color="red" variant="subtle">
+              <IconTrash size={16} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Thêm tùy chọn">
+            <ActionIcon variant="subtle">
+              <IconDotsVertical size={16} />
+            </ActionIcon>
+          </Tooltip>
+        </Flex>
+      </Table.Td>
+    </Table.Tr>
+  ));
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Quản lý người dùng
-        </h1>
-        <button className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          <PlusCircle className="mr-2 h-4 w-4" />
+      <Flex justify="space-between" align="center">
+        <Title order={2}>Quản lý người dùng</Title>
+        <Button leftSection={<IconPlus size={16} />} color="blue">
           Thêm người dùng
-        </button>
-      </div>
+        </Button>
+      </Flex>
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle>Danh sách người dùng</CardTitle>
-          <CardDescription>
-            Quản lý tất cả người dùng trong hệ thống
-          </CardDescription>
-          <div className="relative mt-2">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input
-              placeholder="Tìm kiếm người dùng..."
-              className="pl-8 h-9 w-full rounded-md border border-input bg-background py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <div className="overflow-auto">
-              <table className="w-full caption-bottom text-sm">
-                <thead className="[&_tr]:border-b">
-                  <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      ID
-                    </th>
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      Tên
-                    </th>
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      Email
-                    </th>
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      Vai trò
-                    </th>
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      Trạng thái
-                    </th>
-                    <th className="h-10 px-4 text-left align-middle font-medium">
-                      Thao tác
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="[&_tr:last-child]:border-0">
-                  {filteredUsers.map((user) => (
-                    <tr
-                      key={user.id}
-                      className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                    >
-                      <td className="p-4 align-middle">{user.id}</td>
-                      <td className="p-4 align-middle">{user.name}</td>
-                      <td className="p-4 align-middle">{user.email}</td>
-                      <td className="p-4 align-middle">{user.role}</td>
-                      <td className="p-4 align-middle">
-                        <div className="flex items-center">
-                          <span
-                            className={`flex h-2 w-2 rounded-full mr-2 ${
-                              user.status === "Hoạt động"
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                            }`}
-                          ></span>
-                          {user.status}
-                        </div>
-                      </td>
-                      <td className="p-4 align-middle">
-                        <div className="flex space-x-2">
-                          <button className="inline-flex items-center justify-center rounded-md p-1 text-sm font-medium text-muted-foreground hover:bg-muted/50">
-                            <Edit className="h-4 w-4" />
-                            <span className="sr-only">Chỉnh sửa</span>
-                          </button>
-                          <button className="inline-flex items-center justify-center rounded-md p-1 text-sm font-medium text-destructive hover:bg-destructive/10">
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Xóa</span>
-                          </button>
-                          <button className="inline-flex items-center justify-center rounded-md p-1 text-sm font-medium text-muted-foreground hover:bg-muted/50">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Thêm</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="flex items-center justify-end p-4">
-              <div className="flex items-center space-x-2">
-                <button className="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium ring-offset-background hover:bg-muted">
-                  Trước
-                </button>
-                <button className="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium ring-offset-background bg-muted">
-                  1
-                </button>
-                <button className="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium ring-offset-background hover:bg-muted">
-                  2
-                </button>
-                <button className="inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium ring-offset-background hover:bg-muted">
-                  Sau
-                </button>
-              </div>
-            </div>
-          </div>
-        </CardContent>
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Card.Section withBorder inheritPadding py="xs">
+          <Flex justify="space-between" align="center">
+            <Title order={3} size="h4">
+              Danh sách người dùng
+            </Title>
+            <Text size="sm" color="dimmed">
+              Quản lý tất cả người dùng trong hệ thống
+            </Text>
+          </Flex>
+        </Card.Section>
+
+        <TextInput
+          placeholder="Tìm kiếm người dùng..."
+          leftSection={<IconSearch size={16} />}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          mt="md"
+          mb="md"
+        />
+
+        <Table striped highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>ID</Table.Th>
+              <Table.Th>Tên</Table.Th>
+              <Table.Th>Email</Table.Th>
+              <Table.Th>Vai trò</Table.Th>
+              <Table.Th>Trạng thái</Table.Th>
+              <Table.Th>Thao tác</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+
+        <Flex justify="flex-end" mt="md">
+          <Pagination total={2} value={activePage} onChange={setActivePage} />
+        </Flex>
       </Card>
     </div>
   );

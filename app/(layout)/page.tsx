@@ -1,6 +1,5 @@
 import React from "react";
 import LandingPage from "@/app/(layout)/components/LandingPage";
-import Feedback from "@/components/Feedback";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -48,7 +47,6 @@ function Page() {
   return (
     <div>
       <LandingPage />
-      <Feedback />
     </div>
   );
 }

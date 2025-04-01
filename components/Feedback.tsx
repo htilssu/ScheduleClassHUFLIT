@@ -334,7 +334,7 @@ export default function Feedback() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="w-full p-6">
       <h2 className="text-2xl font-bold mb-6">Đánh giá của người dùng</h2>
 
       {session && (

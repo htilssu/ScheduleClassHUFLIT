@@ -35,8 +35,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src={Logo} alt="Logo" className="h-8 w-auto" />
-              <span className="text-xl font-bold text-orange-500">
+              <Image src={Logo} alt="Logo" className="h-12 w-auto" />
+              <span className="text-3xl font-bold text-orange-500">
                 SCHEDULE
               </span>
             </Link>
@@ -45,9 +45,9 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               <Link
-                href="/"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  pathname === "/"
+                href="/home"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/home"
                     ? "text-orange-500 bg-orange-50/70"
                     : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
@@ -56,7 +56,7 @@ const Navbar = () => {
               </Link>
               <Link
                 href="/schedule"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
+                className={`px-3 py-2 rounded-md text-base font-medium ${
                   pathname === "/schedule"
                     ? "text-orange-500 bg-orange-50/70"
                     : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
@@ -65,21 +65,31 @@ const Navbar = () => {
                 Lịch học
               </Link>
               <Link
-                href="/about"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  pathname === "/about"
+                href="/direction"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/direction"
                     ? "text-orange-500 bg-orange-50/70"
                     : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
               >
-                Giới thiệu
+                Hướng dẫn
+              </Link>
+              <Link
+                href="/contact"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/contact"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                }`}
+              >
+                Liên hệ
               </Link>
             </div>
           </div>
 
           <div className="flex-shrink-0">
             {status === "loading" ? (
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
             ) : session ? (
               <Menu shadow="md" width={200}>
                 <Menu.Target>
@@ -109,14 +119,16 @@ const Navbar = () => {
                   <Menu.Item
                     component={Link}
                     href="/profile"
-                    leftSection={<User size={14} />}
+                    leftSection={<User size={18} />}
+                    className="text-base"
                   >
                     Hồ sơ
                   </Menu.Item>
                   <Menu.Item
                     color="red"
-                    leftSection={<LogOut size={14} />}
+                    leftSection={<LogOut size={18} />}
                     onClick={handleSignOut}
+                    className="text-base"
                   >
                     Đăng xuất
                   </Menu.Item>
@@ -124,7 +136,13 @@ const Navbar = () => {
               </Menu>
             ) : (
               <Link href="/auth">
-                <Button color="orange" variant="filled" radius="md" fullWidth>
+                <Button
+                  color="orange"
+                  variant="filled"
+                  radius="md"
+                  fullWidth
+                  className="text-base"
+                >
                   Đăng nhập
                 </Button>
               </Link>
