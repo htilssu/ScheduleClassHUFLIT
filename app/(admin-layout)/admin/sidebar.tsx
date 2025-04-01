@@ -77,7 +77,7 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto border-r bg-background pt-5 z-10">
+    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 overflow-y-auto border-r bg-background pt-5 z-40">
       <nav className="space-y-1 px-3">
         {sidebarItems.map((item) => (
           <div key={item.href} className="space-y-1">
