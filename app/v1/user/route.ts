@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
-  // Lấy thông tin từ session
-  const session = await getServerSession(authOptions);
+  // Lấy thông tin từ session sử dụng auth()
+  const session = await auth();
 
   if (!session || !session.user) {
     return NextResponse.json(
@@ -15,10 +14,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Lấy thông tin chi tiết từ database nếu có email
-    const userData = session.user.email
+    // Lấy thông tin chi tiết từ database dựa trên id người dùng
+    const userData = session.user.id
       ? await prisma.user.findUnique({
-          where: { email: session.user.email },
+          where: { id: session.user.id },
           select: {
             id: true,
             name: true,
