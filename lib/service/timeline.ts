@@ -1,11 +1,11 @@
-'use server'
+"use server";
 
-import {prisma} from "./prismaClient"
+import { prisma } from "../prisma";
 
 export async function getTimeLine(id: string) {
-    return await prisma.timeLine.findFirst({
-        where: {
-            id: id
-        }
-    })
+  return await prisma.timeLine.findFirst({
+    where: {
+      id: id,
+    },
+  });
 }

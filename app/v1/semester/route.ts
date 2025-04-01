@@ -1,15 +1,19 @@
-import {NextResponse} from "next/server";
-import {prisma} from "@/lib/service/prismaClient";
-import {unstable_cache} from "next/cache";
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
-const getSemester = unstable_cache(async () => {
+const getSemester = unstable_cache(
+  async () => {
     return prisma.semester.findMany();
-}, ['semester'], {
+  },
+  ["semester"],
+  {
     revalidate: 3600 * 24 * 30,
-})
+  }
+);
 
 export async function GET() {
-    const data = await getSemester();
+  const data = await getSemester();
 
-    return NextResponse.json(data);
+  return NextResponse.json(data);
 }
