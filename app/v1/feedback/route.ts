@@ -1,24 +1,16 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { getFeedbacks } from "@/lib/service/feedback";
 
-export async function GET() {
+export const GET = async (request: NextRequest) => {
   try {
-    const feedbacks = await prisma.feedback.findMany({
-      include: {
-        user: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const searchParams = request.nextUrl.searchParams;
 
-    return NextResponse.json(feedbacks);
+    const limit = Number(searchParams.get("limit")) || 5;
+    const page = Number(searchParams.get("page")) || 1;
+
+    const result = await getFeedbacks(page, limit);
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error fetching feedbacks:", error);
     return NextResponse.json(
@@ -26,39 +18,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
-
-export async function POST(request: Request) {
-  try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { content, rating } = await request.json();
-
-    if (!content || rating === undefined) {
-      return NextResponse.json(
-        { error: "Content and rating are required" },
-        { status: 400 }
-      );
-    }
-
-    const feedback = await prisma.feedback.create({
-      data: {
-        content,
-        rating,
-        userId: session.user.id,
-      },
-    });
-
-    return NextResponse.json({ success: true, data: feedback });
-  } catch (error) {
-    console.error("Error creating feedback:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
+};

@@ -8,6 +8,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { resetUser } from "@/lib/state/user";
+import { AppDispatch } from "@/lib/state";
 
 interface LoginParam {
   username: string;
@@ -23,7 +25,7 @@ export function LoginForm() {
     redirectPath && redirectPath.trim() !== "" ? redirectPath : "/home";
 
   const loadingAction = loadingSlice.actions;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const errorMessages = {
     user_not_found: "Tài khoản không tồn tại",
@@ -56,6 +58,8 @@ export function LoginForm() {
         setError(errorMessage);
         toast.error(errorMessage);
       } else if (result?.ok) {
+        dispatch(resetUser());
+
         toast.success("Đăng nhập thành công!");
         router.push(redirect);
       }

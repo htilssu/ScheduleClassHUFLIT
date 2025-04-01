@@ -1,24 +1,84 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type UserState = {
-                            id: string;
-                            name: string;
-                            email: string;
-                            image: string;
-                            role: string;
-                        } | null
+export async function fetchUserData() {
+  try {
+    const response = await fetch("/v1/user");
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Không thể lấy thông tin người dùng: ${response.status} ${errorText}`
+      );
+    }
 
-export const userSlice = createSlice(
-    {
-        name: "user",
-        initialState: null as UserState,
-        reducers: {
-            setUser: (state, action) => {
-                return action.payload;
-            },
-            clearUser: (state) => {
-                return null;
-            }
-        }
-    })
+    const userData = await response.json();
+
+    if (!userData) {
+      throw new Error("Dữ liệu người dùng nhận được không hợp lệ");
+    }
+
+    return userData;
+  } catch (error: any) {
+    console.error("Lỗi khi lấy thông tin người dùng:", error);
+    return null;
+  }
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  role: "DEFAULT_USER" | "PREMIUM_USER" | "ADMIN";
+}
+
+export interface UserState {
+  data: User | null | undefined;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: UserState = {
+  data: undefined,
+  loading: true,
+  error: null,
+};
+
+export const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setUserLoading: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    setUserSuccess: (state, action: PayloadAction<User>) => {
+      state.loading = false;
+      state.data = action.payload;
+      state.error = null;
+    },
+    setUserError: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.data = null;
+      state.error = action.payload;
+    },
+    clearUser: (state) => {
+      state.data = null;
+      state.loading = false;
+      state.error = null;
+    },
+    resetUser: (state) => {
+      state.data = undefined;
+      state.loading = false;
+      state.error = null;
+    },
+  },
+});
+
+export const {
+  setUserLoading,
+  setUserSuccess,
+  setUserError,
+  clearUser,
+  resetUser,
+} = userSlice.actions;
