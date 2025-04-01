@@ -8,10 +8,10 @@ import Feedback from "@/components/Feedback";
 const MainContent = () => {
     return (
         <div className="flex flex-col gap-5">
-            <QuickSchedule/>
-            <CourseRegistration/>
-            <KeyFeatures/>
-            <Feedback/>
+      <QuickSchedule />
+      <CourseRegistration />
+      <KeyFeatures />
+      <Feedback />
         </div>
     );
 };

@@ -1,183 +1,322 @@
-'use client'
+"use client";
 
-import React, { useState } from "react";
-import { FaStar, FaThumbsUp } from "react-icons/fa";
+import { createFeedback } from "@/app/actions/feedback";
+import { deleteFeedback } from "@/app/actions/feedback";
+import useUser from "@/lib/hook/useUser"; // Import hook useUser
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { Modal, Button, Group, Text } from "@mantine/core";
 
-// Dummy feedback data
-const feedbackData = [
-    { id: 1, name: "Nguyen Anh Tuan", rating: 5, comment: "Xếp lịch rất nhanh!", date: "2024-03-25", likes: 4 },
-    { id: 2, name: "Tran Trung Hieu", rating: 4, comment: "Xếp lịch nhanh nhưng giao diện chưa đẹp.", date: "2024-03-24", likes: 1 },
-    { id: 3, name: "Toan Dong 123", rating: 4, comment: "Cần hỗ trợ thêm tool đăng kí môn =)).", date: "2024-03-23", likes: 10 },
-    { id: 4, name: "Anh Dao", rating: 5, comment: "Tôi muốn kết nối với bạn.", date: "2024-03-23", likes: 1 },
-    { id: 5, name: "Le Bong", rating: 3, comment: "Cũng tạm được.", date: "2024-03-23", likes: 2 },
-];
-
-// StarRating Component
-const StarRating = ({ rating }: { rating: number }) => {
-    return (
-        <div className="flex text-yellow-500">
-            {[...Array(5)].map((_, index) => (
-                <FaStar key={index} className={index < rating ? "text-yellow-500" : "text-gray-300"} />
-            ))}
-        </div>
-    );
-};
-
-// FeedbackSummary Component
-const FeedbackSummary = ({ feedbacks }: { feedbacks: { rating: number }[] }) => {
-    const totalReviews = feedbacks.length;
-    const averageRating = (
-        feedbacks.reduce((sum, f) => sum + f.rating, 0) / totalReviews
-    ).toFixed(1);
-
-    return (
-        <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold">Đánh giá khách hàng</h2>
-            <div className="flex items-center mt-2 gap-2">
-                <span className="text-2xl font-semibold">{averageRating}/5</span>
-                <StarRating rating={Math.round(Number(averageRating))}/>
-            </div>
-            <span className="text-gray-500">({totalReviews} đánh giá)</span>
-        </div>
-    );
-};
-
-// FeedbackItem Component
-const FeedbackItem = ({feedback, onLike }: { feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number }, onLike: (id: number) => void }) => {
-    return (
-        <div className="p-4 border-b flex justify-between items-start">
-            <div>
-                <h3 className="font-semibold">{feedback.name}</h3>
-                <StarRating rating={feedback.rating} />
-                <p className="text-gray-700 mt-1">{feedback.comment}</p>
-                <span className="text-sm text-gray-500">{feedback.date}</span>
-            </div>
-            <button onClick={() => onLike(feedback.id)} className="text-orange-500 flex items-center">
-                <FaThumbsUp className="mr-1" /> {feedback.likes}
-            </button>
-        </div>
-    );
-};
-
-// FeedbackList Component with Filter and Show More
-const FeedbackList = ({ feedbacks, onLike }: { feedbacks: { id: number; name: string; rating: number; comment: string; date: string; likes: number }[], onLike: (id: number) => void }) => {
-    const [filter, setFilter] = useState<number | null>(null);
-    const [visibleCount, setVisibleCount] = useState(3);
-
-    const filteredFeedbacks = filter ? feedbacks.filter((f) => f.rating === filter) : feedbacks;
-    const visibleFeedbacks = filteredFeedbacks.slice(0, visibleCount);
-
-    const handleShowMore = () => {
-        setVisibleCount(prevCount => prevCount + 3);
-    };
-
-    const handleShowLess = () => {
-        setVisibleCount(3);
-    };
-
-    const isAllVisible = visibleCount >= filteredFeedbacks.length;
-
-    return (
-        <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-            <h2 className="text-lg font-bold">Phản hồi Người dùng</h2>
-            <div className="flex gap-2 my-2">
-                <button
-                    className={`px-3 py-1 rounded border hover:border-orange-500 ${filter === null ? "bg-orange-500 text-white" : "bg-gray-100"}`}
-                    onClick={() => setFilter(null)}
-                >
-                    Tất cả
-                </button>
-                {[5, 4, 3, 2, 1].map((star) => (
-                    <button
-                        key={star}
-                        className={`px-3 py-1 rounded border hover:border-orange-500 ${filter === star ? "bg-orange-500 text-white" : "bg-gray-100"}`}
-                        onClick={() => setFilter(filter === star ? null : star)}
-                    >
-                        {star} ★
-                    </button>
-                ))}
-            </div>
-            {visibleFeedbacks.length > 0 ? (
-                visibleFeedbacks.map((feedback) => (
-                    <FeedbackItem key={feedback.id} feedback={feedback} onLike={onLike}/>
-                ))
-            ) : (
-                <p className="text-gray-500 text-center mt-2">Không có đánh giá nào.</p>
-            )}
-            {filteredFeedbacks.length > 3 && (
-                <button
-                    onClick={isAllVisible ? handleShowLess : handleShowMore}
-                    className="p-3 text-cyan-500 hover:text-cyan-600 font-medium italic"
-                >
-                    {isAllVisible ? "Ẩn bớt" : "Xem thêm đánh giá"}
-                </button>
-            )}
-        </div>
-    );
-};
-
-// FeedbackForm Component
-const FeedbackForm = ({onSubmit}: {
-    onSubmit: (feedback: { id: number; name: string; rating: number; comment: string; date: string; likes: number }) => void }) => {
-    const [rating, setRating] = useState(5);
-    const [comment, setComment] = useState("");
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit({ id: Date.now(), name: "Bạn", rating, comment, date: new Date().toISOString().split("T")[0], likes: 0 });
-        setRating(5);
-        setComment("");
-    };
-
-    return (
-        <div className="bg-white p-4 rounded-lg shadow-md mt-4">
-            <h2 className="text-lg font-bold">Gửi đánh giá của bạn</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="flex items-center mt-2">
-                    {[...Array(5)].map((_, index) => (
-                        <FaStar
-                            key={index}
-                            className={index < rating ? "text-yellow-500" : "text-gray-300"}
-                            onClick={() => setRating(index + 1)}
-                        />
-                    ))}
-                </div>
-                <textarea
-                    className="w-full p-2 border border-orange-500 rounded mt-2"
-                    placeholder="Nhận xét của bạn..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                />
-                <button type="submit" className="bg-cyan-500 text-white px-4 py-2 rounded mt-2">
-                    Gửi đánh giá
-                </button>
-            </form>
-            <p className="text-sm text-orange-500 p-4 font-extralight italic">Sự đánh giá của bạn sẽ góp phần cải thiện chất lượng dịch vụ và
-                sản phẩm của chúng tôi.</p>
-        </div>
-    );
-};
+interface Feedback {
+  id: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+  userId: string;
+  user: {
+    name: string | null;
+    image: string | null;
+  };
+}
 
 // Main Feedback Component
 export default function Feedback() {
-    const [feedbacks, setFeedbacks] = useState(feedbackData);
+  // Sử dụng hook useUser để tự động fetch và lấy dữ liệu người dùng
+  const { data: user } = useUser();
 
-    const addFeedback = (newFeedback: {
-        id: number;
-        name: string;
-        rating: number; comment: string; date: string; likes: number }) => {
-        setFeedbacks([newFeedback, ...feedbacks]);
-    };
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [content, setContent] = useState("");
+  const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    limit: 5,
+  });
 
-    const likeFeedback = (id: number) => {
-        setFeedbacks(feedbacks.map((fb) => (fb.id === id ? { ...fb, likes: fb.likes + 1 } : fb)));
-    };
+  // State cho confirm dialog
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [feedbackToDelete, setFeedbackToDelete] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchFeedbacks(pagination.currentPage, pagination.limit);
+  }, [pagination.currentPage, pagination.limit]);
+
+  const fetchFeedbacks = async (page: number = 1, limit: number = 5) => {
+    try {
+      const response = await fetch(
+        `/v1/feedback?page=${page}&limit=${limit}`,
+        {}
+      );
+      const data = await response.json();
+      setFeedbacks(data.data);
+      setPagination(data.pagination);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= pagination.totalPages) {
+      setPagination((prev) => ({ ...prev, currentPage: newPage }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      setError("Vui lòng đăng nhập để gửi feedback");
+      toast.error("Vui lòng đăng nhập để gửi feedback"); // Thêm toast error
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      // Sử dụng server action trực tiếp từ app/actions/feedback.ts
+      const result = await createFeedback({
+        content,
+        rating,
+      });
+
+      if (result.success) {
+        toast.success("Gửi đánh giá thành công!");
+
+        // Reset form
+        setContent("");
+        setRating(0);
+
+        // Tải lại dữ liệu
+        fetchFeedbacks(1, pagination.limit);
+      } else {
+        setError(result.error || "Có lỗi xảy ra");
+        toast.error(result.error || "Có lỗi xảy ra khi gửi đánh giá");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      setError("Có lỗi xảy ra khi gửi feedback");
+      toast.error("Có lỗi xảy ra khi gửi đánh giá");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await deleteFeedback(id);
+
+      if (result.success) {
+        toast.success(result.message || "Đã xóa đánh giá thành công!");
+        fetchFeedbacks(pagination.currentPage, pagination.limit);
+      } else {
+        toast.error(result.message || "Không thể xóa đánh giá");
+      }
+    } catch (error: any) {
+      console.error("Error deleting feedback:", error);
+      toast.error(error.message || "Có lỗi xảy ra khi xóa đánh giá");
+    } finally {
+      // Đóng modal sau khi xóa (dù thành công hay thất bại)
+      setConfirmModalOpen(false);
+      setFeedbackToDelete(null);
+    }
+  };
+
+  // Hiển thị modal xác nhận
+  const openConfirmModal = (id: string) => {
+    setFeedbackToDelete(id);
+    setConfirmModalOpen(true);
+  };
+
+  // Hiển thị nút phân trang
+  const renderPagination = () => {
+    if (pagination.totalPages <= 1) return null;
 
     return (
-        <div className="px-8 py-6">
-            <FeedbackSummary feedbacks={feedbacks} />
-            <FeedbackList feedbacks={feedbacks} onLike={likeFeedback} />
-            <FeedbackForm onSubmit={addFeedback} />
-        </div>
+      <div className="flex justify-center items-center mt-6 gap-2">
+        <button
+          onClick={() => handlePageChange(pagination.currentPage - 1)}
+          disabled={pagination.currentPage === 1}
+          className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+        >
+          &laquo; Trước
+        </button>
+
+        {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
+          (page) => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`px-3 py-1 rounded-md ${
+                page === pagination.currentPage
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
+
+        <button
+          onClick={() => handlePageChange(pagination.currentPage + 1)}
+          disabled={pagination.currentPage === pagination.totalPages}
+          className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+        >
+          Sau &raquo;
+        </button>
+      </div>
     );
+  };
+
+  return (
+    <div className="w-full p-6">
+      <h2 className="text-2xl font-bold mb-6">Đánh giá của người dùng</h2>
+
+      {/* Hiển thị form nếu user đã đăng nhập (lấy từ store) */}
+      {/* {session && ( */}
+      {user && (
+        <form onSubmit={handleSubmit} className="mb-8">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Đánh giá của bạn
+            </label>
+            <div className="flex gap-2 mb-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className="text-2xl focus:outline-none"
+                >
+                  <FaStar
+                    className={`${
+                      star <= rating ? "text-yellow-400" : "text-gray-300"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              rows={4}
+              placeholder="Nhập đánh giá của bạn..."
+              required
+            />
+          </div>
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 disabled:opacity-50"
+          >
+            {loading ? "Đang gửi..." : "Gửi đánh giá"}
+          </button>
+        </form>
+      )}
+
+      {/* Modal xác nhận xóa */}
+      <Modal
+        opened={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        title="Xác nhận xóa đánh giá"
+        centered
+        size="md"
+      >
+        <Text size="sm" mb="md">
+          Bạn có chắc chắn muốn xóa đánh giá này không? Hành động này không thể
+          hoàn tác.
+        </Text>
+
+        <Group justify="flex-end" mt="xl">
+          <Button variant="outline" onClick={() => setConfirmModalOpen(false)}>
+            Hủy bỏ
+          </Button>
+          <Button
+            color="red"
+            onClick={() => feedbackToDelete && handleDelete(feedbackToDelete)}
+            loading={loading}
+          >
+            Xóa đánh giá
+          </Button>
+        </Group>
+      </Modal>
+
+      <div className="space-y-4">
+        {feedbacks.length > 0 ? (
+          feedbacks.map((feedback) => (
+            <div
+              key={feedback.id}
+              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex items-center mb-2">
+                  {feedback.user.image && (
+                    <Image
+                      src={feedback.user.image}
+                      alt={feedback.user.name || "User"}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full mr-2"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium">
+                      {feedback.user.name || "Anonymous"}
+                    </p>
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          className={`${
+                            i < feedback.rating
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Nút xóa feedback - chỉ hiển thị nếu người dùng là chủ feedback hoặc là admin */}
+                {user &&
+                  (user.id === feedback.userId || user.role === "ADMIN") && (
+                    <button
+                      onClick={() => openConfirmModal(feedback.id)}
+                      className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100"
+                      title="Xóa đánh giá"
+                    >
+                      <FaTrash size={16} />
+                    </button>
+                  )}
+              </div>
+              <p className="text-gray-700">{feedback.content}</p>
+              <p className="text-sm text-gray-500 mt-2">
+                {new Date(feedback.createdAt).toLocaleDateString("vi-VN")}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">Chưa có đánh giá nào.</p>
+        )}
+      </div>
+
+      {renderPagination()}
+
+      {pagination.total > 0 && (
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Hiển thị {Math.min(pagination.limit, feedbacks.length)} trong tổng số{" "}
+          {pagination.total} đánh giá
+        </p>
+      )}
+    </div>
+  );
 }

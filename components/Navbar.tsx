@@ -1,152 +1,170 @@
-'use client'
+"use client";
 
-import React, {useState} from 'react';
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {usePathname} from 'next/navigation'; // Thêm import này
-import {useAuth} from "@/context/AuthContext";
-import {post} from "@/lib/utils/request";
-import {Menu, X} from 'lucide-react'
-import Logo from '../public/images/LogoT&H1.png';
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { Avatar, Menu, Button, Skeleton } from "@mantine/core";
+import { User, LogOut } from "lucide-react";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { clearUser, AppDispatch } from "@/lib/state";
+import useUser from "@/lib/hook/useUser";
 
-function Navbar() {
-    const [mobileMenuOpen, setmMobileMenuOpen] = useState(false)
-    const {user} = useAuth();
-    const pathname = usePathname(); // Lấy đường dẫn hiện tại
+const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-    function logout() {
-        post(origin + '/v1/auth/logout', {action: 'logout'}).then(() => {
-            localStorage.setItem("token", "")
-            window.location.href = '/';
-        });
-    }
+  // Sử dụng hook useUser để tự động fetch và lấy dữ liệu người dùng
+  const { data: user, loading: userLoading } = useUser();
 
-    // Hàm kiểm tra xem link có active không
-    const isActive = (href: string) => pathname === href;
+  const dispatch = useDispatch<AppDispatch>();
+  const [isScrolled, setIsScrolled] = useState(false);
 
-    return (
-        <header
-            className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-0'>
-            <div className='max-w-7xl mx-auto flex h-14 lg:h-16 items-center'>
-                <div className="flex items-center justify-between w-full px-4 md:px-0">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-                        <Image
-                            src={Logo}
-                            alt="Logo"
-                            className="w-10 md:w-12 lg:w-14 h-auto transition-all duration-300"
-                            priority
-                        />
-                        <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
-                            SCHEDULE
-                        </h2>
-                    </Link>
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-                    {/* Navigation */}
-                    <nav
-                        className="hidden md:flex items-center justify-end lg:mr-20 mr-10 flex-1 space-x-4 lg:space-x-8 text-base lg:text-lg font-medium">
-                        <Link
-                            href="/home"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
-                                isActive('/home') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
-                            }`}
-                        >
-                            Trang Chủ
-                        </Link>
-                        <Link
-                            href="/schedule"
-                            prefetch
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
-                                isActive('/schedule') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
-                            }`}
-                        >
-                            Xếp Lịch
-                        </Link>
-                        <Link
-                            href="/direction"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
-                                isActive('/direction') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
-                            }`}
-                        >
-                            Hướng Dẫn
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className={`transition-colors duration-200 whitespace-nowrap px-2 py-1 rounded-md hover:bg-gray-200 ${
-                                isActive('/contact') ? 'text-orange-600' : 'text-gray-900 hover:text-orange-400'
-                            }`}
-                        >
-                            Liên Hệ
-                        </Link>
-                    </nav>
+  const handleSignOut = async () => {
+    // Dispatch action để clear user state trong redux
+    dispatch(clearUser());
+    await signOut({ callbackUrl: "/" });
+  };
 
-                    {/* Auth Button */}
-                    <div className="flex-shrink-0">
-                        {user ? (
-                            <button
-                                onClick={logout}
-                                className="px-3 py-1 cursor-pointer rounded-md bg-orange-500 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#FFA500,0_0_10px_#ffffff,inset_0_0_2px_#FFDAB9] border-2 border-orange-700 transition-all hover:bg-orange-600 hover:shadow-[0_0_15px_#FFA500,0_0_5px_#ffffff]"
-                            >
-                                Đăng xuất
-                            </button>
-                        ) : (
-                            <Link href="/auth">
-                                <button
-                                    className="px-3 py-1 cursor-pointer rounded-md bg-orange-500 text-white hover:text-white flex items-center gap-1 shadow-[0_0_5px_#FFA500,0_0_10px_#ffffff,inset_0_2px_#FFDAB9] border-2 border-orange-700 transition-all hover:bg-orange-600 hover:shadow-[0_0_15px_#FFA500,0_0_5px_#ffffff]"
-                                >
-                                    Đăng nhập
-                                </button>
-                            </Link>
-                        )}
-                    </div>
-                </div>
-                <button
-                    className='inline-flex items-center justify-center rounded-md md:hidden'
-                    onClick={() => setmMobileMenuOpen(!mobileMenuOpen)}
-                >
-                    <span className='sr-only'>Open main menu</span>
-                    {mobileMenuOpen ? (
-                        <X className='h-6 w-6' aria-hidden="true"/>
-                    ) : (
-                        <Menu className='h-6 w-6' aria-hidden="true"/>
-                    )}
-                </button>
+  return (
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-white/80 shadow-sm`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/images/LogoT&H1.png"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="h-12 w-auto"
+              />
+              <span className="text-3xl font-bold text-orange-500">
+                SCHEDULE
+              </span>
+            </Link>
+          </div>
+
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-4">
+              <Link
+                href="/home"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/home"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                }`}
+              >
+                Trang chủ
+              </Link>
+              <Link
+                href="/schedule"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/schedule"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                }`}
+              >
+                Lịch học
+              </Link>
+              <Link
+                href="/direction"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/direction"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                }`}
+              >
+                Hướng dẫn
+              </Link>
+              <Link
+                href="/contact"
+                className={`px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === "/contact"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                }`}
+              >
+                Liên hệ
+              </Link>
             </div>
-            {mobileMenuOpen && (
-                <div className='md:hidden'>
-                    <div className='space-y-1 px-2 pb-3 pt-2'>
-                        <Link
-                            href="/home"
-                            className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive(
-                                    '/home') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
-                            }`}
-                        >
-                            Trang Chủ
-                        </Link>
-                        <Link
-                            href="/schedule"
-                            className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive(
-                                    '/schedule') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
-                            }`}
-                        >
-                            Xếp Lịch
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className={`block rounded-md px-3 py-2 text-base font-medium ${
-                                isActive(
-                                    '/contact') ? 'text-orange-400 bg-gray-800' : 'text-orange-500 hover:bg-gray-800 hover:text-red-400'
-                            }`}
-                        >
-                            Liên Hệ
-                        </Link>
+          </div>
+
+          <div className="flex-shrink-0">
+            {userLoading && user === null ? (
+              <Skeleton height={40} circle />
+            ) : user ? (
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <Avatar
+                    src={user.image || undefined}
+                    alt={user.name || ""}
+                    radius="xl"
+                    size="md"
+                    className="cursor-pointer"
+                  >
+                    {user.name?.charAt(0).toUpperCase() || "U"}
+                  </Avatar>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Label>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.name}
+                      </p>
+                      <p className="text-xs leading-none text-gray-500">
+                        {user.email}
+                      </p>
                     </div>
-                </div>
+                  </Menu.Label>
+                  <Menu.Divider />
+                  <Menu.Item
+                    component={Link}
+                    href="/profile"
+                    leftSection={<User size={18} />}
+                    className="text-base"
+                  >
+                    Hồ sơ
+                  </Menu.Item>
+                  <Menu.Item
+                    color="red"
+                    leftSection={<LogOut size={18} />}
+                    onClick={handleSignOut}
+                    className="text-base"
+                  >
+                    Đăng xuất
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <Link href="/auth">
+                <Button
+                  color="orange"
+                  variant="filled"
+                  radius="md"
+                  className="text-base"
+                >
+                  Đăng nhập
+                </Button>
+              </Link>
             )}
-        </header>
-    );
-}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 export default Navbar;

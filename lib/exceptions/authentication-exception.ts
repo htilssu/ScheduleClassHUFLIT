@@ -1,10 +1,10 @@
-import {CredentialsSignin} from "next-auth";
-import {AuthenticateErrorCode} from "@/lib/types";
+import { CredentialsSignin } from "next-auth";
+import { AuthenticateErrorCode } from "@/lib/types";
 
 export class UserNotFoundException extends CredentialsSignin {
-    code: AuthenticateErrorCode = "user_not_found";
+  code: AuthenticateErrorCode = "user_not_found";
 }
 
 export class WrongPasswordException extends CredentialsSignin {
-    code: AuthenticateErrorCode = "invalid_password"
+  code: AuthenticateErrorCode = "invalid_password";
 }
