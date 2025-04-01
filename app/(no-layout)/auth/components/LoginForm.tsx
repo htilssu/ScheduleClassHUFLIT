@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loadingSlice } from "@/lib/state";
 import { useForm } from "@mantine/form";
-import { signIn } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 interface LoginParam {
   username: string;
@@ -17,6 +18,12 @@ interface LoginParam {
 
 export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
+  const redirect =
+    redirectPath && redirectPath.trim() !== "" ? redirectPath : "/home";
+
   const form = useForm<LoginParam>({
     initialValues: {
       username: "",
@@ -33,32 +40,41 @@ export function LoginForm() {
     default: "Đã xảy ra lỗi khi đăng nhập",
   };
 
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setError(null);
-        dispatch(loadingAction.setLoading(true));
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    dispatch(loadingAction.setLoading(true));
+    dispatch(loadingAction.setLoadingText("Đang đăng nhập..."));
 
-        signIn("credentials", {
-          username: form.values.username,
-          password: form.values.password,
-          redirect: false,
-        }).then((value) => {
-          if (value?.error) {
-            const errorCode = value.code as keyof typeof errorMessages;
-            const errorMessage =
-              errorMessages[errorCode] || errorMessages.default;
-            setError(errorMessage);
-            toast.error(errorMessage);
-          }
-          dispatch(loadingAction.setLoading(false));
-        });
-      }}
-      className="space-y-6"
-    >
+    try {
+      const result = await signIn("credentials", {
+        username: form.values.username,
+        password: form.values.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        const errorCode = result.error as keyof typeof errorMessages;
+        const errorMessage = errorMessages[errorCode] || errorMessages.default;
+        setError(errorMessage);
+        toast.error(errorMessage);
+      } else if (result?.ok) {
+        toast.success("Đăng nhập thành công!");
+        router.push(redirect);
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng nhập:", error);
+      toast.error(errorMessages.default);
+    } finally {
+      dispatch(loadingAction.setLoading(false));
+      dispatch(loadingAction.setLoadingText(""));
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="username">Email</Label>
+        <Label htmlFor="username">Tên đăng nhập / Email</Label>
         <Input id="username" {...form.getInputProps("username")} required />
       </div>
       <div className="space-y-2">

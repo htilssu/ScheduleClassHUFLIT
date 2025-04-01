@@ -29,9 +29,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/80 backdrop-blur-md shadow-lg" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-white/80 shadow-sm`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -50,8 +48,8 @@ const Navbar = () => {
                 href="/"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
                   pathname === "/"
-                    ? "text-orange-500 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
               >
                 Trang chủ
@@ -60,8 +58,8 @@ const Navbar = () => {
                 href="/schedule"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
                   pathname === "/schedule"
-                    ? "text-orange-500 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
               >
                 Lịch học
@@ -70,8 +68,8 @@ const Navbar = () => {
                 href="/about"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${
                   pathname === "/about"
-                    ? "text-orange-500 bg-orange-50"
-                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"
+                    ? "text-orange-500 bg-orange-50/70"
+                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
               >
                 Giới thiệu
@@ -126,7 +124,7 @@ const Navbar = () => {
               </Menu>
             ) : (
               <Link href="/auth">
-                <Button className="bg-orange-500 text-white hover:bg-orange-600">
+                <Button color="orange" variant="filled" radius="md" fullWidth>
                   Đăng nhập
                 </Button>
               </Link>

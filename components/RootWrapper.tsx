@@ -19,7 +19,7 @@ const RootWrapper = ({ children }: Readonly<{ children: ReactNode }>) => {
       <Provider store={store}>
         <SessionProvider>
           <MantineProvider>
-            <Box className={"relative"}>
+            <Box className="relative">
               <LoadingOverlayWrapper />
               {children}
               <ToastContainer
