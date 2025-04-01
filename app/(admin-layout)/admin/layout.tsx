@@ -14,12 +14,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <AdminNavbar />
-      <div className="flex min-h-screen">
-        <AdminSidebar />
-        <main className="flex-1 p-6 pt-20">{children}</main>
+      <div className="flex flex-1 pt-16">
+        <div className="w-64 flex-shrink-0">
+          <AdminSidebar />
+        </div>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
-    </>
+    </div>
   );
 }
