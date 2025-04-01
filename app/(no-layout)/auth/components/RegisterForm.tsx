@@ -2,13 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { useForm, zodResolver } from "@mantine/form";
-import { TextInput, PasswordInput, Button, Box, Text } from "@mantine/core";
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Box,
+  Text,
+  Alert,
+} from "@mantine/core";
 import { signUp } from "@/app/actions/auth-actions";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { loadingSlice } from "@/lib/state";
 import { RegisterData } from "@/app/types/auth";
 import { z } from "zod";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 // Schema validation với Zod
 const registerSchema = z
@@ -69,35 +77,49 @@ export function RegisterForm() {
 
   return (
     <Box mx="auto">
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput
-          withAsterisk
-          label="Tên đăng nhập hoặc Email"
-          placeholder="Nhập tên đăng nhập hoặc email"
-          {...form.getInputProps("username")}
-          mb="md"
-        />
-        <Text size="xs" color="dimmed" mb="md">
-          Nếu nhập email, hệ thống sẽ tự động sử dụng làm tên đăng nhập
-        </Text>
+      <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
+        <div className="space-y-2">
+          <Text component="label" htmlFor="username" size="sm" fw={500}>
+            Tên đăng nhập hoặc Email
+          </Text>
+          <TextInput
+            id="username"
+            {...form.getInputProps("username")}
+            required
+          />
+          <Alert
+            icon={<IconAlertCircle size="1rem" />}
+            color="yellow"
+            variant="light"
+            mt={5}
+          >
+            Nếu nhập email, hệ thống sẽ tự động sử dụng làm tên đăng nhập
+          </Alert>
+        </div>
 
-        <PasswordInput
-          withAsterisk
-          label="Mật khẩu"
-          placeholder="Nhập mật khẩu"
-          {...form.getInputProps("password")}
-          mb="md"
-        />
+        <div className="space-y-2">
+          <Text component="label" htmlFor="password" size="sm" fw={500}>
+            Mật khẩu
+          </Text>
+          <PasswordInput
+            id="password"
+            {...form.getInputProps("password")}
+            required
+          />
+        </div>
 
-        <PasswordInput
-          withAsterisk
-          label="Xác nhận mật khẩu"
-          placeholder="Nhập lại mật khẩu"
-          {...form.getInputProps("confirmPassword")}
-          mb="md"
-        />
+        <div className="space-y-2">
+          <Text component="label" htmlFor="confirmPassword" size="sm" fw={500}>
+            Xác nhận mật khẩu
+          </Text>
+          <PasswordInput
+            id="confirmPassword"
+            {...form.getInputProps("confirmPassword")}
+            required
+          />
+        </div>
 
-        <Button type="submit" fullWidth mt="md" color="orange">
+        <Button type="submit" fullWidth color="orange">
           Đăng ký
         </Button>
       </form>
