@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import {FaRobot, FaBell, FaHeadset, FaSyncAlt} from "react-icons/fa"; // Import icon từ react-icons
+import {FaBell, FaHeadset, FaRobot, FaSyncAlt} from "react-icons/fa"; // Import icon từ react-icons
 
 const KeyFeatures = () => {
     const features = [
@@ -35,9 +35,9 @@ const KeyFeatures = () => {
                             className={`${feature.color} text-3xl mb-3 group-hover:scale-110 transition-transform duration-200`}>
                             {feature.icon}
                         </span>
-                        <p className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors duration-200">
+                        <h2 className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors duration-200">
                             {feature.text}
-                        </p>
+                        </h2>
                     </div>
                 ))}
             </div>

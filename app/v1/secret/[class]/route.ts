@@ -1,14 +1,17 @@
-import {NextRequest, NextResponse} from "next/server";
-import {prisma} from "@/lib/service/prismaClient";
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest, {params}: { params: Promise<{ class: string }> }) {
-    const pr = await params;
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ class: string }> }
+) {
+  const pr = await params;
 
-    const classSecret = await prisma.classSecret.findFirst({
-        where: {
-            id: pr.class
-        }
-    })
+  const classSecret = await prisma.classSecret.findFirst({
+    where: {
+      id: pr.class,
+    },
+  });
 
-    return NextResponse.json({...classSecret});
+  return NextResponse.json({ ...classSecret });
 }
