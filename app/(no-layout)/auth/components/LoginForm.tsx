@@ -46,7 +46,7 @@ export function LoginForm() {
           redirect: false,
         }).then((value) => {
           if (value?.error) {
-            const errorCode = value.error as keyof typeof errorMessages;
+            const errorCode = value.code as keyof typeof errorMessages;
             const errorMessage =
               errorMessages[errorCode] || errorMessages.default;
             setError(errorMessage);
