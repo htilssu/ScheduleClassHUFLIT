@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
         name: session.user.name || "",
         email: session.user.email || "",
         image: session.user.image || "",
-        role: "user", // Giá trị mặc định
+        role: "DEFAULT_USER", // Giá trị mặc định khớp với enum trong Prisma
       });
     }
   } catch (error) {

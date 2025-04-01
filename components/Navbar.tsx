@@ -3,16 +3,22 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
-import { Avatar, Menu, Button } from "@mantine/core";
+import { signOut } from "next-auth/react";
+import { Avatar, Menu, Button, Skeleton } from "@mantine/core";
 import { User, LogOut } from "lucide-react";
-import Logo from "../public/images/LogoT&H1.png";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { clearUser, AppDispatch } from "@/lib/state";
+import useUser from "@/lib/hook/useUser";
 
 const Navbar = () => {
-  const [mobileMenuOpen, setmMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+
+  // Sử dụng hook useUser để tự động fetch và lấy dữ liệu người dùng
+  const { data: user, loading: userLoading } = useUser();
+
+  const dispatch = useDispatch<AppDispatch>();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,6 +30,8 @@ const Navbar = () => {
   }, []);
 
   const handleSignOut = async () => {
+    // Dispatch action để clear user state trong redux
+    dispatch(clearUser());
     await signOut({ callbackUrl: "/" });
   };
 
@@ -35,7 +43,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src={Logo} alt="Logo" className="h-12 w-auto" />
+              <Image
+                src="/images/LogoT&H1.png"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="h-12 w-auto"
+              />
               <span className="text-3xl font-bold text-orange-500">
                 SCHEDULE
               </span>
@@ -88,19 +102,19 @@ const Navbar = () => {
           </div>
 
           <div className="flex-shrink-0">
-            {status === "loading" ? (
-              <div className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
-            ) : session ? (
+            {userLoading && user === null ? (
+              <Skeleton height={40} circle />
+            ) : user ? (
               <Menu shadow="md" width={200}>
                 <Menu.Target>
                   <Avatar
-                    src={session.user?.image}
-                    alt={session.user?.name || ""}
+                    src={user.image || undefined}
+                    alt={user.name || ""}
                     radius="xl"
                     size="md"
                     className="cursor-pointer"
                   >
-                    {session.user?.name?.charAt(0).toUpperCase() || "U"}
+                    {user.name?.charAt(0).toUpperCase() || "U"}
                   </Avatar>
                 </Menu.Target>
 
@@ -108,10 +122,10 @@ const Navbar = () => {
                   <Menu.Label>
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {session.user?.name}
+                        {user.name}
                       </p>
                       <p className="text-xs leading-none text-gray-500">
-                        {session.user?.email}
+                        {user.email}
                       </p>
                     </div>
                   </Menu.Label>
@@ -140,7 +154,6 @@ const Navbar = () => {
                   color="orange"
                   variant="filled"
                   radius="md"
-                  fullWidth
                   className="text-base"
                 >
                   Đăng nhập

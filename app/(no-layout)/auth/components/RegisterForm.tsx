@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, zodResolver } from "@mantine/form";
 import {
   TextInput,
@@ -17,6 +17,9 @@ import { loadingSlice } from "@/lib/state";
 import { RegisterData } from "@/app/types/auth";
 import { z } from "zod";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { signIn } from "@/lib/auth";
+import { resetUser } from "@/lib/state/user";
+import { AppDispatch } from "@/lib/state";
 
 // Schema validation với Zod
 const registerSchema = z
@@ -34,7 +37,11 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
+  const redirect =
+    redirectPath && redirectPath.trim() !== "" ? redirectPath : "/home";
+  const dispatch = useDispatch<AppDispatch>();
   const { setLoading, setLoadingText } = loadingSlice.actions;
 
   const form = useForm<RegisterFormValues>({
@@ -61,8 +68,26 @@ export function RegisterForm() {
 
       if (result.success) {
         toast.success("Đăng ký thành công!");
-        // Chuyển hướng người dùng sau khi đăng ký thành công
-        router.push("/");
+
+        // Đăng nhập tự động sau khi đăng ký thành công
+        dispatch(setLoadingText("Đang đăng nhập..."));
+        try {
+          await signIn("credentials", {
+            username: values.username,
+            password: values.password,
+            redirect: false,
+          });
+
+          // Đặt lại state user để kích hoạt việc load lại dữ liệu
+          dispatch(resetUser());
+
+          toast.success("Đăng nhập thành công!");
+          router.push(redirect);
+        } catch (error) {
+          console.error("Lỗi khi đăng nhập tự động:", error);
+          toast.error("Đăng ký thành công nhưng không thể đăng nhập tự động");
+          router.push("/auth"); // Chuyển hướng đến trang đăng nhập
+        }
       } else {
         toast.error(result.message || "Có lỗi xảy ra khi đăng ký");
       }
