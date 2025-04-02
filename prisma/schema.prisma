@@ -26,6 +26,7 @@ model User {
   username      String          @unique
   password      String          @map("password")
   role          Role            @default(DEFAULT_USER)
+  isActive      Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   TimeLine      TimeLine[]

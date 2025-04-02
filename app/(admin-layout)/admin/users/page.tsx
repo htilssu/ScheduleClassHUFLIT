@@ -4,130 +4,114 @@ import { useState } from "react";
 import {
   Title,
   Card,
-  TextInput,
   Group,
   Button,
-  Badge,
-  Table,
-  Text,
-  ActionIcon,
-  Tooltip,
-  Pagination,
   Box,
   Flex,
+  LoadingOverlay,
+  Text,
+  Pagination,
+  Notification,
 } from "@mantine/core";
-import {
-  IconSearch,
-  IconPlus,
-  IconTrash,
-  IconEdit,
-  IconDotsVertical,
-  IconCheck,
-  IconX,
-} from "@tabler/icons-react";
-
-const dummyUsers = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    email: "vana@example.com",
-    role: "Sinh viên",
-    status: "Hoạt động",
-  },
-  {
-    id: 2,
-    name: "Trần Thị B",
-    email: "thib@example.com",
-    role: "Giảng viên",
-    status: "Hoạt động",
-  },
-  {
-    id: 3,
-    name: "Lê Văn C",
-    email: "vanc@example.com",
-    role: "Sinh viên",
-    status: "Bị khóa",
-  },
-  {
-    id: 4,
-    name: "Phạm Thị D",
-    email: "thid@example.com",
-    role: "Sinh viên",
-    status: "Hoạt động",
-  },
-  {
-    id: 5,
-    name: "Hoàng Văn E",
-    email: "vane@example.com",
-    role: "Quản trị viên",
-    status: "Hoạt động",
-  },
-];
+import { IconPlus } from "@tabler/icons-react";
+import { useUsers } from "@/hooks/useUsers";
+import { User } from "@/hooks/useUsers";
+import { UserTable } from "./components/UserTable";
+import { UserSearch } from "./components/UserSearch";
+import { UserEditModal } from "./components/UserEditModal";
+import { AddUserModal } from "./components/AddUserModal";
+import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
+import { UserDetailModal } from "./components/UserDetailModal";
+import { updateUser, deleteUser } from "@/app/actions/admin-actions";
 
 export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activePage, setActivePage] = useState(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>();
 
-  const filteredUsers = dummyUsers.filter(
+  const { data: users = [], isLoading, error } = useUsers();
+
+  const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      (user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getStatusBadge = (status: string) => {
-    if (status === "Hoạt động") {
-      return (
-        <Badge
-          color="green"
-          variant="light"
-          leftSection={<IconCheck size={14} />}
-        >
-          {status}
-        </Badge>
-      );
-    } else {
-      return (
-        <Badge color="red" variant="light" leftSection={<IconX size={14} />}>
-          {status}
-        </Badge>
-      );
-    }
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
   };
 
-  const rows = filteredUsers.map((user) => (
-    <Table.Tr key={user.id}>
-      <Table.Td>{user.id}</Table.Td>
-      <Table.Td>{user.name}</Table.Td>
-      <Table.Td>{user.email}</Table.Td>
-      <Table.Td>{user.role}</Table.Td>
-      <Table.Td>{getStatusBadge(user.status)}</Table.Td>
-      <Table.Td>
-        <Flex gap="xs">
-          <Tooltip label="Chỉnh sửa">
-            <ActionIcon color="blue" variant="subtle">
-              <IconEdit size={16} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Xóa">
-            <ActionIcon color="red" variant="subtle">
-              <IconTrash size={16} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Thêm tùy chọn">
-            <ActionIcon variant="subtle">
-              <IconDotsVertical size={16} />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </Table.Td>
-    </Table.Tr>
-  ));
+  const handleDelete = (user: User) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleViewDetails = (user: User) => {
+    setSelectedUser(user);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleContact = (user: User) => {
+    // TODO: Implement contact functionality
+    console.log("Contacting user:", user);
+  };
+
+  const handleAddUser = () => {
+    setSelectedUser(undefined);
+    setIsAddModalOpen(true);
+  };
+
+  const handleSaveUser = async (userData: Partial<User>) => {
+    if (!selectedUser) {
+      // Handle add new user case
+      return;
+    }
+
+    const result = await updateUser(selectedUser.id, userData);
+    if (result.success) {
+      // Show success notification
+      console.log("User updated successfully");
+    } else {
+      // Show error notification
+      console.error("Failed to update user:", result.error);
+    }
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    
+    const result = await deleteUser(selectedUser.id);
+    if (result.success) {
+      // Show success notification
+      console.log("User deleted successfully");
+    } else {
+      // Show error notification
+      console.error("Failed to delete user:", result.error);
+    }
+    setIsDeleteModalOpen(false);
+  };
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Text color="red">Đã có lỗi xảy ra khi tải dữ liệu</Text>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <Flex justify="space-between" align="center">
         <Title order={2}>Quản lý người dùng</Title>
-        <Button leftSection={<IconPlus size={16} />} color="blue">
+        <Button leftSection={<IconPlus size={16} />} color="blue" onClick={handleAddUser}>
           Thêm người dùng
         </Button>
       </Flex>
@@ -144,33 +128,50 @@ export default function AdminUsersPage() {
           </Flex>
         </Card.Section>
 
-        <TextInput
-          placeholder="Tìm kiếm người dùng..."
-          leftSection={<IconSearch size={16} />}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          mt="md"
-          mb="md"
-        />
+        <UserSearch searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
-        <Table striped highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>ID</Table.Th>
-              <Table.Th>Tên</Table.Th>
-              <Table.Th>Email</Table.Th>
-              <Table.Th>Vai trò</Table.Th>
-              <Table.Th>Trạng thái</Table.Th>
-              <Table.Th>Thao tác</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
+        <Box pos="relative">
+          <LoadingOverlay visible={isLoading} zIndex={1000} />
+          <UserTable
+            users={filteredUsers}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onViewDetails={handleViewDetails}
+            onContact={handleContact}
+          />
+        </Box>
 
         <Flex justify="flex-end" mt="md">
           <Pagination total={2} value={activePage} onChange={setActivePage} />
         </Flex>
       </Card>
+
+      <AddUserModal
+        opened={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleSaveUser}
+      />
+
+      <UserEditModal
+        opened={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleSaveUser}
+        user={selectedUser}
+        title="Chỉnh sửa người dùng"
+      />
+
+      <DeleteConfirmationModal
+        opened={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteUser}
+        user={selectedUser}
+      />
+
+      <UserDetailModal
+        opened={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        user={selectedUser}
+      />
     </div>
   );
 }
