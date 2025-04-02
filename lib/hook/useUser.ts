@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/state";
 import {
+  fetchUserData,
+  setUserError,
   setUserLoading,
   setUserSuccess,
-  setUserError,
   UserState,
-  fetchUserData,
 } from "@/lib/state/user";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
  * Hook tùy chỉnh để fetch và quản lý dữ liệu người dùng
@@ -20,6 +20,7 @@ export function useUser() {
   const userState = useSelector<RootState, UserState>((state) => state.user);
 
   useEffect(() => {
+    console.log(userState);
     if (userState.data === undefined && !userState.loading) {
       const fetchUser = async () => {
         try {
