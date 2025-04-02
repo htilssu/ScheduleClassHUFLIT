@@ -52,9 +52,11 @@ export function LoginForm() {
         redirect: false,
       });
 
-      if (result?.error) {
-        const errorCode = result.error as keyof typeof errorMessages;
-        const errorMessage = errorMessages[errorCode] || errorMessages.default;
+      if (result?.code) {
+        const errorCode = result.code;
+        const errorMessage =
+          errorMessages[errorCode as keyof typeof errorMessages] ||
+          errorMessages.default;
         setError(errorMessage);
         toast.error(errorMessage);
       } else if (result?.ok) {
