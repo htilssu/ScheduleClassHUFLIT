@@ -14,7 +14,7 @@ export default function HomePage() {
             <MainContent />
           </Grid.Col>
           <Grid.Col span={{ lg: 3 }} visibleFrom="lg">
-            <Box style={{ position: "fixed" }}>
+            <Box style={{ position: "fixed" }} className={"lg:w-[23%]  mr-1"}>
               <Notify />
             </Box>
           </Grid.Col>

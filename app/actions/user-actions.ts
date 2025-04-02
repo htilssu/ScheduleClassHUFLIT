@@ -9,7 +9,7 @@ export async function updateUserProfile(
     | FormData
     | {
         name?: string;
-        email?: string;
+        username?: string;
         image?: string;
       }
 ) {
@@ -29,7 +29,7 @@ export async function updateUserProfile(
     // Lọc bỏ các trường undefined hoặc null
     const updateData: any = {};
     if (data.name) updateData.name = data.name;
-    if (data.email) updateData.email = data.email;
+    if (data.username) updateData.username = data.username;
     if (data.image) updateData.image = data.image;
 
     // Kiểm tra xem có dữ liệu cập nhật không
