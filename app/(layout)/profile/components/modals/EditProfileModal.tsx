@@ -44,7 +44,7 @@ const EditProfileModal = ({ opened, onClose, user, onSubmit }: EditProfileModalP
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }

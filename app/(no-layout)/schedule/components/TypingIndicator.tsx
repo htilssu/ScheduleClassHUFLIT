@@ -1,5 +1,4 @@
 import { Bot } from "lucide-react";
-import { Card, Loader } from "@mantine/core";
 
 export function TypingIndicator() {
   return (
@@ -9,12 +8,13 @@ export function TypingIndicator() {
           <Bot className="w-6 h-6 text-white" />
         </div>
       </div>
-      <Card shadow="sm" className="px-4 py-3 rounded-lg bg-white">
-        <div className="flex items-center gap-2">
-          <Loader size="xs" color="blue" />
-          <span className="text-sm text-gray-500">Đang nhập...</span>
+      <div className="px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-sm">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce-delay-1"></div>
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce-delay-2"></div>
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce-delay-3"></div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

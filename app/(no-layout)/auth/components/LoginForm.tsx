@@ -5,7 +5,6 @@ import { useForm } from "@mantine/form";
 import { Button, TextInput, Text } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { resetUser } from "@/lib/state/user";
@@ -52,20 +51,19 @@ export function LoginForm() {
         redirect: false,
       });
 
-      if (result?.error) {
-        const errorCode = result.error as keyof typeof errorMessages;
-        const errorMessage = errorMessages[errorCode] || errorMessages.default;
+      if (result?.code) {
+        const errorCode = result.code;
+        const errorMessage =
+          errorMessages[errorCode as keyof typeof errorMessages] ||
+          errorMessages.default;
         setError(errorMessage);
-        toast.error(errorMessage);
       } else if (result?.ok) {
         dispatch(resetUser());
-
-        toast.success("Đăng nhập thành công!");
         router.push(redirect);
       }
     } catch (error) {
       console.error("Lỗi khi đăng nhập:", error);
-      toast.error(errorMessages.default);
+      setError(errorMessages.default);
     } finally {
       dispatch(loadingAction.setLoading(false));
       dispatch(loadingAction.setLoadingText(""));
