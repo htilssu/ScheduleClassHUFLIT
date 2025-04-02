@@ -2,43 +2,54 @@
 
 import React, { useState } from 'react';
 import { Modal, Stack, TextInput, Textarea, Button } from '@mantine/core';
-
-interface ExtendedUser {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    createdAt?: string;
-    role?: string;
-    phone?: string;
-    address?: string;
-    status?: 'active' | 'inactive';
-    username?: string;
-}
+import { updateUserProfile } from '@/app/actions/user-actions';
+import { notifications } from '@mantine/notifications';
+import { User } from '@/lib/state/user';
 
 interface EditFormData {
     name: string;
-    phone: string;
-    address: string;
+    username: string;
 }
 
 interface EditProfileModalProps {
     opened: boolean;
     onClose: () => void;
-    user: ExtendedUser;
-    onSubmit: (data: EditFormData) => void;
+    user: User;
+    onSubmit: (data: User) => void;
 }
 
 const EditProfileModal = ({ opened, onClose, user, onSubmit }: EditProfileModalProps) => {
     const [formData, setFormData] = useState<EditFormData>({
         name: user.name || '',
-        phone: user.phone || '',
-        address: user.address || ''
+        username: user.username || '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
-        onClose();
+        try {
+            const result = await updateUserProfile(formData);
+            if (result.success && result.user) {
+                notifications.show({
+                    title: 'Thành công',
+                    message: 'Cập nhật thông tin thành công',
+                    color: 'green',
+                });
+                onSubmit(result.user as any);
+                onClose();
+            } else {
+                notifications.show({
+                    title: 'Lỗi',
+                    message: result.message || 'Có lỗi xảy ra khi cập nhật thông tin',
+                    color: 'red',
+                });
+            }
+        } catch (error) {
+            notifications.show({
+                title: 'Lỗi',
+                message: 'Có lỗi xảy ra khi cập nhật thông tin',
+                color: 'red',
+            });
+        }
     };
 
     return (
@@ -53,17 +64,13 @@ const EditProfileModal = ({ opened, onClose, user, onSubmit }: EditProfileModalP
                         required
                     />
                     <TextInput
-                        label="Số điện thoại"
-                        placeholder="Nhập số điện thoại"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        label="Tên đăng nhập"
+                        placeholder="Nhập tên đăng nhập"
+                        value={formData.username}
+                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        required
                     />
-                    <Textarea
-                        label="Địa chỉ"
-                        placeholder="Nhập địa chỉ"
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    />
+
                     <Button type="submit" color="orange" fullWidth>
                         Lưu thay đổi
                     </Button>

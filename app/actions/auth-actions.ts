@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { RegisterData, RegisterResponse } from "../types/auth";
+import { auth } from "@/lib/auth";
 
 // Hàm kiểm tra định dạng email
 function isValidEmail(email: string): boolean {
@@ -79,4 +80,80 @@ export async function signUp(data: RegisterData): Promise<RegisterResponse> {
       message: "Có lỗi xảy ra khi đăng ký",
     };
   }
+}
+
+export async function changePassword(data: {
+    currentPassword: string;
+    newPassword: string;
+}) {
+    try {
+        const session = await auth();
+        if (!session?.user?.id) {
+            return {
+                success: false,
+                message: "Chưa đăng nhập",
+            };
+        }
+
+        const { currentPassword, newPassword } = data;
+
+        // Validate input
+        if (!currentPassword || !newPassword) {
+            return {
+                success: false,
+                message: "Vui lòng điền đầy đủ thông tin",
+            };
+        }
+
+        // Check password length
+        if (newPassword.length < 6) {
+            return {
+                success: false,
+                message: "Mật khẩu phải có ít nhất 6 ký tự",
+            };
+        }
+
+        // Get user with password
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { password: true },
+        });
+
+        if (!user) {
+            return {
+                success: false,
+                message: "Không tìm thấy người dùng",
+            };
+        }
+
+        // Verify current password
+        const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!isValidPassword) {
+            return {
+                success: false,
+                message: "Mật khẩu hiện tại không đúng",
+            };
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        await prisma.user.update({
+            where: { id: session.user.id },
+            data: { password: hashedPassword },
+        });
+
+        return {
+            success: true,
+            message: "Đổi mật khẩu thành công",
+        };
+    } catch (error) {
+        console.error("Error in changePassword:", error);
+        return {
+            success: false,
+            message: "Có lỗi xảy ra khi đổi mật khẩu",
+        };
+    }
 }

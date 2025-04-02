@@ -20,10 +20,12 @@ export async function GET(req: NextRequest) {
           where: { id: session.user.id },
           select: {
             id: true,
+            username: true,
             name: true,
             email: true,
             image: true,
             role: true,
+            createdAt: true
           },
         })
       : null;

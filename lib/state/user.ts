@@ -29,7 +29,12 @@ export interface User {
   name: string;
   email: string;
   image: string;
+  username: string;
+  phone?: string;
+  address?: string;
+  createdAt?: string;
   role: "DEFAULT_USER" | "PREMIUM_USER" | "ADMIN";
+  status?: 'active' | 'inactive';
 }
 
 export interface UserState {
