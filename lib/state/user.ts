@@ -40,7 +40,7 @@ export interface UserState {
 
 const initialState: UserState = {
   data: undefined,
-  loading: true,
+  loading: false,
   error: null,
 };
 
@@ -49,6 +49,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUserLoading: (state) => {
+      state.data = null;
       state.loading = true;
       state.error = null;
     },

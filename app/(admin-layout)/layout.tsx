@@ -1,9 +1,9 @@
-import React from "react";
-import { Metadata } from "next";
 import "@/app/globals.css";
 import "@mantine/core/styles.css";
-import RootWrapper from "@/components/RootWrapper";
-import { AuthProvider } from "@/context/AuthContext";
+import { Metadata } from "next";
+import React from "react";
+import { AdminNavbar } from "./admin/components/Navbar";
+import { AdminSidebar } from "./admin/components/Sidebar";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard - HUFLIT Schedule",
@@ -14,13 +14,14 @@ export default function AdminRootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi">
-      <body suppressHydrationWarning>
-        <RootWrapper>
-          <AuthProvider>{children}</AuthProvider>
-        </RootWrapper>
-      </body>
-    </html>
+    <div className="min-h-screen flex flex-col">
+      <AdminNavbar />
+      <div className="flex flex-1 pt-16">
+        <div className="w-64 flex-shrink-0">
+          <AdminSidebar />
+        </div>
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
+      </div>
+    </div>
   );
 }
- 

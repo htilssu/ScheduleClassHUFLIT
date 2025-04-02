@@ -25,7 +25,7 @@ import {
 
 function SetupSection() {
   const form = useForm({
-    initialValues: loadScheduleConfig(), // Load cấu hình mặc định
+    initialValues: loadScheduleConfig(),
   });
   const router = useRouter();
 

@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Avatar,
   Menu,
@@ -23,9 +22,12 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
+import useUser from "@/lib/hook/useUser";
+import { signOut } from "next-auth/react";
 
 export function AdminNavbar() {
-  const { data: session, status } = useSession();
+  const { data: user, loading, error } = useUser();
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(3);
 
@@ -37,6 +39,8 @@ export function AdminNavbar() {
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
+
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <header className="fixed top-0 left-0 right-0 border-b border-gray-200 bg-white dark:bg-gray-800 h-16 z-50">
@@ -87,27 +91,27 @@ export function AdminNavbar() {
 
           <Divider orientation="vertical" className="h-6" />
 
-          {status === "loading" ? (
+          {loading && !user && !error ? (
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></div>
-          ) : session ? (
+          ) : user ? (
             <Menu shadow="md" width={220} position="bottom-end">
               <Menu.Target>
                 <button className="flex items-center gap-2 rounded-full hover:bg-muted/50 p-1 transition-colors">
                   <Avatar
-                    src={session.user?.image}
-                    alt={session.user?.name || ""}
+                    src={user.image}
+                    alt={user.name || ""}
                     radius="xl"
                     size="md"
                     className="cursor-pointer"
                   >
-                    {session.user?.name?.charAt(0).toUpperCase() || "A"}
+                    {user.name?.charAt(0).toUpperCase() || "A"}
                   </Avatar>
                   <div className="hidden md:flex flex-col items-start text-sm">
                     <span className="font-medium">
-                      {session.user?.name || "Admin"}
+                      {user.name || "Người dùng"}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      Quản trị viên
+                      {isAdmin ? "Quản trị viên" : "Người dùng"}
                     </span>
                   </div>
                 </button>
@@ -117,10 +121,10 @@ export function AdminNavbar() {
                 <Menu.Label>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      {session.user?.name || "Admin"}
+                      {user.name || "Người dùng"}
                     </p>
                     <p className="text-xs leading-none text-gray-500">
-                      {session.user?.email}
+                      {user.email}
                     </p>
                   </div>
                 </Menu.Label>
@@ -132,20 +136,24 @@ export function AdminNavbar() {
                 >
                   Hồ sơ
                 </Menu.Item>
-                <Menu.Item
-                  component={Link}
-                  href="/admin/settings"
-                  leftSection={<Settings size={14} />}
-                >
-                  Cài đặt hệ thống
-                </Menu.Item>
-                <Menu.Item
-                  component={Link}
-                  href="/admin/users"
-                  leftSection={<UserCog size={14} />}
-                >
-                  Quản lý người dùng
-                </Menu.Item>
+                {isAdmin && (
+                  <>
+                    <Menu.Item
+                      component={Link}
+                      href="/admin/settings"
+                      leftSection={<Settings size={14} />}
+                    >
+                      Cài đặt hệ thống
+                    </Menu.Item>
+                    <Menu.Item
+                      component={Link}
+                      href="/admin/users"
+                      leftSection={<UserCog size={14} />}
+                    >
+                      Quản lý người dùng
+                    </Menu.Item>
+                  </>
+                )}
                 <Menu.Item
                   component={Link}
                   href="/help"
@@ -175,4 +183,3 @@ export function AdminNavbar() {
     </header>
   );
 }
- 
