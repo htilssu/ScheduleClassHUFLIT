@@ -11,6 +11,7 @@ import {
   LoadingOverlay,
   Text,
   Pagination,
+  Notification,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useUsers } from "@/hooks/useUsers";
@@ -21,6 +22,7 @@ import { UserEditModal } from "./components/UserEditModal";
 import { AddUserModal } from "./components/AddUserModal";
 import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 import { UserDetailModal } from "./components/UserDetailModal";
+import { updateUser, deleteUser } from "@/app/actions/admin-actions";
 
 export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,16 +68,34 @@ export default function AdminUsersPage() {
   };
 
   const handleSaveUser = async (userData: Partial<User>) => {
-    // TODO: Implement API call to save user
-    console.log("Saving user:", userData);
+    if (!selectedUser) {
+      // Handle add new user case
+      return;
+    }
+
+    const result = await updateUser(selectedUser.id, userData);
+    if (result.success) {
+      // Show success notification
+      console.log("User updated successfully");
+    } else {
+      // Show error notification
+      console.error("Failed to update user:", result.error);
+    }
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
   };
 
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
-    // TODO: Implement API call to delete user
-    console.log("Deleting user:", selectedUser);
+    
+    const result = await deleteUser(selectedUser.id);
+    if (result.success) {
+      // Show success notification
+      console.log("User deleted successfully");
+    } else {
+      // Show error notification
+      console.error("Failed to delete user:", result.error);
+    }
     setIsDeleteModalOpen(false);
   };
 
