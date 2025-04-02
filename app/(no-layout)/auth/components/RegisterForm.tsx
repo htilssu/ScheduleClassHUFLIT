@@ -11,7 +11,6 @@ import {
   Alert,
 } from "@mantine/core";
 import { signUp } from "@/app/actions/auth-actions";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { loadingSlice } from "@/lib/state";
 import { RegisterData } from "@/app/types/auth";
@@ -20,6 +19,7 @@ import { IconAlertCircle } from "@tabler/icons-react";
 import { signIn } from "@/lib/auth";
 import { resetUser } from "@/lib/state/user";
 import { AppDispatch } from "@/lib/state";
+import { useState } from "react";
 
 // Schema validation với Zod
 const registerSchema = z
@@ -43,6 +43,7 @@ export function RegisterForm() {
     redirectPath && redirectPath.trim() !== "" ? redirectPath : "/home";
   const dispatch = useDispatch<AppDispatch>();
   const { setLoading, setLoadingText } = loadingSlice.actions;
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<RegisterFormValues>({
     initialValues: {
@@ -54,6 +55,9 @@ export function RegisterForm() {
   });
 
   const handleSubmit = async (values: RegisterFormValues) => {
+    // Xóa lỗi cũ
+    setError(null);
+
     // Hiển thị loading
     dispatch(setLoading(true));
     dispatch(setLoadingText("Đang đăng ký..."));
@@ -67,8 +71,6 @@ export function RegisterForm() {
       const result = await signUp(registerData);
 
       if (result.success) {
-        toast.success("Đăng ký thành công!");
-
         // Đăng nhập tự động sau khi đăng ký thành công
         dispatch(setLoadingText("Đang đăng nhập..."));
         try {
@@ -81,19 +83,18 @@ export function RegisterForm() {
           // Đặt lại state user để kích hoạt việc load lại dữ liệu
           dispatch(resetUser());
 
-          toast.success("Đăng nhập thành công!");
           router.push(redirect);
         } catch (error) {
           console.error("Lỗi khi đăng nhập tự động:", error);
-          toast.error("Đăng ký thành công nhưng không thể đăng nhập tự động");
+          setError("Đăng ký thành công nhưng không thể đăng nhập tự động");
           router.push("/auth"); // Chuyển hướng đến trang đăng nhập
         }
       } else {
-        toast.error(result.message || "Có lỗi xảy ra khi đăng ký");
+        setError(result.message || "Có lỗi xảy ra khi đăng ký");
       }
     } catch (error) {
       console.error("Lỗi khi gửi form đăng ký:", error);
-      toast.error("Có lỗi xảy ra khi đăng ký");
+      setError("Có lỗi xảy ra khi đăng ký");
     } finally {
       dispatch(setLoading(false));
       dispatch(setLoadingText(""));
@@ -143,6 +144,12 @@ export function RegisterForm() {
             required
           />
         </div>
+
+        {error && (
+          <Alert color="red" title="Lỗi" variant="light">
+            {error}
+          </Alert>
+        )}
 
         <Button type="submit" fullWidth color="orange">
           Đăng ký
