@@ -12,7 +12,7 @@ const ProfileHeader = ({ user }: { user: User }) => (
             <Stack gap={0}>
                 <Title order={3}>{user.name}</Title>
                 <Text c="dimmed">{user.email}</Text>
-                <Badge color="orange" variant="light">
+                <Badge color="orange" variant="outline" >
                     {user.role}
                 </Badge>
             </Stack>

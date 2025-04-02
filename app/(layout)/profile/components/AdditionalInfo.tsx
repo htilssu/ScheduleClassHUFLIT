@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Card, Stack, Group, Title, Text, Button } from '@mantine/core';
-import { Shield, Lock } from 'lucide-react';
+import {Card, Stack, Group, Title, Text, Button, Badge} from '@mantine/core';
+import { Shield, Lock, LockKeyhole , KeyRound } from 'lucide-react';
 import { User } from '@/lib/state/user';
 
 interface AdditionalInfoProps {
@@ -19,11 +19,22 @@ const AdditionalInfo = ({ user, onPasswordChange }: AdditionalInfoProps) => (
                     <Shield size={20} className="text-orange-500" />
                     <div>
                         <Text size="sm" c="dimmed">Trạng thái tài khoản</Text>
-                        <Text>{user.status === 'inactive' ? 'Không hoạt động' : 'Đang hoạt động'}</Text>
+                        <Badge color="green" variant="dot">
+                            {user.status === 'inactive' ? 'Không hoạt động' : 'Đang hoạt động'}
+                        </Badge>
                     </div>
                 </Group>
                 <Group className="bg-orange-50 p-3 rounded-lg">
-                    <Lock size={20} className="text-orange-500" />
+                    <LockKeyhole size={20} className="text-orange-500" />
+                    <div>
+                        <Text size="sm" c="dimmed">Quyền hạn</Text>
+                        <Badge color="orange" variant="outline" >
+                            {user.role}
+                        </Badge>
+                    </div>
+                </Group>
+                <Group className="bg-orange-50 p-3 rounded-lg">
+                    <KeyRound size={20} className="text-orange-500" />
                     <div>
                         <Text size="sm" c="dimmed">Mật khẩu</Text>
                         <Text>********</Text>

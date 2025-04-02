@@ -79,7 +79,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-0">
       <Stack gap="xl">
         <Paper shadow="sm" p="xl" radius="md">
           <ProfileHeader user={user} />
