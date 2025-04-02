@@ -44,26 +44,30 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/images/LogoT&H1.png"
-                alt="Logo"
-                width={48}
-                height={48}
-                className="h-12 w-auto"
+                  src="/images/LogoT&H1.png"
+                  alt="Logo"
+                  width={48}
+                  height={48}
+                  className="h-12 w-auto"
               />
-              <span className="text-3xl font-bold text-orange-500">
-                SCHEDULE
-              </span>
+              <span
+                  className="text-3xl font-bold bg-gradient-to-r from-orange-900 via-orange-500 to-orange-300 bg-clip-text text-transparent"
+              >
+  SCHEDULE
+</span>
+
+
             </Link>
           </div>
 
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               <Link
-                href="/home"
-                className={`px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === "/home"
-                    ? "text-orange-500 bg-orange-50/70"
-                    : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
+                  href="/home"
+                  className={`px-3 py-2 rounded-md text-base font-medium ${
+                      pathname === "/home"
+                          ? "text-orange-500 bg-orange-50/70"
+                          : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                 }`}
               >
                 Trang chủ
@@ -112,9 +116,9 @@ const Navbar = () => {
                     alt={user.name || ""}
                     radius="xl"
                     size="md"
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-full shadow-lg ring-1 ring-orange-400 transition duration-300"
                   >
-                    {user.name?.charAt(0).toUpperCase() || "U"}
+                    {user.name?.charAt(0).toUpperCase() || "H"}
                   </Avatar>
                 </Menu.Target>
 
