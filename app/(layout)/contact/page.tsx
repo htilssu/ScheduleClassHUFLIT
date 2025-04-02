@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const Page = () => {
     return (
-        <div className={"h-screen"}>
+        <div>
             <Contact/>
         </div>
     );
