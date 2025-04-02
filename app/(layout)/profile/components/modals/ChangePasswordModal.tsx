@@ -11,8 +11,28 @@ interface ChangePasswordModalProps {
   onSubmit: (data: {
     currentPassword: string;
     newPassword: string;
-  }) => Promise<{ success: boolean; message?: string }>;
+  }) => Promise<{ success: boolean; message?: string; code?: string }>;
 }
+
+// Định nghĩa các mã lỗi có thể xảy ra
+export enum PasswordErrorCode {
+  INVALID_CURRENT_PASSWORD = "invalid_current_password",
+  SAME_PASSWORD = "same_password",
+  WEAK_PASSWORD = "weak_password",
+  SERVER_ERROR = "server_error",
+}
+
+// Bảng dịch mã lỗi sang thông báo người dùng
+const errorMessages: Record<string, string> = {
+  [PasswordErrorCode.INVALID_CURRENT_PASSWORD]:
+    "Mật khẩu hiện tại không chính xác",
+  [PasswordErrorCode.SAME_PASSWORD]:
+    "Mật khẩu mới không được trùng với mật khẩu hiện tại",
+  [PasswordErrorCode.WEAK_PASSWORD]: "Mật khẩu mới không đủ mạnh",
+  [PasswordErrorCode.SERVER_ERROR]:
+    "Có lỗi xảy ra khi đổi mật khẩu, vui lòng thử lại sau",
+  default: "Có lỗi xảy ra khi đổi mật khẩu",
+};
 
 // Schema validation với Zod
 const passwordSchema = z
@@ -70,24 +90,48 @@ const ChangePasswordModal = ({
         form.reset();
         onClose();
       } else {
-        // Hiển thị lỗi từ server trên trường tương ứng
-        if (
-          result.message?.toLowerCase().includes("mật khẩu hiện tại") ||
-          result.message?.toLowerCase().includes("current password")
-        ) {
-          form.setFieldError("currentPassword", result.message);
-        } else if (
-          result.message?.toLowerCase().includes("mật khẩu mới") ||
-          result.message?.toLowerCase().includes("new password")
-        ) {
-          form.setFieldError("newPassword", result.message);
+        // Xử lý lỗi dựa trên mã lỗi nếu có
+        if (result.code) {
+          const errorMessage =
+            errorMessages[result.code] || errorMessages.default;
+
+          // Xác định trường cần hiển thị lỗi dựa trên mã lỗi
+          switch (result.code) {
+            case PasswordErrorCode.INVALID_CURRENT_PASSWORD:
+              form.setFieldError("currentPassword", errorMessage);
+              break;
+            case PasswordErrorCode.SAME_PASSWORD:
+            case PasswordErrorCode.WEAK_PASSWORD:
+              form.setFieldError("newPassword", errorMessage);
+              break;
+            default:
+              form.setFieldError("currentPassword", errorMessage);
+          }
+        } else if (result.message) {
+          // Fallback: xử lý dựa trên nội dung thông báo
+          if (
+            result.message.toLowerCase().includes("mật khẩu hiện tại") ||
+            result.message.toLowerCase().includes("current password")
+          ) {
+            form.setFieldError("currentPassword", result.message);
+          } else if (
+            result.message.toLowerCase().includes("mật khẩu mới") ||
+            result.message.toLowerCase().includes("new password")
+          ) {
+            form.setFieldError("newPassword", result.message);
+          } else {
+            form.setFieldError("currentPassword", result.message);
+          }
         } else {
-          form.setFieldError("currentPassword", result.message);
+          form.setFieldError("currentPassword", errorMessages.default);
         }
       }
     } catch (error) {
       console.error("Error changing password:", error);
-      form.setFieldError("currentPassword", "Có lỗi xảy ra khi đổi mật khẩu");
+      form.setFieldError(
+        "currentPassword",
+        errorMessages[PasswordErrorCode.SERVER_ERROR]
+      );
     } finally {
       setIsSubmitting(false);
     }
