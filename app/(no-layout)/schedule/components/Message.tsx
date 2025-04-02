@@ -1,5 +1,5 @@
 import { Bot } from "lucide-react";
-import { Card, Group, Text, Table, ScrollArea } from "@mantine/core";
+import { Card, ScrollArea, Table, Text } from "@mantine/core";
 import { ClassData } from "@/lib/types";
 
 interface MessageProps {
@@ -28,60 +28,12 @@ export function Message({ text, sender, classes }: MessageProps) {
         }`}
       >
         {sender === "bot" ? (
-          <div>
-            <Card shadow="sm" p="md" radius="md" withBorder>
-              <Text size="md" style={{ whiteSpace: "pre-line" }}>
-                {text}
-              </Text>
-
-              {classes && classes.length > 0 && (
-                <div className="mt-4">
-                  <Text fw={700} size="sm" mb={5} c="blue">
-                    Danh sách lớp học:
-                  </Text>
-                  <ScrollArea h={classes.length > 3 ? 300 : undefined}>
-                    <Table
-                      striped
-                      highlightOnHover
-                      withTableBorder
-                      withColumnBorders
-                    >
-                      <Table.Thead>
-                        <Table.Tr>
-                          <Table.Th>Môn học</Table.Th>
-                          <Table.Th>Lớp</Table.Th>
-                          <Table.Th>Giảng viên</Table.Th>
-                          <Table.Th>Thời gian</Table.Th>
-                        </Table.Tr>
-                      </Table.Thead>
-                      <Table.Tbody>
-                        {classes.map((cls) => (
-                          <Table.Tr key={cls.id}>
-                            <Table.Td fw={500}>{cls.Subject.name}</Table.Td>
-                            <Table.Td>{cls.classId}</Table.Td>
-                            <Table.Td>{cls.Lecturer.name}</Table.Td>
-                            <Table.Td>
-                              {cls.learningSection.map((section, index) => (
-                                <div key={index} className="text-sm">
-                                  <span className="font-semibold">
-                                    {section.weekDay}
-                                  </span>{" "}
-                                  ({section.time}) -{" "}
-                                  <span className="text-gray-700">
-                                    {" "}
-                                    {section.room}
-                                  </span>
-                                </div>
-                              ))}
-                            </Table.Td>
-                          </Table.Tr>
-                        ))}
-                      </Table.Tbody>
-                    </Table>
-                  </ScrollArea>
-                </div>
-              )}
-            </Card>
+          <div
+            className={`max-w-3xl w-fit bg-white text-black border border-gray-300 rounded-3xl px-4 py-3`}
+          >
+            <Text size="md" style={{ whiteSpace: "pre-line" }}>
+              {text}
+            </Text>
           </div>
         ) : (
           text

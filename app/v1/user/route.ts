@@ -35,13 +35,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(userData);
     } else {
       // Trả về dữ liệu có sẵn từ session với cấu trúc tương tự
-      return NextResponse.json({
-        id: session.user.id || "",
-        name: session.user.name || "",
-        email: session.user.email || "",
-        image: session.user.image || "",
-        role: "DEFAULT_USER", // Giá trị mặc định khớp với enum trong Prisma
-      });
+      return NextResponse.json(
+        { error: "Không tìm thấy phiên đăng nhập" },
+        { status: 401 }
+      );
     }
   } catch (error) {
     console.error("Lỗi khi lấy thông tin user:", error);
