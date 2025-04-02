@@ -113,14 +113,6 @@ export function RegisterForm() {
             {...form.getInputProps("username")}
             required
           />
-          <Alert
-            icon={<IconAlertCircle size="1rem" />}
-            color="yellow"
-            variant="light"
-            mt={5}
-          >
-            Nếu nhập email, hệ thống sẽ tự động sử dụng làm tên đăng nhập
-          </Alert>
         </div>
 
         <div className="space-y-2">
