@@ -1,14 +1,4 @@
-export interface ExtendedUser {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    createdAt?: string;
-    role?: string;
-    phone?: string;
-    address?: string;
-    status?: 'active' | 'inactive';
-    username?: string;
-}
+import { User } from '@/lib/state/user';
 
 export interface EditFormData {
     name: string;

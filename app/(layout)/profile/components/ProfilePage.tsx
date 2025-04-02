@@ -9,10 +9,14 @@ import PersonalInfo from './PersonalInfo';
 import AdditionalInfo from './AdditionalInfo';
 import EditProfileModal from './modals/EditProfileModal';
 import ChangePasswordModal from './modals/ChangePasswordModal';
-import { EditFormData } from '../types';
+import { useDispatch } from 'react-redux';
+import { setUserSuccess, User } from '@/lib/state/user';
+import { notifications } from '@mantine/notifications';
+import { changePassword } from '@/app/actions/auth-actions';
 
 const ProfilePage = () => {
     const { data: user, loading } = useUser();
+    const dispatch = useDispatch();
     const [editModalOpened, setEditModalOpened] = useState(false);
     const [passwordModalOpened, setPasswordModalOpened] = useState(false);
 
@@ -32,9 +36,40 @@ const ProfilePage = () => {
         );
     }
 
-    const handleEditSubmit = (data: EditFormData) => {
-        // TODO: Implement API call to update user data
-        console.log('Updating user data:', data);
+    const handleEditSubmit = (updatedUser: User) => {
+        dispatch(setUserSuccess(updatedUser));
+    };
+
+    const handlePasswordChange = async (data: {
+        currentPassword: string;
+        newPassword: string;
+    }) => {
+        try {
+            const result = await changePassword(data);
+            
+            if (result.success) {
+                notifications.show({
+                    title: 'Thành công',
+                    message: result.message || 'Đổi mật khẩu thành công',
+                    color: 'green',
+                });
+                setPasswordModalOpened(false);
+            } else {
+                // Hiển thị lỗi từ server
+                notifications.show({
+                    title: 'Lỗi',
+                    message: result.message || 'Có lỗi xảy ra khi đổi mật khẩu',
+                    color: 'red',
+                });
+            }
+        } catch (error) {
+            console.error('Error changing password:', error);
+            notifications.show({
+                title: 'Lỗi',
+                message: 'Có lỗi xảy ra khi đổi mật khẩu',
+                color: 'red',
+            });
+        }
     };
 
     return (
@@ -64,6 +99,7 @@ const ProfilePage = () => {
             <ChangePasswordModal
                 opened={passwordModalOpened}
                 onClose={() => setPasswordModalOpened(false)}
+                onSubmit={handlePasswordChange}
             />
         </div>
     );

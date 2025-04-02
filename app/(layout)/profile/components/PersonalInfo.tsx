@@ -3,21 +3,10 @@
 import React from 'react';
 import { Card, Stack, Group, Title, Text, Button } from '@mantine/core';
 import { User, Mail, Calendar, Phone, MapPin, Edit } from 'lucide-react';
-
-interface ExtendedUser {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    createdAt?: string;
-    role?: string;
-    phone?: string;
-    address?: string;
-    status?: 'active' | 'inactive';
-    username?: string;
-}
+import { User as UserType } from '@/lib/state/user';
 
 interface PersonalInfoProps {
-    user: ExtendedUser;
+    user: UserType;
     onEdit: () => void;
 }
 
