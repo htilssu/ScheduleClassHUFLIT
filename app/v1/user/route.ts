@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
             email: true,
             image: true,
             role: true,
-            createdAt: true
+            createdAt: true,
           },
         })
       : null;
