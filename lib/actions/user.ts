@@ -1,11 +1,4 @@
 import { prisma } from "../prisma";
-import { store } from "@/lib/state";
-import {
-  userSlice,
-  setUserLoading,
-  setUserSuccess,
-  setUserError,
-} from "@/lib/state/user";
 
 function isEmail(username: string) {
   return username.includes("@");
@@ -13,7 +6,7 @@ function isEmail(username: string) {
 
 export async function getUserFromDb(username: string) {
   if (isEmail(username)) {
-    return prisma.user.findUnique({ where: { email: username } });
+    return prisma.user.findFirst({ where: { email: username } });
   } else {
     return prisma.user.findUnique({ where: { username: username } });
   }
