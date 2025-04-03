@@ -77,7 +77,7 @@ export default function AdminCodesPage() {
   // Form tạo mã mới
   const createForm = useForm({
     initialValues: {
-      expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Mặc định 1 ngày sau
+      expiredAt: new Date(performance.now() + 24 * 60 * 60 * 1000), // Mặc định 1 ngày sau
     },
   });
 
@@ -277,7 +277,7 @@ export default function AdminCodesPage() {
               label="Ngày hết hạn"
               placeholder="Chọn ngày hết hạn"
               required
-              minDate={new Date(Date.now() + 12 * 60 * 60 * 1000)}
+              minDate={new Date(performance.now() + 12 * 60 * 60 * 1000)}
               valueFormat="DD/MM/YYYY"
               {...createForm.getInputProps("expiredAt")}
               disabled={isCreatePending}
