@@ -213,3 +213,11 @@ model Feedback {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model BadWord {
+  id   String @id @default(cuid()) @map("_id")
+  word String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
