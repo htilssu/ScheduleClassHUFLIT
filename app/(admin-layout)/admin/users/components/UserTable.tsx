@@ -1,4 +1,4 @@
-import { Table, Text, Badge, Flex, ActionIcon, Tooltip, Menu } from "@mantine/core";
+import { Table, Text, Badge, Flex, ActionIcon, Tooltip, Menu, Skeleton } from "@mantine/core";
 import {
   IconEdit,
   IconTrash,
@@ -116,6 +116,43 @@ export const UserTable = ({
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
+    </Table>
+  );
+};
+
+export const UserTableSkeleton = () => {
+  const skeletonRows = [1, 2, 3, 4, 5];
+  
+  return (
+    <Table striped highlightOnHover>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>ID</Table.Th>
+          <Table.Th>Tên</Table.Th>
+          <Table.Th>Email</Table.Th>
+          <Table.Th>Vai trò</Table.Th>
+          <Table.Th>Trạng thái</Table.Th>
+          <Table.Th>Thao tác</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {skeletonRows.map((index) => (
+          <Table.Tr key={index}>
+            <Table.Td><Skeleton height={20} width={40} /></Table.Td>
+            <Table.Td><Skeleton height={20} width={150} /></Table.Td>
+            <Table.Td><Skeleton height={20} width={200} /></Table.Td>
+            <Table.Td><Skeleton height={20} width={100} /></Table.Td>
+            <Table.Td><Skeleton height={20} width={80} /></Table.Td>
+            <Table.Td>
+              <Flex gap="xs">
+                <Skeleton height={32} width={32} circle />
+                <Skeleton height={32} width={32} circle />
+                <Skeleton height={32} width={32} circle />
+              </Flex>
+            </Table.Td>
+          </Table.Tr>
+        ))}
+      </Table.Tbody>
     </Table>
   );
 }; 

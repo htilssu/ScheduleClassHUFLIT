@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "dev": "set NODE_OPTIONS=--inspect && next dev --turbo",
+    "dev": "set NODE_OPTIONS=--inspect && start chrome http://localhost:3000 && next dev --turbo",
     "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",
