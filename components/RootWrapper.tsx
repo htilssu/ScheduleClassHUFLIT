@@ -7,9 +7,6 @@ import { store } from "@/lib/state";
 import { Box, MantineProvider, createTheme } from "@mantine/core";
 import { Provider } from "react-redux";
 import LoadingOverlayWrapper from "./LoadingOverlayWrapper";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { SessionProvider } from "next-auth/react";
 import "@mantine/dates/styles.css";
 
 export const queryClient = new QueryClient();
@@ -40,18 +37,6 @@ const RootWrapper = ({ children }: Readonly<{ children: ReactNode }>) => {
           <Box className="relative">
             <LoadingOverlayWrapper />
             {children}
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
           </Box>
         </MantineProvider>
       </Provider>
