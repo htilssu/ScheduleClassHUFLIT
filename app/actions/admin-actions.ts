@@ -11,9 +11,8 @@ export async function updateUser(userId: string, userData: Partial<User>) {
       where: { id: userId },
       data: {
         name: userData.name,
-        email: userData.email,
-        username: userData.username,
-        role: userData.role as Role
+        role: userData.role as Role,
+        isActive: userData.isActive
       },
     });
 

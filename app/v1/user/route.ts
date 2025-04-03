@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
-  // Lấy thông tin từ session sử dụng auth()
   const session = await auth();
 
   if (!session || !session.user) {
@@ -25,18 +25,27 @@ export async function GET(req: NextRequest) {
             email: true,
             image: true,
             role: true,
+            isActive: true,
             createdAt: true,
           },
         })
       : null;
 
-    // Trả về dữ liệu user từ DB hoặc từ session nếu không tìm thấy
     if (userData) {
+      if (!userData.isActive || userData.role !== session.user.role) {
+        const cookieStore = await cookies();
+        cookieStore.delete("schedule-session");
+
+        return NextResponse.json(
+          { error: "Tài khoản bị khóa hoặc không có quyền truy cập" },
+          { status: 403 }
+        );
+      }
+
       return NextResponse.json(userData);
     } else {
-      // Trả về dữ liệu có sẵn từ session với cấu trúc tương tự
       return NextResponse.json(
-        { error: "Không tìm thấy phiên đăng nhập" },
+        { error: "Không tìm thấy người dùng" },
         { status: 401 }
       );
     }

@@ -8,23 +8,24 @@ import {
   Button,
   Box,
   Flex,
-  LoadingOverlay,
   Text,
   Pagination,
-  Notification,
 } from "@mantine/core";
+import { notifications } from '@mantine/notifications';
 import { IconPlus } from "@tabler/icons-react";
 import { useUsers } from "@/hooks/useUsers";
 import { User } from "@/hooks/useUsers";
-import { UserTable } from "./components/UserTable";
+import { UserTable, UserTableSkeleton } from "./components/UserTable";
 import { UserSearch } from "./components/UserSearch";
 import { UserEditModal } from "./components/UserEditModal";
 import { AddUserModal } from "./components/AddUserModal";
 import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 import { UserDetailModal } from "./components/UserDetailModal";
 import { updateUser, deleteUser } from "@/app/actions/admin-actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AdminUsersPage() {
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [activePage, setActivePage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -33,14 +34,14 @@ export default function AdminUsersPage() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
 
-  const { data: users = [], isLoading, error } = useUsers();
+  const { data, isLoading, error } = useUsers({
+    page: activePage,
+    limit: 12,
+    search: searchQuery,
+  });
 
-  const filteredUsers = users.filter(
-    (user) =>
-      (user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-      (user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-      user.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const users = data?.users || [];
+  const totalPages = data?.pagination.totalPages || 1;
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
@@ -73,16 +74,31 @@ export default function AdminUsersPage() {
       return;
     }
 
-    const result = await updateUser(selectedUser.id, userData);
+    // Ensure isActive is a boolean
+    const updateData = {
+      ...userData,
+      isActive: Boolean(userData.isActive),
+    };
+
+    const result = await updateUser(selectedUser.id, updateData);
     if (result.success) {
-      // Show success notification
-      console.log("User updated successfully");
+      notifications.show({
+        title: "Thành công",
+        message: "Cập nhật thông tin người dùng thành công",
+        color: "green",
+      });
+      // Invalidate and refetch users query
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
     } else {
-      // Show error notification
-      console.error("Failed to update user:", result.error);
+      notifications.show({
+        title: "Lỗi",
+        message: "Không thể cập nhật thông tin người dùng",
+        color: "red",
+      });
     }
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
+    setSelectedUser(undefined);
   };
 
   const handleDeleteUser = async () => {
@@ -90,13 +106,22 @@ export default function AdminUsersPage() {
     
     const result = await deleteUser(selectedUser.id);
     if (result.success) {
-      // Show success notification
-      console.log("User deleted successfully");
+      notifications.show({
+        title: "Thành công",
+        message: "Xóa người dùng thành công",
+        color: "green",
+      });
+      // Invalidate and refetch users query
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
     } else {
-      // Show error notification
-      console.error("Failed to delete user:", result.error);
+      notifications.show({
+        title: "Lỗi",
+        message: "Không thể xóa người dùng",
+        color: "red",
+      });
     }
     setIsDeleteModalOpen(false);
+    setSelectedUser(undefined);
   };
 
   if (error) {
@@ -131,18 +156,26 @@ export default function AdminUsersPage() {
         <UserSearch searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
         <Box pos="relative">
-          <LoadingOverlay visible={isLoading} zIndex={1000} />
-          <UserTable
-            users={filteredUsers}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onViewDetails={handleViewDetails}
-            onContact={handleContact}
-          />
+          {isLoading ? (
+            <UserTableSkeleton />
+          ) : (
+            <UserTable
+              users={users}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onViewDetails={handleViewDetails}
+              onContact={handleContact}
+            />
+          )}
         </Box>
 
-        <Flex justify="flex-end" mt="md">
-          <Pagination total={2} value={activePage} onChange={setActivePage} />
+        <Flex justify="center" mt="md">
+          <Pagination 
+            total={totalPages} 
+            value={activePage} 
+            onChange={setActivePage}
+            withEdges
+          />
         </Flex>
       </Card>
 

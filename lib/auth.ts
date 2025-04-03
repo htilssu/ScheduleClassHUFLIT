@@ -7,7 +7,9 @@ import { comparePassword } from "./utils";
 import {
   UserNotFoundException,
   WrongPasswordException,
+  AccountLockedException,
 } from "@/lib/exceptions/authentication-exception";
+import { Role } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -25,6 +27,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user) {
           throw new UserNotFoundException();
         }
+
+        if (!user.isActive) {
+          throw new AccountLockedException();
+        }
+
         const compareResult = await comparePassword(
           credentials.password as string,
           user.password
@@ -40,9 +47,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as string;
         token.email = user.email;
         token.name = user.name;
+        token.role = user.role;
       }
       return token;
     },
@@ -51,6 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.email = token.email || "";
         session.user.name = token.name || "";
+        session.user.role = token.role as Role;
       }
       return session;
     },
@@ -58,6 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 5 * 60,
   },
   pages: {
     signIn: "/auth",
