@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 // Schema cho việc tạo từ cấm
@@ -50,6 +50,7 @@ export async function createBadWordAction(words: string[]) {
     );
 
     revalidatePath("/admin/badwords"); // Revalidate trang quản lý
+    revalidateTag("bad-words");
     return { success: true, badWords: createdBadWords };
   } catch (error) {
     console.error("Error creating bad word:", error);
@@ -76,6 +77,7 @@ export async function deleteBadWordAction(id: string) {
       where: { id },
     });
     revalidatePath("/admin/badwords"); // Revalidate trang quản lý
+    revalidateTag("bad-words");
     return { success: true };
   } catch (error) {
     console.error("Error deleting bad word:", error);

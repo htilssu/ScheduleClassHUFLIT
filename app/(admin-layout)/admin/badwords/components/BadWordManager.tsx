@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import {
   ActionIcon,
   Alert,
+  Badge,
   Box,
   Button,
   Group,
@@ -11,7 +12,6 @@ import {
   TagsInput,
   Skeleton,
   Stack,
-  Table,
   Text,
   Title,
 } from "@mantine/core";
@@ -178,60 +178,50 @@ export default function BadWordManager() {
         </Alert>
       )}
 
-      <Box pos="relative">
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Từ Cấm</Table.Th>
-              <Table.Th>Ngày Thêm</Table.Th>
-              <Table.Th>Hành Động</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {isLoading
-              ? Array.from({ length: 5 }).map((_, index) => (
-                  <Table.Tr key={index}>
-                    <Table.Td>
-                      <Skeleton height={20} width="60%" />
-                    </Table.Td>
-                    <Table.Td>
-                      <Skeleton height={20} width="70%" />
-                    </Table.Td>
-                    <Table.Td>
-                      <Skeleton height={32} width={32} circle />
-                    </Table.Td>
-                  </Table.Tr>
-                ))
-              : badWords.map((bw) => (
-                  <Table.Tr key={bw.id}>
-                    <Table.Td>
-                      <Text fw={500}>{bw.word}</Text>
-                    </Table.Td>
-                    <Table.Td>{formatDate(bw.createdAt)}</Table.Td>
-                    <Table.Td>
-                      <ActionIcon
-                        variant="light"
-                        color="red"
-                        onClick={() => handleDeleteClick(bw)}
-                        loading={
-                          isDeletePending && selectedBadWord?.id === bw.id
-                        }
-                        disabled={isDeletePending}
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-            {!isLoading && badWords.length === 0 && (
-              <Table.Tr>
-                <Table.Td colSpan={3} align="center">
-                  <Text c="dimmed">Không có từ cấm nào.</Text>
-                </Table.Td>
-              </Table.Tr>
+      <Box
+        pos="relative"
+        p="md"
+        style={{
+          backgroundColor: "var(--mantine-color-dark-6)",
+          borderRadius: "var(--mantine-radius-md)",
+          border: "1px solid var(--mantine-color-dark-4)",
+        }}
+      >
+        {isLoading ? (
+          <Group>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Skeleton key={index} height={32} width={100} />
+            ))}
+          </Group>
+        ) : (
+          <Group gap="xs">
+            {badWords.map((bw) => (
+              <Badge
+                key={bw.id}
+                size="lg"
+                variant="light"
+                rightSection={
+                  <ActionIcon
+                    variant="transparent"
+                    color="red"
+                    size="sm"
+                    radius="xl"
+                    onClick={() => handleDeleteClick(bw)}
+                    loading={isDeletePending && selectedBadWord?.id === bw.id}
+                    disabled={isDeletePending}
+                  >
+                    <IconTrash size={14} />
+                  </ActionIcon>
+                }
+              >
+                {bw.word}
+              </Badge>
+            ))}
+            {badWords.length === 0 && (
+              <Text c="dimmed">Không có từ cấm nào.</Text>
             )}
-          </Table.Tbody>
-        </Table>
+          </Group>
+        )}
       </Box>
 
       <Modal
