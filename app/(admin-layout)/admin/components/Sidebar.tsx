@@ -13,6 +13,7 @@ import {
   School,
   ChevronDown,
   ChevronRight,
+  Ticket,
 } from "lucide-react";
 import { cn } from "@/lib/utils/TwMerge";
 
@@ -33,6 +34,11 @@ const sidebarItems: SidebarItem[] = [
     title: "Quản lý người dùng",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    title: "Quản lý Mã",
+    href: "/admin/codes",
+    icon: Ticket,
   },
   {
     title: "Quản lý lịch học",

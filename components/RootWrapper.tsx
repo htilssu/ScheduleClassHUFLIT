@@ -10,6 +10,7 @@ import LoadingOverlayWrapper from "./LoadingOverlayWrapper";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
+import "@mantine/dates/styles.css";
 
 export const queryClient = new QueryClient();
 
