@@ -17,6 +17,14 @@ const CreateCodeSchema = z.object({
       // Tối thiểu 12h kể từ bây giờ
       message: "Ngày hết hạn phải ở tương lai (ít nhất 12 giờ)",
     }),
+  maxUses: z
+    .number({
+      required_error: "Số lần sử dụng tối đa là bắt buộc",
+      invalid_type_error: "Số lần sử dụng tối đa không hợp lệ",
+    })
+    .min(1, {
+      message: "Số lần sử dụng tối đa phải lớn hơn hoặc bằng 1",
+    }),
 });
 
 // Server action tạo mã mới
@@ -24,6 +32,7 @@ export async function createCodeAction(formData: FormData) {
   const session = await auth();
   const validatedFields = CreateCodeSchema.safeParse({
     expiredAt: new Date(formData.get("expiredAt") as string),
+    maxUses: parseInt(formData.get("maxUses") as string, 10),
   });
 
   if (!validatedFields.success) {
@@ -49,6 +58,8 @@ export async function createCodeAction(formData: FormData) {
         code,
         expiredAt: validatedFields.data.expiredAt,
         createdBy: session.user.id,
+        maxUses: validatedFields.data.maxUses,
+        usedCount: 0,
       },
     });
 
