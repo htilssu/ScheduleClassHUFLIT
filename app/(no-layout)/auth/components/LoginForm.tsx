@@ -29,6 +29,8 @@ export function LoginForm() {
   const errorMessages = {
     user_not_found: "Tài khoản không tồn tại",
     invalid_password: "Mật khẩu không chính xác",
+    account_locked:
+      "Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ",
     default: "Đã xảy ra lỗi khi đăng nhập",
   };
 

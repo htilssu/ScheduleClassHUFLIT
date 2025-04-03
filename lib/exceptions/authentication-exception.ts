@@ -8,3 +8,7 @@ export class UserNotFoundException extends CredentialsSignin {
 export class WrongPasswordException extends CredentialsSignin {
   code: AuthenticateErrorCode = "invalid_password";
 }
+
+export class AccountLockedException extends CredentialsSignin {
+  code: AuthenticateErrorCode = "account_locked";
+}
