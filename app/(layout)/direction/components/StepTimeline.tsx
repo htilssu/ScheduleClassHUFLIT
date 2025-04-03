@@ -1,8 +1,40 @@
-import React from 'react';
+'use client'
+
+import React, { useState } from 'react';
 import Link from "next/link";
 import {FaPlayCircle} from "react-icons/fa";
 
+const LinkPreview = ({ url, onMouseLeave }: { url: string, onMouseLeave: () => void }) => {
+    const videoId = url.split('v=')[1];
+    return (
+        <Link 
+            href={url}
+            target="_blank"
+            className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer"
+            onMouseLeave={onMouseLeave}
+        >
+            <div className="relative pb-[56.25%]">
+                <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                />
+            </div>
+            <div className="p-3 bg-gradient-to-r from-orange-500 to-orange-600">
+                <p className="text-sm text-white font-medium flex items-center justify-center">
+                    <FaPlayCircle className="mr-2" />
+                    Click to watch full video
+                </p>
+            </div>
+        </Link>
+    );
+};
+
 const StepTimeline = () => {
+    const [showPreview, setShowPreview] = useState(false);
+    const videoUrl = "https://www.youtube.com/watch?v=r_v401nG0mg";
+
     const steps = [
         {
             title: 'Bước 1: Đăng ký & Đăng nhập',
@@ -83,13 +115,17 @@ const StepTimeline = () => {
                 ))}
 
                 <div className="flex items-center justify-center animate-pulse hover:animate-none">
-                    <Link
-                        href="https://www.youtube.com/watch?v=r_v401nG0mg"
-                        className="relative inline-flex items-center px-4 py-2 text-lg font-semibold text-white bg-orange-500 rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:shadow-xl hover:bg-orange-500"
-                    >
-                        <FaPlayCircle className="mr-3 text-2xl text-white animate-pulse hover:animate-none"/>
-                        Watch Demo
-                    </Link>
+                    <div className="relative">
+                        {showPreview && <LinkPreview url={videoUrl} onMouseLeave={() => setShowPreview(false)} />}
+                        <Link
+                            href={videoUrl}
+                            className="relative inline-flex items-center px-4 py-2 text-lg font-semibold text-white bg-orange-500 rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:shadow-xl hover:bg-orange-500"
+                            onMouseEnter={() => setShowPreview(true)}
+                        >
+                            <FaPlayCircle className="mr-3 text-2xl text-white animate-pulse hover:animate-none"/>
+                            Watch Demo
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
