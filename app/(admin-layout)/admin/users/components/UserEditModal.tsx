@@ -23,10 +23,8 @@ export const UserEditModal = ({
     const formData = new FormData(e.target as HTMLFormElement);
     const userData: Partial<User> = {
       name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      username: formData.get("username") as string,
       role: formData.get("role") as string,
-      isActive: formData.get("isActive") === "true",
+      isActive: formData.get("isActive") === "on",
     };
     onSubmit(userData);
   };
@@ -42,13 +40,12 @@ export const UserEditModal = ({
           required
         />
         <TextInput
-            label="Tên đăng nhập"
-            name="username"
-            defaultValue={user?.username || ""}
-            placeholder="Nhập tên đăng nhập"
-            required
-            disabled={isEditMode}
-            mt="md"
+          label="Tên đăng nhập"
+          name="username"
+          defaultValue={user?.username || ""}
+          placeholder="Nhập tên đăng nhập"
+          disabled
+          mt="md"
         />
         <TextInput
           label="Email"
@@ -56,8 +53,7 @@ export const UserEditModal = ({
           type="email"
           defaultValue={user?.email || ""}
           placeholder="Nhập email"
-          required
-          disabled={isEditMode}
+          disabled
           mt="md"
         />
         <Select
@@ -77,7 +73,7 @@ export const UserEditModal = ({
           name="isActive"
           defaultChecked={user?.isActive ?? true}
           mt="md"
-          color={"green"}
+          color="green"
         />
         <Group justify="flex-end" mt="xl">
           <Button variant="default" onClick={onClose}>
