@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/lib/context/AuthContext";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@/app/globals.css";
