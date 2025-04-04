@@ -101,7 +101,7 @@ const FAQ: React.FC = () => {
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <Text size="lg" className="font-medium">
                   {activeIndex !== null ? faqData[activeIndex].question : 'Chọn câu hỏi để xem chi tiết'}
@@ -134,10 +134,10 @@ const FAQ: React.FC = () => {
                     onClick={() => setActiveIndex(activeIndex === index ? null : index)}
                     className="w-full p-4 flex items-center gap-4 bg-orange-50 hover:bg-orange-100 transition-colors duration-200"
                   >
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <item.icon size={24} className="text-orange-500" />
                     </div>
-                    <Text className="font-medium text-left flex-grow">{item.question}</Text>
+                    <Text className="font-medium text-left grow">{item.question}</Text>
                     <motion.div
                       animate={{ rotate: activeIndex === index ? 180 : 0 }}
                       transition={{ duration: 0.3 }}

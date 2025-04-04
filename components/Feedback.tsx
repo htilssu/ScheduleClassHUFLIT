@@ -1,14 +1,16 @@
 "use client";
 
-import { createFeedback } from "@/app/actions/feedback";
-import { deleteFeedback } from "@/app/actions/feedback";
-import useUser from "@/lib/hook/useUser"; // Import hook useUser
+import { createFeedback, deleteFeedback } from "@/app/actions/feedback";
+import { useUser } from "@/lib/hook/useUser"; // Import hook useUser
+import { Alert, Button, Group, Modal, Text } from "@mantine/core";
+import { IconCheck, IconX } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { Modal, Button, Group, Text } from "@mantine/core";
+import { FaStar, FaTrash } from "react-icons/fa";
+dayjs.extend(relativeTime);
 
 interface Feedback {
   id: string;
@@ -24,8 +26,8 @@ interface Feedback {
 
 // Main Feedback Component
 export default function Feedback() {
-  // Sử dụng hook useUser để tự động fetch và lấy dữ liệu người dùng
-  const { data: user } = useUser();
+  const { data: user } = useUser(); // Lấy thông tin người dùng từ store
+  const queryClient = useQueryClient();
 
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [content, setContent] = useState("");
@@ -42,6 +44,12 @@ export default function Feedback() {
   // State cho confirm dialog
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [feedbackToDelete, setFeedbackToDelete] = useState<string | null>(null);
+
+  // State cho Alert
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     fetchFeedbacks(pagination.currentPage, pagination.limit);
@@ -67,44 +75,42 @@ export default function Feedback() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) {
-      setError("Vui lòng đăng nhập để gửi feedback");
-      toast.error("Vui lòng đăng nhập để gửi feedback"); // Thêm toast error
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      // Sử dụng server action trực tiếp từ app/actions/feedback.ts
-      const result = await createFeedback({
-        content,
-        rating,
-      });
-
+  const { mutate: submitFeedback, isPending: isSubmitting } = useMutation({
+    mutationFn: createFeedback,
+    onSuccess: (result) => {
       if (result.success) {
-        toast.success("Gửi đánh giá thành công!");
-
-        // Reset form
+        // Hiển thị Alert thành công
+        setAlert({ message: "Gửi đánh giá thành công!", type: "success" });
         setContent("");
         setRating(0);
-
-        // Tải lại dữ liệu
-        fetchFeedbacks(1, pagination.limit);
+        queryClient.invalidateQueries({ queryKey: ["feedback"] });
       } else {
-        setError(result.error || "Có lỗi xảy ra");
-        toast.error(result.error || "Có lỗi xảy ra khi gửi đánh giá");
+        // Hiển thị Alert lỗi
+        setAlert({
+          message: result.error || "Có lỗi xảy ra khi gửi đánh giá",
+          type: "error",
+        });
       }
-    } catch (error) {
-      console.error("Error submitting feedback:", error);
-      setError("Có lỗi xảy ra khi gửi feedback");
-      toast.error("Có lỗi xảy ra khi gửi đánh giá");
-    } finally {
-      setLoading(false);
+    },
+    onError: (error) => {
+      // Hiển thị Alert lỗi
+      setAlert({
+        message: error.message || "Có lỗi xảy ra khi gửi đánh giá",
+        type: "error",
+      });
+    },
+  });
+
+  const handleSubmit = () => {
+    if (!user) {
+      // Kiểm tra xem người dùng đã đăng nhập chưa
+      setAlert({
+        message: "Vui lòng đăng nhập để gửi feedback",
+        type: "error",
+      });
+      return;
     }
+    submitFeedback({ content, rating });
   };
 
   const handleDelete = async (id: string) => {
@@ -112,14 +118,15 @@ export default function Feedback() {
       const result = await deleteFeedback(id);
 
       if (result.success) {
-        toast.success(result.message || "Đã xóa đánh giá thành công!");
         fetchFeedbacks(pagination.currentPage, pagination.limit);
       } else {
-        toast.error(result.message || "Không thể xóa đánh giá");
+        setAlert({
+          message: result.message || "Có lỗi xảy ra khi xóa đánh giá",
+          type: "error",
+        });
       }
     } catch (error: any) {
       console.error("Error deleting feedback:", error);
-      toast.error(error.message || "Có lỗi xảy ra khi xóa đánh giá");
     } finally {
       // Đóng modal sau khi xóa (dù thành công hay thất bại)
       setConfirmModalOpen(false);
@@ -178,8 +185,26 @@ export default function Feedback() {
     <div className="w-full p-6">
       <h2 className="text-2xl font-bold mb-6">Đánh giá của người dùng</h2>
 
-      {/* Hiển thị form nếu user đã đăng nhập (lấy từ store) */}
-      {/* {session && ( */}
+      {/* Hiển thị Alert */}
+      {alert && (
+        <Alert
+          icon={
+            alert.type === "success" ? (
+              <IconCheck size={16} />
+            ) : (
+              <IconX size={16} />
+            )
+          }
+          title={alert.type === "success" ? "Thành công" : "Lỗi"}
+          color={alert.type === "success" ? "green" : "red"}
+          withCloseButton
+          onClose={() => setAlert(null)} // Đóng alert khi nhấn nút close
+          mb="md"
+        >
+          {alert.message}
+        </Alert>
+      )}
+
       {user && (
         <form onSubmit={handleSubmit} className="mb-8">
           <div className="mb-4">
@@ -192,7 +217,7 @@ export default function Feedback() {
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="text-2xl focus:outline-none"
+                  className="text-2xl focus:outline-hidden"
                 >
                   <FaStar
                     className={`${
@@ -205,7 +230,7 @@ export default function Feedback() {
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-orange-500"
               rows={4}
               placeholder="Nhập đánh giá của bạn..."
               required
@@ -254,7 +279,7 @@ export default function Feedback() {
           feedbacks.map((feedback) => (
             <div
               key={feedback.id}
-              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              className="bg-white p-4 rounded-lg shadow-xs border border-gray-200"
             >
               <div className="flex justify-between items-start">
                 <div className="flex items-center mb-2">

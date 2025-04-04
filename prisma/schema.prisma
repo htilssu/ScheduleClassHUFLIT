@@ -15,6 +15,8 @@ model Code {
   expiredAt DateTime
   createdBy String   @db.ObjectId
   user      User     @relation(fields: [createdBy], references: [id])
+  maxUses   Int      @default(1)
+  usedCount Int      @default(0)
 }
 
 model User {
@@ -209,6 +211,14 @@ model Feedback {
   rating    Int      @default(0)
   userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BadWord {
+  id   String @id @default(cuid()) @map("_id")
+  word String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

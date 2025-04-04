@@ -25,7 +25,7 @@ const Intro = () => {
           hiệu quả. Hãy để chúng tôi đồng hành cùng bạn trên hành trình học tập!
         </h2>
         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-          <div className="rounded-md shadow">
+          <div className="rounded-md shadow-sm">
             <a
               href={"/schedule"}
               className={`w-full flex items-center justify-center px-8 py-3 border border-orange-500 text-white font-medium rounded-md bg-orange-400 hover:bg-orange-500 hover:text-gray-50 md:py-4 md:text-lg md:px-10`}

@@ -20,7 +20,6 @@ export function useUser() {
   const userState = useSelector<RootState, UserState>((state) => state.user);
 
   useEffect(() => {
-    console.log(userState);
     if (userState.data === undefined && !userState.loading) {
       const fetchUser = async () => {
         try {

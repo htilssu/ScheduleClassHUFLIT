@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { ForbiddenError } from "@/lib/exceptions/ForbiddenError";
 import { prisma } from "@/lib/prisma";
+import { BadWordService } from "@/lib/service/badword";
 import { revalidateTag } from "next/cache";
 
 export async function createFeedback(data: {
@@ -30,6 +31,18 @@ export async function createFeedback(data: {
       return {
         success: false,
         error: "Đánh giá phải có số sao từ 1 đến 5",
+      };
+    }
+
+    // Kiểm tra từ cấm với cache
+    const { hasBadWords, badWords } = await BadWordService.checkBadWords(
+      data.content
+    );
+
+    if (hasBadWords) {
+      return {
+        success: false,
+        error: `Nội dung chứa từ cấm: ${badWords.join(", ")}`,
       };
     }
 

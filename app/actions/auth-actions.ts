@@ -1,11 +1,9 @@
 "use server";
 
-import { auth, signIn } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { RegisterData, RegisterResponse } from "../types/auth";
-import { cookies } from "next/headers";
-import { decode, encode } from "next-auth/jwt";
 // Hàm kiểm tra định dạng email
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

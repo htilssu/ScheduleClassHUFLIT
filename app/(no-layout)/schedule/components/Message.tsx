@@ -14,7 +14,7 @@ export function Message({ text, sender, classes }: MessageProps) {
       className={`flex ${sender === "user" ? "justify-end" : "justify-start"}`}
     >
       {sender === "bot" && (
-        <div className="flex-shrink-0 mr-2">
+        <div className="shrink-0 mr-2">
           <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
             <Bot className="w-6 h-6 text-white" />
           </div>
@@ -40,7 +40,7 @@ export function Message({ text, sender, classes }: MessageProps) {
         )}
       </div>
       {sender === "user" && (
-        <div className="flex-shrink-0 ml-2">
+        <div className="shrink-0 ml-2">
           <div
             className="w-10 h-10 rounded-full bg-cover bg-center"
             style={{

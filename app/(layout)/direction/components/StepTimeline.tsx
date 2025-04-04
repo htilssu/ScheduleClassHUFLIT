@@ -7,7 +7,7 @@ import {FaPlayCircle} from "react-icons/fa";
 const LinkPreview = ({ url, onMouseLeave }: { url: string, onMouseLeave: () => void }) => {
     const videoId = url.split('v=')[1];
     return (
-        <Link 
+        <Link
             href={url}
             target="_blank"
             className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer"
@@ -21,7 +21,7 @@ const LinkPreview = ({ url, onMouseLeave }: { url: string, onMouseLeave: () => v
                     allowFullScreen
                 />
             </div>
-            <div className="p-3 bg-gradient-to-r from-orange-500 to-orange-600">
+            <div className="p-3 bg-linear-to-r from-orange-500 to-orange-600">
                 <p className="text-sm text-white font-medium flex items-center justify-center">
                     <FaPlayCircle className="mr-2" />
                     Click to watch full video
@@ -92,7 +92,7 @@ const StepTimeline = () => {
                     >
                         {/* Timeline Badge */}
                         <div
-                            className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-500 border-4 border-white z-10 transition-transform transform hover:scale-125"></div>
+                            className="shrink-0 w-8 h-8 rounded-full bg-orange-500 border-4 border-white z-10 transition-transform transform hover:scale-125"></div>
 
                         {/* Timeline Panel */}
                         <div

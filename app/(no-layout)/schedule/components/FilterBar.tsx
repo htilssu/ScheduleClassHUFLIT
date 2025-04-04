@@ -134,7 +134,7 @@ const FilterBar = () => {
                     setIsOpenChat(true)
                 }} classNames={
                     {
-                        root: "!bg-orange-500 !hover:bg-orange-600",
+                        root: "bg-orange-500! !hover:bg-orange-600",
                     }
                 }>
                     <IconBrandOpenai stroke={2}/>

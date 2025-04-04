@@ -14,7 +14,7 @@ const QuickSchedule = () => {
           alt="Background"
           fill
           loading={"lazy"}
-          className="opacity-100 blur-sm"
+          className="opacity-100 blur-xs"
         />
         <div className="absolute inset-0 bg-gray-900/10"></div>
         {/* Overlay để nội dung nổi bật */}
@@ -26,7 +26,7 @@ const QuickSchedule = () => {
           <AiOutlineSchedule className="text-white text-2xl" />
           Lịch Học Nhanh
         </h2>
-        <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-lg shadow-inner">
+        <div className="text-center p-4 bg-white/80 backdrop-blur-xs rounded-lg shadow-inner">
           <p className="text-gray-600">[Bạn chưa có lịch nào]</p>
           <p className="text-orange-500 italic mt-2 text-sm">
             Đăng nhập để lịch học của bạn được lưu nhé!
