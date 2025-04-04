@@ -12,8 +12,10 @@ const ScheduleMain = ({ classes }: { classes: ClassData[] }) => {
       <div className={"relative"}>
         <FilterBar />
         <DndContext>
-          <div className={"flex p-2 relative z-10 max-h-screen"}>
-            <SelectSection classes={classes || []} />
+          <div className={"flex p-2 relative z-10"}>
+            <div className="w-2/6">
+              <SelectSection classes={classes || []} />
+            </div>
             <ScheduleTimeLine />
           </div>
         </DndContext>

@@ -1,5 +1,5 @@
 import { Modal, Text, Button, Group } from "@mantine/core";
-import { User } from "@/hooks/useUsers";
+import { User } from "@/lib/hook/useUsers";
 
 interface DeleteConfirmationModalProps {
   opened: boolean;
@@ -33,4 +33,4 @@ export const DeleteConfirmationModal = ({
       </Group>
     </Modal>
   );
-}; 
+};
