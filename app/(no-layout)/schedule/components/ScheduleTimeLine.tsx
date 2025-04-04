@@ -80,6 +80,18 @@ function ScheduleTimeLine() {
       console.log("Checking conflict for:", newClass);
       console.log("Current classes:", classes.length);
 
+      // Kiểm tra xem subjectId có trùng không (môn học đã tồn tại)
+      const existingClassWithSameSubject = classes.find(
+        (existingClass) => existingClass.subjectId === newClass.subjectId
+      );
+
+      if (existingClassWithSameSubject) {
+        console.log(
+          `Subject conflict detected: ${newClass.Subject.name} (${newClass.subjectId}) already exists in timeline`
+        );
+        return existingClassWithSameSubject;
+      }
+
       for (const existingClass of classes) {
         // Bỏ qua nếu đang so sánh với chính mình
         if (existingClass.id === newClass.id) {
