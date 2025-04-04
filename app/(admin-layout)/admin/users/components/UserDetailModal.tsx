@@ -1,6 +1,29 @@
-import { Modal, Text, Group, Stack, Badge, Avatar, ActionIcon, Tooltip, Paper, Button, Grid, Box } from "@mantine/core";
-import { IconCheck, IconX, IconCopy, IconMail, IconUser, IconCalendar, IconId, IconAt, IconUserCircle } from "@tabler/icons-react";
-import { User } from "@/hooks/useUsers";
+import {
+  Modal,
+  Text,
+  Group,
+  Stack,
+  Badge,
+  Avatar,
+  ActionIcon,
+  Tooltip,
+  Paper,
+  Button,
+  Grid,
+  Box,
+} from "@mantine/core";
+import {
+  IconCheck,
+  IconX,
+  IconCopy,
+  IconMail,
+  IconUser,
+  IconCalendar,
+  IconId,
+  IconAt,
+  IconUserCircle,
+} from "@tabler/icons-react";
+import { User } from "@/lib/hook/useUsers";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
 
@@ -13,7 +36,11 @@ interface UserDetailModalProps {
 const getStatusBadge = (isActive: boolean) => {
   if (isActive) {
     return (
-      <Badge color="green" variant="light" leftSection={<IconCheck size={14} />}>
+      <Badge
+        color="green"
+        variant="light"
+        leftSection={<IconCheck size={14} />}
+      >
         Hoạt động
       </Badge>
     );
@@ -51,11 +78,16 @@ const copyToClipboard = (text: string, label: string) => {
   });
 };
 
-const InfoItem = ({ icon: Icon, label, value, copyable = false }: { 
-  icon: any, 
-  label: string, 
-  value: string, 
-  copyable?: boolean 
+const InfoItem = ({
+  icon: Icon,
+  label,
+  value,
+  copyable = false,
+}: {
+  icon: any;
+  label: string;
+  value: string;
+  copyable?: boolean;
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -69,9 +101,13 @@ const InfoItem = ({ icon: Icon, label, value, copyable = false }: {
     <Paper p="md" radius="md" withBorder>
       <Group gap="xs" mb="xs">
         <Icon size={16} />
-        <Text fw={500} c="dimmed">{label}</Text>
+        <Text fw={500} c="dimmed">
+          {label}
+        </Text>
         {copyable && (
-          <Tooltip label={copied ? "Copied!" : `Sao chép ${label.toLowerCase()}`}>
+          <Tooltip
+            label={copied ? "Copied!" : `Sao chép ${label.toLowerCase()}`}
+          >
             <ActionIcon
               variant="subtle"
               color={copied ? "green" : "gray"}
@@ -88,7 +124,11 @@ const InfoItem = ({ icon: Icon, label, value, copyable = false }: {
   );
 };
 
-export const UserDetailModal = ({ opened, onClose, user }: UserDetailModalProps) => {
+export const UserDetailModal = ({
+  opened,
+  onClose,
+  user,
+}: UserDetailModalProps) => {
   if (!user) return null;
 
   return (
@@ -105,12 +145,7 @@ export const UserDetailModal = ({ opened, onClose, user }: UserDetailModalProps)
         {/* Header Section */}
         <Paper p="lg" radius="md" withBorder>
           <Group align="center" justify="center" mb="md">
-            <Avatar
-              size={120}
-              radius="xl"
-              color="blue"
-              variant="light"
-            >
+            <Avatar size={120} radius="xl" color="blue" variant="light">
               {user.name?.[0]?.toUpperCase() || user.username[0].toUpperCase()}
             </Avatar>
           </Group>
@@ -153,13 +188,13 @@ export const UserDetailModal = ({ opened, onClose, user }: UserDetailModalProps)
               <InfoItem
                 icon={IconCalendar}
                 label="Ngày tạo tài khoản"
-                value={new Date(user.createdAt).toLocaleString('vi-VN', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit'
+                value={new Date(user.createdAt).toLocaleString("vi-VN", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
                 })}
               />
             </Stack>
@@ -171,7 +206,7 @@ export const UserDetailModal = ({ opened, onClose, user }: UserDetailModalProps)
           <Button
             variant="light"
             leftSection={<IconMail size={16} />}
-            onClick={() => window.location.href = `mailto:${user.email}`}
+            onClick={() => (window.location.href = `mailto:${user.email}`)}
             disabled={!user.email}
           >
             Gửi email
@@ -180,4 +215,4 @@ export const UserDetailModal = ({ opened, onClose, user }: UserDetailModalProps)
       </Stack>
     </Modal>
   );
-}; 
+};

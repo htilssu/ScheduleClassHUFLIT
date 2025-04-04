@@ -11,10 +11,10 @@ import {
   Text,
   Pagination,
 } from "@mantine/core";
-import { notifications } from '@mantine/notifications';
+import { notifications } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
-import { useUsers } from "@/hooks/useUsers";
-import { User } from "@/hooks/useUsers";
+import { useUsers } from "@/lib/hook/useUsers";
+import { User } from "@/lib/hook/useUsers";
 import { UserTable, UserTableSkeleton } from "./components/UserTable";
 import { UserSearch } from "./components/UserSearch";
 import { UserEditModal } from "./components/UserEditModal";
@@ -103,7 +103,7 @@ export default function AdminUsersPage() {
 
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
-    
+
     const result = await deleteUser(selectedUser.id);
     if (result.success) {
       notifications.show({
@@ -136,7 +136,11 @@ export default function AdminUsersPage() {
     <div className="space-y-6">
       <Flex justify="space-between" align="center">
         <Title order={2}>Quản lý người dùng</Title>
-        <Button leftSection={<IconPlus size={16} />} color="blue" onClick={handleAddUser}>
+        <Button
+          leftSection={<IconPlus size={16} />}
+          color="blue"
+          onClick={handleAddUser}
+        >
           Thêm người dùng
         </Button>
       </Flex>
@@ -170,9 +174,9 @@ export default function AdminUsersPage() {
         </Box>
 
         <Flex justify="center" mt="md">
-          <Pagination 
-            total={totalPages} 
-            value={activePage} 
+          <Pagination
+            total={totalPages}
+            value={activePage}
             onChange={setActivePage}
             withEdges
           />

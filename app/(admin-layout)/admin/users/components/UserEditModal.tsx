@@ -1,5 +1,5 @@
 import { Modal, TextInput, Select, Switch, Button, Group } from "@mantine/core";
-import { User } from "@/hooks/useUsers";
+import { User } from "@/lib/hook/useUsers";
 
 interface UserModalProps {
   opened: boolean;
@@ -86,4 +86,4 @@ export const UserEditModal = ({
       </form>
     </Modal>
   );
-}; 
+};

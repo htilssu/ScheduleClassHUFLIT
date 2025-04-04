@@ -1,6 +1,16 @@
-import { Modal, TextInput, Select, Switch, Button, Group, Stack, Text, PasswordInput } from "@mantine/core";
+import {
+  Modal,
+  TextInput,
+  Select,
+  Switch,
+  Button,
+  Group,
+  Stack,
+  Text,
+  PasswordInput,
+} from "@mantine/core";
 import { IconMail, IconUser, IconLock } from "@tabler/icons-react";
-import { User } from "@/hooks/useUsers";
+import { User } from "@/lib/hook/useUsers";
 
 interface AddUserModalProps {
   opened: boolean;
@@ -102,4 +112,4 @@ export const AddUserModal = ({
       </form>
     </Modal>
   );
-}; 
+};

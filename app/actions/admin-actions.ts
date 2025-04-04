@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { User } from "@/hooks/useUsers";
+import { User } from "@/lib/hook/useUsers";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 
@@ -12,7 +12,7 @@ export async function updateUser(userId: string, userData: Partial<User>) {
       data: {
         name: userData.name,
         role: userData.role as Role,
-        isActive: userData.isActive
+        isActive: userData.isActive,
       },
     });
 

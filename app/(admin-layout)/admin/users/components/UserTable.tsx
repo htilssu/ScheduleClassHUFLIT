@@ -1,4 +1,13 @@
-import { Table, Text, Badge, Flex, ActionIcon, Tooltip, Menu, Skeleton } from "@mantine/core";
+import {
+  Table,
+  Text,
+  Badge,
+  Flex,
+  ActionIcon,
+  Tooltip,
+  Menu,
+  Skeleton,
+} from "@mantine/core";
 import {
   IconEdit,
   IconTrash,
@@ -8,7 +17,7 @@ import {
   IconEye,
   IconMail,
 } from "@tabler/icons-react";
-import { User } from "@/hooks/useUsers";
+import { User } from "@/lib/hook/useUsers";
 
 interface UserTableProps {
   users: User[];
@@ -21,7 +30,11 @@ interface UserTableProps {
 const getStatusBadge = (isActive: boolean) => {
   if (isActive) {
     return (
-      <Badge color="green" variant="light" leftSection={<IconCheck size={14} />}>
+      <Badge
+        color="green"
+        variant="light"
+        leftSection={<IconCheck size={14} />}
+      >
         Hoạt động
       </Badge>
     );
@@ -66,12 +79,20 @@ export const UserTable = ({
       <Table.Td>
         <Flex gap="xs">
           <Tooltip label="Chỉnh sửa">
-            <ActionIcon color="blue" variant="subtle" onClick={() => onEdit(user)}>
+            <ActionIcon
+              color="blue"
+              variant="subtle"
+              onClick={() => onEdit(user)}
+            >
               <IconEdit size={16} />
             </ActionIcon>
           </Tooltip>
           <Tooltip label="Xóa">
-            <ActionIcon color="red" variant="subtle" onClick={() => onDelete(user)}>
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              onClick={() => onDelete(user)}
+            >
               <IconTrash size={16} />
             </ActionIcon>
           </Tooltip>
@@ -122,7 +143,7 @@ export const UserTable = ({
 
 export const UserTableSkeleton = () => {
   const skeletonRows = [1, 2, 3, 4, 5];
-  
+
   return (
     <Table striped highlightOnHover>
       <Table.Thead>
@@ -138,11 +159,21 @@ export const UserTableSkeleton = () => {
       <Table.Tbody>
         {skeletonRows.map((index) => (
           <Table.Tr key={index}>
-            <Table.Td><Skeleton height={20} width={40} /></Table.Td>
-            <Table.Td><Skeleton height={20} width={150} /></Table.Td>
-            <Table.Td><Skeleton height={20} width={200} /></Table.Td>
-            <Table.Td><Skeleton height={20} width={100} /></Table.Td>
-            <Table.Td><Skeleton height={20} width={80} /></Table.Td>
+            <Table.Td>
+              <Skeleton height={20} width={40} />
+            </Table.Td>
+            <Table.Td>
+              <Skeleton height={20} width={150} />
+            </Table.Td>
+            <Table.Td>
+              <Skeleton height={20} width={200} />
+            </Table.Td>
+            <Table.Td>
+              <Skeleton height={20} width={100} />
+            </Table.Td>
+            <Table.Td>
+              <Skeleton height={20} width={80} />
+            </Table.Td>
             <Table.Td>
               <Flex gap="xs">
                 <Skeleton height={32} width={32} circle />
@@ -155,4 +186,4 @@ export const UserTableSkeleton = () => {
       </Table.Tbody>
     </Table>
   );
-}; 
+};
