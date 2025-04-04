@@ -101,7 +101,8 @@ export default function Feedback() {
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!user) {
       // Kiểm tra xem người dùng đã đăng nhập chưa
       setAlert({
