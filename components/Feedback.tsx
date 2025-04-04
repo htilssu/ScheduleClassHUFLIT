@@ -2,7 +2,7 @@
 
 import { createFeedback, deleteFeedback } from "@/app/actions/feedback";
 import { useUser } from "@/lib/hook/useUser"; // Import hook useUser
-import { Alert, Button, Group, Modal, Text } from "@mantine/core";
+import { Alert, Button, Group, Modal, Text, Badge } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -21,6 +21,7 @@ interface Feedback {
   user: {
     name: string | null;
     image: string | null;
+    role?: string; // Thêm trường role
   };
 }
 
@@ -294,9 +295,30 @@ export default function Feedback() {
                     />
                   )}
                   <div>
-                    <p className="font-medium">
-                      {feedback.user.name || "Anonymous"}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">
+                        {feedback.user.name || "Anonymous"}
+                      </p>
+                      {/* Hiển thị badge role nếu người dùng hiện tại là admin */}
+                      {user && user.role === "ADMIN" && feedback.user.role && (
+                        <Badge
+                          size="xs"
+                          color={
+                            feedback.user.role === "ADMIN"
+                              ? "red"
+                              : feedback.user.role === "PREMIUM_USER"
+                              ? "violet"
+                              : "blue"
+                          }
+                        >
+                          {feedback.user.role === "DEFAULT_USER"
+                            ? "Người dùng"
+                            : feedback.user.role === "PREMIUM_USER"
+                            ? "Premium"
+                            : "Admin"}
+                        </Badge>
+                      )}
+                    </div>
                     <div className="flex gap-1">
                       {[...Array(5)].map((_, i) => (
                         <FaStar

@@ -31,6 +31,7 @@ export const getFeedbacks = unstable_cache(
           select: {
             name: true,
             image: true,
+            role: true,
           },
         },
       },
