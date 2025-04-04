@@ -69,7 +69,7 @@ const ScheduleRegistration = () => {
                 {courses.map((course, index) => (
                     <div
                         key={index}
-                        className="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-orange-200 transition-all duration-300 group"
+                        className="bg-gray-50 p-5 rounded-lg shadow-xs border border-gray-200 hover:shadow-md hover:border-orange-200 transition-all duration-300 group"
                     >
                         <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors duration-200">
                             {course.name}
@@ -85,7 +85,7 @@ const ScheduleRegistration = () => {
                         </p>
                         <Link href={"/schedule"} className={"flex"}>
                             <button
-                                className="mt-4 w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white py-2 px-4 rounded-lg font-medium hover:from-orange-500 hover:to-orange-600 focus:ring-2 focus:ring-orange-300 transition-all duration-200">
+                                className="mt-4 w-full bg-linear-to-r from-orange-400 to-orange-500 text-white py-2 px-4 rounded-lg font-medium hover:from-orange-500 hover:to-orange-600 focus:ring-2 focus:ring-orange-300 transition-all duration-200">
                                 Xếp Lịch Ngay
                             </button>
                         </Link>

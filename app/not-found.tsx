@@ -60,11 +60,11 @@ export default function Custom404() {
 
                 <h1 className="text-6xl font-extrabold mb-4 flex items-center justify-center gap-1 animate-pulse">
                     <span
-                        className="text-transparent bg-clip-text bg-gradient-to-r from-orange-700 to-orange-600">4</span>
+                        className="text-transparent bg-clip-text bg-linear-to-r from-orange-700 to-orange-600">4</span>
                     <span
-                        className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-500">0</span>
+                        className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 to-orange-500">0</span>
                     <span
-                        className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">4</span>
+                        className="text-transparent bg-clip-text bg-linear-to-r from-orange-500 to-orange-400">4</span>
                 </h1>
 
                 {/* Thông báo với icon */}

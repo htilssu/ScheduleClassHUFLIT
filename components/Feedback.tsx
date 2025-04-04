@@ -217,7 +217,7 @@ export default function Feedback() {
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className="text-2xl focus:outline-none"
+                  className="text-2xl focus:outline-hidden"
                 >
                   <FaStar
                     className={`${
@@ -230,7 +230,7 @@ export default function Feedback() {
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-orange-500"
               rows={4}
               placeholder="Nhập đánh giá của bạn..."
               required
@@ -279,7 +279,7 @@ export default function Feedback() {
           feedbacks.map((feedback) => (
             <div
               key={feedback.id}
-              className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+              className="bg-white p-4 rounded-lg shadow-xs border border-gray-200"
             >
               <div className="flex justify-between items-start">
                 <div className="flex items-center mb-2">

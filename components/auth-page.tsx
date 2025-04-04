@@ -38,7 +38,7 @@ export function AuthPageComponent() {
     //             >
     //                 <div className="relative">
     //                     <div className={"flex justify-center items-center"}>
-    //                         <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+    //                         <Link href="/" className="flex items-center space-x-2 shrink-0">
     //                             <Image
     //                                 src={Logo}
     //                                 alt="Logo"
@@ -57,7 +57,7 @@ export function AuthPageComponent() {
     //                             className={cn(
     //                                 "flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md",
     //                                 isLogin
-    //                                     ? "bg-white text-orange-500 shadow-sm shadow-orange-200/50"
+    //                                     ? "bg-white text-orange-500 shadow-xs shadow-orange-200/50"
     //                                     : "text-gray-500 hover:text-orange-400"
     //                             )}
     //                             onClick={() => setIsLogin(true)}
@@ -68,7 +68,7 @@ export function AuthPageComponent() {
     //                             className={cn(
     //                                 "flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md",
     //                                 !isLogin
-    //                                     ? "bg-white text-orange-500 shadow-sm shadow-orange-200/50"
+    //                                     ? "bg-white text-orange-500 shadow-xs shadow-orange-200/50"
     //                                     : "text-gray-500 hover:text-orange-400"
     //                             )}
     //                             onClick={() => setIsLogin(false)}
@@ -77,7 +77,7 @@ export function AuthPageComponent() {
     //                         </button>
     //                     </div>
     //                     <div
-    //                         className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300 ease-in-out"
+    //                         className="absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-orange-500 to-orange-600 transition-all duration-300 ease-in-out"
     //                         style={{
     //                             width: "50%",
     //                             transform: `translateX(${isLogin ? "0%" : "100%"})`,
@@ -124,7 +124,7 @@ export function AuthPageComponent() {
               <div className="flex justify-center items-center">
                 <Link
                   href="/"
-                  className="flex items-center space-x-2 flex-shrink-0"
+                  className="flex items-center space-x-2 shrink-0"
                 >
                   <Image
                     src={Logo}
@@ -132,7 +132,7 @@ export function AuthPageComponent() {
                     className="w-11 md:w-14 lg:w-16 h-auto transition-all duration-300"
                     priority
                   />
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-linear-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
                     SCHEDULE
                   </h2>
                 </Link>
@@ -167,7 +167,7 @@ export function AuthPageComponent() {
                 </button>
               </div>
               <div
-                className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300 ease-in-out"
+                className="absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-orange-500 to-orange-600 transition-all duration-300 ease-in-out"
                 style={{
                   width: "50%",
                   transform: `translateX(${isLogin ? "0%" : "100%"})`,

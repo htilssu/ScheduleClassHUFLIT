@@ -17,7 +17,7 @@ export default function AdminRootLayout({
     <div className="min-h-screen flex flex-col">
       <AdminNavbar />
       <div className="flex flex-1 pt-16">
-        <div className="w-64 flex-shrink-0">
+        <div className="w-64 shrink-0">
           <AdminSidebar />
         </div>
         <main className="flex-1 p-6 overflow-auto">{children}</main>

@@ -37,11 +37,11 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-white/80 shadow-sm`}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-white/80 shadow-xs`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         <Link href="/" className="flex items-center space-x-2">
                             <Image
                                 src="/images/LogoT&H1.png"
@@ -51,7 +51,7 @@ const Navbar = () => {
                                 className="h-12 w-auto"
                             />
                             <span
-                                className="text-3xl font-bold bg-gradient-to-r from-gray-700 via-orange-500 to-orange-300 bg-clip-text text-transparent"
+                                className="text-3xl font-bold bg-linear-to-r from-gray-700 via-orange-500 to-orange-300 bg-clip-text text-transparent"
                             >
               SCHEDULE
               </span>
@@ -105,7 +105,7 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    <div className="flex-shrink-0 hidden md:flex">
+                    <div className="shrink-0 hidden md:flex">
                         {userLoading && user === null ? (
                             <Skeleton height={40} circle/>
                         ) : user ? (
@@ -180,7 +180,7 @@ const Navbar = () => {
                     <div className="md:hidden">
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-orange-500 hover:bg-orange-50/70 focus:outline-none"
+                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-orange-500 hover:bg-orange-50/70 focus:outline-hidden"
                         >
                             <span className="sr-only">Open main menu</span>
                             {mobileMenuOpen ? (

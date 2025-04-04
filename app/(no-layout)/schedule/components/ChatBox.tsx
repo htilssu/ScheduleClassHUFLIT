@@ -93,7 +93,7 @@ function ChatBox() {
           <TextInput
             classNames={{
               input:
-                "!rounded-lg border-gray-300 focus-within:border-gray-500 focus-within:ring-gray-500",
+                "rounded-lg! border-gray-300 focus-within:border-gray-500 focus-within:ring-gray-500",
             }}
             size={"md"}
             flex={1}

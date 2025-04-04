@@ -80,24 +80,24 @@ function TimeLine(props: TimeLineProps) {
             <Table className={"border-[1px] border-gray-400"}>
                 <Table.Thead className={"bg-amber-50"}>
                     <Table.Tr>
-                        <Table.Th className={"!text-center border-[1px] border-gray-400"}>Tiết</Table.Th>
+                        <Table.Th className={"text-center! border-[1px] border-gray-400"}>Tiết</Table.Th>
                         {Array.from({length: 6}, (_, i) => i).map((i) => (
                             <Table.Th key={i}
-                                      className={"!text-center border-[1px] border-gray-400"}>Thứ {i + 2}</Table.Th>
+                                      className={"text-center! border-[1px] border-gray-400"}>Thứ {i + 2}</Table.Th>
                         ))}
-                        <Table.Th className={"!text-center border-[1px] border-gray-400"}>CN</Table.Th>
+                        <Table.Th className={"text-center! border-[1px] border-gray-400"}>CN</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
                     {Array.from({length: MAX_TIME_SECTION}, (_, i) => i).map((i) => (
                         <Table.Tr key={i}>
                             <Table.Td
-                                className={"!text-center bg-rose-50 border-[1px] border-gray-400"}>{i + 1}</Table.Td>
+                                className={"text-center! bg-rose-50 border-[1px] border-gray-400"}>{i + 1}</Table.Td>
                             {
                                 Array.from({length: 7}, (_, j) => j).map((j) => (
                                     mergeMark[j].has(i) &&
                                     <Table.Td key={j} rowSpan={getRowSpan(j, i)}
-                                              className={"!p-2 text-center border-[1px] border-gray-400 max-w-32"}>
+                                              className={"p-2! text-center border-[1px] border-gray-400 max-w-32"}>
                                       <div className={'w-full h-full'}>
                                           {getTableClassCard(i, j)}
                                       </div>
