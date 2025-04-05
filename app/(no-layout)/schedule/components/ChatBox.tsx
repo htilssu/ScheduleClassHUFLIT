@@ -24,7 +24,9 @@ function ChatBox() {
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Thay vì sử dụng ref trực tiếp, chúng ta sẽ tạo tham chiếu đến phần tử DOM
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,7 +86,13 @@ function ChatBox() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
-      inputRef.current?.focus();
+
+      // Sử dụng setTimeout để đảm bảo focus được áp dụng sau khi UI đã cập nhật
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 0);
     }
   };
 
@@ -120,7 +128,6 @@ function ChatBox() {
         </Stack>
         <Flex gap={5}>
           <TextInput
-            ref={inputRef}
             classNames={{
               input:
                 "rounded-lg! border-gray-300 focus-within:border-gray-500 focus-within:ring-gray-500",
@@ -132,6 +139,8 @@ function ChatBox() {
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isTyping}
+            ref={inputRef}
+            autoFocus
           />
           <Button
             size={"md"}

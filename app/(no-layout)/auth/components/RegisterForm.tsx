@@ -22,7 +22,7 @@ import { z } from "zod";
 const registerSchema = z
   .object({
     name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
-    username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
+    email: z.string().email("Địa chỉ email không hợp lệ"),
     password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
     confirmPassword: z.string(),
   })
@@ -51,7 +51,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
   const form = useForm<RegisterFormValues>({
     initialValues: {
       name: "",
-      username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -67,7 +67,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
     try {
       const registerData: RegisterData = {
         name: values.name,
-        username: values.username,
+        email: values.email,
         password: values.password,
       };
 
@@ -106,12 +106,14 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Text component="label" htmlFor="username" size="sm" fw={500}>
-            Tên đăng nhập hoặc Email
+          <Text component="label" htmlFor="email" size="sm" fw={500}>
+            Email
           </Text>
           <TextInput
-            id="username"
-            {...form.getInputProps("username")}
+            id="email"
+            type="email"
+            placeholder="example@email.com"
+            {...form.getInputProps("email")}
             required
           />
         </div>
