@@ -2,7 +2,15 @@
 
 import { createFeedback, deleteFeedback } from "@/app/actions/feedback";
 import { useUser } from "@/lib/hook/useUser"; // Import hook useUser
-import { Alert, Button, Group, Modal, Text, Badge } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Group,
+  Modal,
+  Text,
+  Badge,
+  Skeleton,
+} from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -25,6 +33,37 @@ interface Feedback {
   };
 }
 
+/**
+ * Component hiển thị skeleton loading cho feedback
+ * @returns JSX.Element
+ */
+const FeedbackSkeleton = () => {
+  return (
+    <>
+      {[1, 2, 3].map((item) => (
+        <div
+          key={item}
+          className="bg-white p-4 rounded-lg shadow-xs border border-gray-200"
+        >
+          <div className="flex justify-between items-start">
+            <div className="flex items-center mb-2 w-full">
+              <Skeleton height={32} circle className="mr-2" />
+              <div className="w-full">
+                <Skeleton height={18} width="30%" mb={8} />
+                <Skeleton height={16} width={80} />
+              </div>
+            </div>
+          </div>
+          <Skeleton height={16} mt={10} mb={8} />
+          <Skeleton height={16} width="80%" mb={8} />
+          <Skeleton height={16} width="40%" mb={8} />
+          <Skeleton height={12} width="20%" mt={12} />
+        </div>
+      ))}
+    </>
+  );
+};
+
 // Main Feedback Component
 export default function Feedback() {
   const { data: user } = useUser(); // Lấy thông tin người dùng từ store
@@ -35,6 +74,7 @@ export default function Feedback() {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(true); // State kiểm soát loading skeleton
   const [pagination, setPagination] = useState({
     total: 0,
     totalPages: 0,
@@ -58,6 +98,7 @@ export default function Feedback() {
 
   const fetchFeedbacks = async (page: number = 1, limit: number = 5) => {
     try {
+      setIsLoadingFeedbacks(true); // Bắt đầu loading
       const response = await fetch(
         `/v1/feedback?page=${page}&limit=${limit}`,
         {}
@@ -67,6 +108,8 @@ export default function Feedback() {
       setPagination(data.pagination);
     } catch (error) {
       console.error("Error fetching feedbacks:", error);
+    } finally {
+      setIsLoadingFeedbacks(false); // Kết thúc loading
     }
   };
 
@@ -201,7 +244,7 @@ export default function Feedback() {
       <div className="flex justify-center items-center mt-6 gap-2">
         <button
           onClick={() => handlePageChange(pagination.currentPage - 1)}
-          disabled={pagination.currentPage === 1}
+          disabled={pagination.currentPage === 1 || isLoadingFeedbacks}
           className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
         >
           &laquo; Trước
@@ -212,6 +255,7 @@ export default function Feedback() {
             <button
               key={page}
               onClick={() => handlePageChange(page)}
+              disabled={isLoadingFeedbacks}
               className={`px-3 py-1 rounded-md ${
                 page === pagination.currentPage
                   ? "bg-orange-500 text-white"
@@ -225,7 +269,10 @@ export default function Feedback() {
 
         <button
           onClick={() => handlePageChange(pagination.currentPage + 1)}
-          disabled={pagination.currentPage === pagination.totalPages}
+          disabled={
+            pagination.currentPage === pagination.totalPages ||
+            isLoadingFeedbacks
+          }
           className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
         >
           Sau &raquo;
@@ -292,7 +339,7 @@ export default function Feedback() {
           {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || isLoadingFeedbacks}
             className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 disabled:opacity-50"
           >
             {loading ? "Đang gửi..." : "Gửi đánh giá"}
@@ -328,7 +375,9 @@ export default function Feedback() {
       </Modal>
 
       <div className="space-y-4">
-        {feedbacks.length > 0 ? (
+        {isLoadingFeedbacks ? (
+          <FeedbackSkeleton />
+        ) : feedbacks.length > 0 ? (
           feedbacks.map((feedback) => (
             <div
               key={feedback.id}
@@ -410,7 +459,7 @@ export default function Feedback() {
 
       {renderPagination()}
 
-      {pagination.total > 0 && (
+      {!isLoadingFeedbacks && pagination.total > 0 && (
         <p className="text-center text-sm text-gray-500 mt-4">
           Hiển thị {Math.min(pagination.limit, feedbacks.length)} trong tổng số{" "}
           {pagination.total} đánh giá
