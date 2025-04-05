@@ -16,7 +16,7 @@ interface Feedback {
   id: string;
   content: string;
   rating: number;
-  createdAt: string;
+  createdAt: string | Date;
   userId: string;
   user: {
     name: string | null;
@@ -82,8 +82,38 @@ export default function Feedback() {
       if (result.success) {
         // Hiển thị Alert thành công
         setAlert({ message: "Gửi đánh giá thành công!", type: "success" });
+
+        // Thêm feedback mới vào danh sách hiện tại
+        if (result.data) {
+          // Tạo đối tượng feedback mới từ dữ liệu trả về
+          const newFeedback: Feedback = {
+            id: result.data.id,
+            content: result.data.content,
+            rating: result.data.rating,
+            createdAt: new Date(result.data.createdAt), // Chuyển đổi sang kiểu Date nếu cần
+            userId: result.data.userId,
+            user: {
+              name: user?.name || "Bạn",
+              image: user?.image || null,
+              role: user?.role,
+            },
+          };
+
+          // Thêm feedback mới vào đầu danh sách
+          setFeedbacks((prevFeedbacks) => [newFeedback, ...prevFeedbacks]);
+
+          // Cập nhật số lượng tổng feedback trong pagination
+          setPagination((prev) => ({
+            ...prev,
+            total: prev.total + 1,
+          }));
+        }
+
+        // Reset form
         setContent("");
         setRating(0);
+
+        // Vẫn gọi invalidateQueries để đảm bảo dữ liệu đồng bộ
         queryClient.invalidateQueries({ queryKey: ["feedback"] });
       } else {
         // Hiển thị Alert lỗi
@@ -117,10 +147,26 @@ export default function Feedback() {
 
   const handleDelete = async (id: string) => {
     try {
+      setLoading(true);
       const result = await deleteFeedback(id);
 
       if (result.success) {
-        fetchFeedbacks(pagination.currentPage, pagination.limit);
+        // Cập nhật state trực tiếp bằng cách lọc bỏ feedback đã xóa
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.filter((feedback) => feedback.id !== id)
+        );
+
+        // Cập nhật pagination
+        setPagination((prev) => ({
+          ...prev,
+          total: Math.max(0, prev.total - 1),
+        }));
+
+        // Hiển thị thông báo thành công
+        setAlert({
+          message: "Đã xóa đánh giá thành công",
+          type: "success",
+        });
       } else {
         setAlert({
           message: result.message || "Có lỗi xảy ra khi xóa đánh giá",
@@ -129,7 +175,12 @@ export default function Feedback() {
       }
     } catch (error: any) {
       console.error("Error deleting feedback:", error);
+      setAlert({
+        message: error.message || "Có lỗi xảy ra khi xóa đánh giá",
+        type: "error",
+      });
     } finally {
+      setLoading(false);
       // Đóng modal sau khi xóa (dù thành công hay thất bại)
       setConfirmModalOpen(false);
       setFeedbackToDelete(null);
