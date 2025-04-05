@@ -7,7 +7,7 @@ import {FaPlayCircle} from "react-icons/fa";
 const LinkPreview = ({ url, onMouseLeave }: { url: string, onMouseLeave: () => void }) => {
     const videoId = url.split('v=')[1];
     return (
-        <Link 
+        <Link
             href={url}
             target="_blank"
             className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer"

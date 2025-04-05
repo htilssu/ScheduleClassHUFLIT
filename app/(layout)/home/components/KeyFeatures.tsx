@@ -1,14 +1,16 @@
 'use client'
 
 import React from "react";
-import {FaBell, FaHeadset, FaRobot, FaSyncAlt} from "react-icons/fa"; // Import icon từ react-icons
+import {FaBell, FaHeadset, FaRobot} from "react-icons/fa"; // Import icon từ react-icons
+import { RiVipDiamondFill } from "react-icons/ri";
+import Link from "next/link";
 
 const KeyFeatures = () => {
     const features = [
-        {icon: <FaRobot/>, text: "Xếp lịch tự động", color: "text-blue-500"},
-        {icon: <FaBell/>, text: "Thông báo nhắc nhở", color: "text-orange-500"},
-        {icon: <FaHeadset/>, text: "Hỗ trợ 24/7", color: "text-green-500"},
-        {icon: <FaSyncAlt/>, text: "Đồng bộ hóa", color: "text-purple-500"},
+        {icon: <FaRobot/>, text: "Xếp lịch tự động", color: "text-blue-500", href: "/schedule"},
+        {icon: <FaBell/>, text: "Thông báo nhắc nhở", color: "text-orange-500", href: "/notifications"},
+        {icon: <FaHeadset/>, text: "Hỗ trợ 24/7", color: "text-green-500", href: "/contact"},
+        {icon: <RiVipDiamondFill/>, text: "Gói Premium", color: "text-red-500", href: "/purchase"},
     ];
 
     const handleFeatureClick = () => {
@@ -26,19 +28,19 @@ const KeyFeatures = () => {
             {/* Danh sách tính năng */}
             <div className="grid grid-cols-4 gap-6">
                 {features.map((feature, index) => (
-                    <div
+                    <Link
                         key={index}
+                        href={feature.href}
                         className="cursor-pointer group flex flex-col items-center text-center p-4 rounded-lg bg-gray-100 hover:bg-orange-100 hover:shadow-md transition-all duration-300"
-                        onClick={() => handleFeatureClick()}
                     >
                         <span
-                            className={`${feature.color} text-3xl mb-3 group-hover:scale-110 transition-transform duration-200`}>
+                            className={`${feature.color} text-3xl mb-3 transition-transform duration-200`}>
                             {feature.icon}
                         </span>
                         <h2 className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors duration-200">
                             {feature.text}
                         </h2>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
