@@ -16,7 +16,7 @@ async function containsBadWord(text: string): Promise<boolean> {
     select: { word: true },
   });
   const lowerText = text.toLowerCase();
-  return badWords.some((bw) => lowerText.includes(bw.word.toLowerCase()));
+  return badWords.some((bw) => lowerText.includes(bw.word));
 }
 
 export async function createFeedbackAction(formData: FormData) {

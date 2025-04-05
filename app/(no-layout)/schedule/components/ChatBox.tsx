@@ -1,32 +1,28 @@
-import { ClassData } from "@/lib/types";
+import { processChat } from "@/app/actions/chat";
+import { ChatMessage, ChatRole } from "@/app/types/chat";
+import { useUser } from "@/lib/hook/useUser";
 import { Button, Flex, Stack, TextInput } from "@mantine/core";
 import { IconSend2 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Message } from "./Message";
 import { TypingIndicator } from "./TypingIndicator";
 
-type ChatMessage = {
-  id: string;
-  text: string;
-  sender: "bot" | "user";
-  classes?: ClassData[];
-};
-
 function ChatBox() {
+  const { data: user } = useUser();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      id: "1",
-      text: "Chào bạn! Tôi là trợ lý lịch học HUFLIT.",
-      sender: "bot",
+      content: "Chào bạn! Tôi là trợ lý lịch học HUFLIT.",
+      role: ChatRole.ASSISTANT,
     },
     {
-      id: "2",
-      text: "Bạn có thể hỏi tôi về lịch học, môn học, hoặc giáo viên.",
-      sender: "bot",
+      content:
+        "Bạn có thể hỏi tôi về lịch học, môn học, hoặc giáo viên. Tôi cũng có thể giúp bạn xếp lịch học tối ưu.",
+      role: ChatRole.ASSISTANT,
     },
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,26 +34,52 @@ function ChatBox() {
 
     // Thêm tin nhắn của người dùng vào danh sách
     const newUserMessage: ChatMessage = {
-      id: Date.now().toString(),
-      text: inputMessage,
-      sender: "user",
+      content: inputMessage,
+      role: ChatRole.USER,
     };
 
-    setMessages((prev) => [...prev, newUserMessage]);
+    // Cập nhật danh sách tin nhắn với tin nhắn mới của người dùng
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
+
     setInputMessage("");
     setIsTyping(true);
+    setError(null);
 
-    // Giả lập xử lý tin nhắn
-    setTimeout(() => {
-      // Thêm câu trả lời của bot
-      const botResponse: ChatMessage = {
-        id: Date.now().toString(),
-        text: "Tôi đã nhận được tin nhắn của bạn. Chức năng trò chuyện đang được phát triển.",
-        sender: "bot",
+    try {
+      // Gọi server action để xử lý tin nhắn với lịch sử chat
+      // limit 20 tin nhắn
+      const limitedMessages = updatedMessages.slice(0, 20);
+      const response = await processChat(inputMessage, limitedMessages);
+
+      if (response.success && response.reply) {
+        // Thêm tin nhắn phản hồi từ bot vào danh sách
+        setMessages((prev) => [...prev, response.reply!]);
+      } else {
+        // Xử lý lỗi nếu có
+        setError(response.error || "Có lỗi xảy ra khi xử lý tin nhắn");
+        // Thêm tin nhắn lỗi từ bot
+        const errorMessage: ChatMessage = {
+          content:
+            response.error ||
+            "Có lỗi xảy ra khi xử lý tin nhắn, vui lòng thử lại sau.",
+          role: ChatRole.ASSISTANT,
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      }
+    } catch (error: any) {
+      console.error("Lỗi khi gửi tin nhắn:", error);
+      setError("Có lỗi xảy ra khi gửi tin nhắn");
+
+      // Thêm tin nhắn lỗi từ bot
+      const errorMessage: ChatMessage = {
+        content: "Có lỗi xảy ra khi xử lý tin nhắn, vui lòng thử lại sau.",
+        role: ChatRole.ASSISTANT,
       };
-      setMessages((prev) => [...prev, botResponse]);
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -76,12 +98,13 @@ function ChatBox() {
       >
         <Stack className={"mt-3 overflow-y-auto"} flex={1}>
           <div className="space-y-4">
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <Message
-                key={message.id}
-                text={message.text}
-                sender={message.sender}
-                classes={message.classes}
+                key={index}
+                text={message.content}
+                sender={message.role}
+                userImage={user?.image || undefined}
+                userName={user?.name || "Bạn"}
               />
             ))}
 
@@ -101,11 +124,13 @@ function ChatBox() {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyDown}
+            disabled={isTyping}
           />
           <Button
             size={"md"}
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || isTyping}
+            loading={isTyping}
           >
             {isTyping ? "Đang xử lý..." : "Gửi"} &nbsp;
             <IconSend2 />

@@ -27,6 +27,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  credit        Int             @default(10)
   username      String          @unique
   password      String          @map("password")
   role          Role            @default(DEFAULT_USER)
@@ -216,9 +217,8 @@ model Feedback {
 }
 
 model BadWord {
-  id   String @id @default(cuid()) @map("_id")
-  word String @unique
-
+  id        String   @id @default(cuid()) @map("_id")
+  word      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -13,8 +13,6 @@ export type ClassData = Prisma.ClassGetPayload<{
   };
 }>;
 
-export type Role = "admin" | "user" | "student" | "teacher";
-
 /**
  * Mã lỗi xác thực.
  */

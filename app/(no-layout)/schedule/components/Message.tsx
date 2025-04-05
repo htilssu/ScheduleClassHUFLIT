@@ -1,23 +1,31 @@
+import { Avatar, Text } from "@mantine/core";
 import { Bot } from "lucide-react";
-import { Card, ScrollArea, Table, Text } from "@mantine/core";
-import { ClassData } from "@/lib/types";
-
+import { ChatRole } from "@/app/types/chat";
 interface MessageProps {
   text: string;
-  sender: "bot" | "user";
-  classes?: ClassData[];
+  sender: ChatRole;
+  userImage?: string;
+  userName?: string;
 }
 
-export function Message({ text, sender, classes }: MessageProps) {
+export function Message({
+  text,
+  sender,
+  userImage,
+  userName = "Bạn",
+}: MessageProps) {
+  // Lấy chữ cái đầu tiên của tên người dùng làm chữ cái hiển thị trong avatar
+  const userInitial = userName ? userName.charAt(0).toUpperCase() : "U";
+
   return (
     <div
       className={`flex ${sender === "user" ? "justify-end" : "justify-start"}`}
     >
-      {sender === "bot" && (
+      {sender === ChatRole.ASSISTANT && (
         <div className="shrink-0 mr-2">
-          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+          <Avatar size="md" radius="xl" color="blue" variant="filled">
             <Bot className="w-6 h-6 text-white" />
-          </div>
+          </Avatar>
         </div>
       )}
       <div
@@ -27,7 +35,7 @@ export function Message({ text, sender, classes }: MessageProps) {
             : "w-full max-w-3xl"
         }`}
       >
-        {sender === "bot" ? (
+        {sender === ChatRole.ASSISTANT ? (
           <div
             className={`max-w-3xl w-fit bg-white text-black border border-gray-300 rounded-3xl px-4 py-3`}
           >
@@ -39,14 +47,15 @@ export function Message({ text, sender, classes }: MessageProps) {
           text
         )}
       </div>
-      {sender === "user" && (
+      {sender === ChatRole.USER && (
         <div className="shrink-0 ml-2">
-          <div
-            className="w-10 h-10 rounded-full bg-cover bg-center"
-            style={{
-              backgroundImage: "url('/placeholder.svg?height=40&width=40')",
-            }}
-          ></div>
+          {userImage ? (
+            <Avatar size="md" radius="xl" src={userImage} alt={userName} />
+          ) : (
+            <Avatar size="md" radius="xl" color="blue" variant="filled">
+              {userInitial}
+            </Avatar>
+          )}
         </div>
       )}
     </div>
