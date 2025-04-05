@@ -6,7 +6,7 @@ const Page = () => {
         <Paper shadow="sm" p="md" radius="md" withBorder>
             <Stack>
                 <Title order={2}>Dịch Vụ</Title>
-                <Text>Các gói dịch vụ.</Text>
+                <Text>Các gói dịch vụ bạn đã mua.</Text>
             </Stack>
         </Paper>
     );

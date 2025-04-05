@@ -100,7 +100,7 @@ const Navbar = () => {
                                         : "text-gray-700 hover:text-orange-500 hover:bg-orange-50/70"
                                 }`}
                             >
-                                Liên hệ
+                                Giới thiệu
                             </Link>
                         </div>
                     </div>
@@ -272,7 +272,7 @@ const Navbar = () => {
                             }`}
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            Liên hệ
+                            Giới thiệu
                         </Link>
                         {user && (
                             <>
