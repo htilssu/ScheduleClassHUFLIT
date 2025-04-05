@@ -24,6 +24,7 @@ function ChatBox() {
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,13 +33,11 @@ function ChatBox() {
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
-    // Thêm tin nhắn của người dùng vào danh sách
     const newUserMessage: ChatMessage = {
       content: inputMessage,
       role: ChatRole.USER,
     };
 
-    // Cập nhật danh sách tin nhắn với tin nhắn mới của người dùng
     const updatedMessages = [...messages, newUserMessage];
     setMessages(updatedMessages);
 
@@ -47,18 +46,25 @@ function ChatBox() {
     setError(null);
 
     try {
-      // Gọi server action để xử lý tin nhắn với lịch sử chat
-      // limit 20 tin nhắn
-      const limitedMessages = updatedMessages.slice(0, 20);
+      let limitedMessages = updatedMessages;
+
+      if (
+        updatedMessages.length === 3 &&
+        updatedMessages[0].role === ChatRole.ASSISTANT &&
+        updatedMessages[1].role === ChatRole.ASSISTANT &&
+        updatedMessages[2].role === ChatRole.USER
+      ) {
+        limitedMessages = [updatedMessages[2]];
+      } else {
+        limitedMessages = updatedMessages.slice(-20);
+      }
+
       const response = await processChat(inputMessage, limitedMessages);
 
       if (response.success && response.reply) {
-        // Thêm tin nhắn phản hồi từ bot vào danh sách
         setMessages((prev) => [...prev, response.reply!]);
       } else {
-        // Xử lý lỗi nếu có
         setError(response.error || "Có lỗi xảy ra khi xử lý tin nhắn");
-        // Thêm tin nhắn lỗi từ bot
         const errorMessage: ChatMessage = {
           content:
             response.error ||
@@ -71,7 +77,6 @@ function ChatBox() {
       console.error("Lỗi khi gửi tin nhắn:", error);
       setError("Có lỗi xảy ra khi gửi tin nhắn");
 
-      // Thêm tin nhắn lỗi từ bot
       const errorMessage: ChatMessage = {
         content: "Có lỗi xảy ra khi xử lý tin nhắn, vui lòng thử lại sau.",
         role: ChatRole.ASSISTANT,
@@ -79,6 +84,7 @@ function ChatBox() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
+      inputRef.current?.focus();
     }
   };
 
@@ -114,6 +120,7 @@ function ChatBox() {
         </Stack>
         <Flex gap={5}>
           <TextInput
+            ref={inputRef}
             classNames={{
               input:
                 "rounded-lg! border-gray-300 focus-within:border-gray-500 focus-within:ring-gray-500",
