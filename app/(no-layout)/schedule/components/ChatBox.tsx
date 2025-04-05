@@ -24,6 +24,7 @@ function ChatBox() {
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Thay vì sử dụng ref trực tiếp, chúng ta sẽ tạo tham chiếu đến phần tử DOM
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -128,6 +129,7 @@ function ChatBox() {
         </Stack>
         <Flex gap={5}>
           <TextInput
+            ref={inputRef}
             classNames={{
               input:
                 "rounded-lg! border-gray-300 focus-within:border-gray-500 focus-within:ring-gray-500",
