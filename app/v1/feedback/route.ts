@@ -3,7 +3,9 @@ import { getFeedbacks } from "@/lib/service/feedback";
 
 export const GET = async (request: NextRequest) => {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    // Sử dụng URL để lấy query params
+    const url = new URL(request.url);
+    const searchParams = url.searchParams;
 
     const limit = Number(searchParams.get("limit")) || 5;
     const page = Number(searchParams.get("page")) || 1;

@@ -23,7 +23,7 @@ type TimeLineProps = {
 
 function TimeLine(props: TimeLineProps) {
   debug("TimeLine render");
-  const [mergeMark] = useState(mm);
+    const [mergeMark] = useState(mm);
   const [classes, setClasses] = useState(props.classes);
   const dndContext = useDndContext();
   const [highlightCell, setHighlightCell] = useState<{
@@ -38,29 +38,29 @@ function TimeLine(props: TimeLineProps) {
     (classData: ClassData) => {
       classData.learningSection.forEach(({ weekDay, time }) => {
         const [start, end] = time.split("-").map(trim).map(Number);
-        const dayOfWeekMarkSplit = mergeMark[Number(weekDay) - 2];
+            const dayOfWeekMarkSplit = mergeMark[Number(weekDay) - 2];
 
         dayOfWeekMarkSplit.add(start - 1);
-        dayOfWeekMarkSplit.add(end);
-        for (let i = start; i < end; i++) dayOfWeekMarkSplit.remove(i);
-      });
+            dayOfWeekMarkSplit.add(end);
+            for (let i = start; i < end; i++) dayOfWeekMarkSplit.remove(i);
+        });
     },
     [mergeMark]
   );
 
-  useEffect(() => {
-    setClasses(() => {
+    useEffect(() => {
+        setClasses(() => {
       props.classes.map((value) => handleUpdateMergeSplit(value));
-      return props.classes;
+            return props.classes;
     });
-  }, [handleUpdateMergeSplit, props.classes]);
+    }, [handleUpdateMergeSplit, props.classes]);
 
   const getRowSpan = useCallback(
     (dayInWeek: number, section: number) => {
-      const arr = Array.from(mergeMark[dayInWeek]);
-      const indexOfi = arr.indexOf(section);
-      if (indexOfi !== -1) {
-        if (indexOfi === arr.length - 1) {
+        const arr = Array.from(mergeMark[dayInWeek]);
+        const indexOfi = arr.indexOf(section);
+        if (indexOfi !== -1) {
+            if (indexOfi === arr.length - 1) {
           return MAX_TIME_SECTION - section;
         }
         return arr[indexOfi + 1] - section;
@@ -70,15 +70,15 @@ function TimeLine(props: TimeLineProps) {
     [mergeMark]
   );
 
-  function getTableClassCard(row: number, col: number) {
+    function getTableClassCard(row: number, col: number) {
     const classData = classes?.find((classItem) =>
       classItem.learningSection.some(({ weekDay, time }) => {
         const [start] = time.split("-").map(trim).map(Number);
-        return Number(weekDay) - 2 === col && start - 1 === row;
-      })
-    );
+                return Number(weekDay) - 2 === col && start - 1 === row;
+            })
+        );
 
-    if (!classData) return null;
+        if (!classData) return null;
 
     const learningSection = classData.learningSection.find(
       ({ weekDay }) => Number(weekDay) - 2 === col
@@ -299,11 +299,11 @@ function TimeLine(props: TimeLineProps) {
     }
   }, []);
 
-  return (
-    <div className="w-full">
-      <Table className={"border-[1px] border-gray-400"}>
-        <Table.Thead className={"bg-amber-50"}>
-          <Table.Tr>
+    return (
+        <div className="w-full">
+            <Table className={"border-[1px] border-gray-400"}>
+                <Table.Thead className={"bg-amber-50"}>
+                    <Table.Tr>
             <Table.Th className={"text-center! border-[1px] border-gray-400"}>
               Tiết
             </Table.Th>
@@ -318,12 +318,12 @@ function TimeLine(props: TimeLineProps) {
             <Table.Th className={"text-center! border-[1px] border-gray-400"}>
               CN
             </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
           {Array.from({ length: MAX_TIME_SECTION }, (_, i) => i).map((i) => (
-            <Table.Tr key={i}>
-              <Table.Td
+                        <Table.Tr key={i}>
+                            <Table.Td
                 className={
                   "text-center! bg-rose-50 border-[1px] border-gray-400"
                 }
@@ -349,16 +349,16 @@ function TimeLine(props: TimeLineProps) {
                               classData={dndContext.refData.current.data}
                             />
                           ) : null)}
-                      </div>
-                    </Table.Td>
+                                      </div>
+                                    </Table.Td>
                   )
               )}
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
-    </div>
-  );
+                        </Table.Tr>
+                    ))}
+                </Table.Tbody>
+            </Table>
+        </div>
+    );
 }
 
 export default TimeLine;

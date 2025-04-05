@@ -82,8 +82,38 @@ export default function Feedback() {
       if (result.success) {
         // Hiển thị Alert thành công
         setAlert({ message: "Gửi đánh giá thành công!", type: "success" });
+
+        // Thêm feedback mới vào danh sách hiện tại
+        if (result.data) {
+          // Tạo đối tượng feedback mới từ dữ liệu trả về
+          const newFeedback: Feedback = {
+            id: result.data.id,
+            content: result.data.content,
+            rating: result.data.rating,
+            createdAt: result.data.createdAt,
+            userId: result.data.userId,
+            user: {
+              name: user?.name || "Bạn",
+              image: user?.image || null,
+              role: user?.role,
+            },
+          };
+
+          // Thêm feedback mới vào đầu danh sách
+          setFeedbacks((prevFeedbacks) => [newFeedback, ...prevFeedbacks]);
+
+          // Cập nhật số lượng tổng feedback trong pagination
+          setPagination((prev) => ({
+            ...prev,
+            total: prev.total + 1,
+          }));
+        }
+
+        // Reset form
         setContent("");
         setRating(0);
+
+        // Vẫn gọi invalidateQueries để đảm bảo dữ liệu đồng bộ
         queryClient.invalidateQueries({ queryKey: ["feedback"] });
       } else {
         // Hiển thị Alert lỗi
