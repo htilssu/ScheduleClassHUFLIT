@@ -7,14 +7,16 @@ import { z } from "zod";
 
 // Schema cho việc tạo từ cấm
 const CreateBadWordSchema = z.object({
-  words: z.array(z.string().min(1, "Từ cấm không được để trống")),
+  words: z
+    .array(z.string().min(1, "Từ cấm không được để trống"))
+    .transform((words) => words.map((word) => word.toLowerCase().trim())),
 });
 
 // Lấy danh sách bad word (có thể dùng trực tiếp prisma trong Server Component nếu cần)
 export async function getBadWordsAction() {
   try {
     const badWords = await prisma.badWord.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { word: "asc" },
     });
     return { success: true, badWords };
   } catch (error) {
@@ -30,7 +32,7 @@ export async function createBadWordAction(words: string[]) {
   }
 
   try {
-    // Validate dữ liệu
+    // Validate dữ liệu và chuyển đổi thành chữ thường
     const validatedFields = CreateBadWordSchema.safeParse({ words });
 
     if (!validatedFields.success) {
@@ -40,9 +42,34 @@ export async function createBadWordAction(words: string[]) {
       };
     }
 
+    // Loại bỏ từ trùng lặp
+    const uniqueWords = [...new Set(validatedFields.data.words)];
+
+    // Kiểm tra từ đã tồn tại trong database
+    const existingWords = await prisma.badWord.findMany({
+      where: {
+        word: {
+          in: uniqueWords,
+        },
+      },
+      select: {
+        word: true,
+      },
+    });
+
+    const existingWordsSet = new Set(existingWords.map((w) => w.word));
+    const newWords = uniqueWords.filter((word) => !existingWordsSet.has(word));
+
+    if (newWords.length === 0) {
+      return {
+        success: false,
+        error: "Tất cả từ cấm đã tồn tại trong hệ thống",
+      };
+    }
+
     // Tạo nhiều từ cấm cùng lúc
     const createdBadWords = await prisma.$transaction(
-      validatedFields.data.words.map((word) =>
+      newWords.map((word) =>
         prisma.badWord.create({
           data: { word },
         })
@@ -51,7 +78,11 @@ export async function createBadWordAction(words: string[]) {
 
     revalidatePath("/admin/badwords"); // Revalidate trang quản lý
     revalidateTag("bad-words");
-    return { success: true, badWords: createdBadWords };
+    return {
+      success: true,
+      badWords: createdBadWords,
+      skippedCount: uniqueWords.length - newWords.length,
+    };
   } catch (error) {
     console.error("Error creating bad word:", error);
     return {
