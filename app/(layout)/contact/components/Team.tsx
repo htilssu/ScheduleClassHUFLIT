@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const teamMembers = [
     {
         name: 'Tran Trung Hieu',
-        role: 'SoftWare Engineer',
+        role: 'Software Engineer',
         image: '/images/Tuan&Shu01.png',
         avatar: '/images/Tuan&Shu02.png',
         bio: 'Sinh viên năm 3 - Đại học Ngoại ngữ - Tin Học TP HCM',
