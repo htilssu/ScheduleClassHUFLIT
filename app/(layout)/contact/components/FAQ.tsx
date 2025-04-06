@@ -23,7 +23,7 @@ const faqData = [
     question: 'Làm thế nào để sử dụng website xếp lịch học?',
     answer: 'Để sử dụng website, bạn cần đăng nhập bằng tài khoản HUFLIT của mình. Sau đó, bạn có thể xem lịch học, đăng ký môn học và quản lý lịch học của mình một cách dễ dàng.',
     icon: IconUserCheck,
-    image: '/images/H1.png'
+    image: '/images/thongbao04.png'
   },
   {
     question: 'Tôi gặp vấn đề khi sử dụng website, làm thế nào để được hỗ trợ?',
@@ -35,13 +35,13 @@ const faqData = [
     question: 'Website có hỗ trợ xếp lịch học cho tất cả các khoa không?',
     answer: 'Hiện tại website đang hỗ trợ xếp lịch học cho các khoa chính của trường. Chúng tôi đang tiếp tục phát triển để mở rộng phạm vi hỗ trợ cho tất cả các khoa.',
     icon: IconSchool,
-    image: '/images/H2.png'
+    image: '/images/thongbao01.png'
   },
   {
     question: 'Làm thế nào để đóng góp ý kiến cho website?',
     answer: 'Bạn có thể gửi ý kiến đóng góp thông qua form liên hệ hoặc tạo đánh giá ở phần dưới Trang Chủ của Web. Mọi ý kiến đóng góp đều được chúng tôi trân trọng và xem xét.',
     icon: IconMessageReport,
-    image: '/images/H1.png'
+    image: '/images/thongbao02.png'
   }
 ];
 
