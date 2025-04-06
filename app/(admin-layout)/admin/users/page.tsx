@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Title,
   Card,
@@ -23,16 +23,26 @@ import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 import { UserDetailModal } from "./components/UserDetailModal";
 import { updateUser, deleteUser } from "@/app/actions/admin-actions";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from 'next/navigation';
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || "");
   const [activePage, setActivePage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
+
+  // Update searchQuery when URL changes
+  useEffect(() => {
+    const search = searchParams.get('search');
+    if (search !== null) {
+      setSearchQuery(search);
+    }
+  }, [searchParams]);
 
   const { data, isLoading, error } = useUsers({
     page: activePage,
