@@ -2,18 +2,17 @@ import { ChatMessage } from "@/lib/types/chat";
 /**
  * Module xử lý chat thông thường với Google Generative AI
  */
-import ai from "./index";
+import { FunctionCallingMode } from "@google/generative-ai";
+import { availableFunctions, generateScheduleResponse } from "./chat-schedule";
 import {
-  limitChatHistory,
+  containsProhibitedContent,
   convertToGenerativeAIMessage,
   getDefaultGenerationConfig,
-  containsProhibitedContent,
-  containsProhibitedResponse,
   getSystemContext,
+  limitChatHistory,
 } from "./chat-utils";
-import { availableFunctions, generateScheduleResponse } from "./chat-schedule";
-import { FunctionCallingMode } from "@google/generative-ai";
 import { handleFunctionCall } from "./function-calling";
+import ai from "./index";
 // Lấy model name từ biến môi trường hoặc sử dụng giá trị mặc định
 const defaultModel = process.env.AI_MODEL_NAME || "gemini-pro";
 

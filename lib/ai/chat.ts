@@ -5,6 +5,5 @@
 export { generateChatResponse } from "./chat-regular";
 export {
   generateScheduleResponse,
-  analyzeAndOptimizeSchedule,
   type ResponseWithFunctionCall,
 } from "./chat-schedule";

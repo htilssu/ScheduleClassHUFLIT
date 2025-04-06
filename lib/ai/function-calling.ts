@@ -1,5 +1,5 @@
 import { FunctionCall } from "@google/generative-ai";
-import { getClassesByFilter } from "../service/class";
+import { getClassesByFilter, GetClassesParams } from "../service/class";
 
 /**
  * Xử lý function call từ AI
@@ -7,7 +7,7 @@ import { getClassesByFilter } from "../service/class";
  * @returns Promise<any> - Kết quả từ function đã gọi
  */
 export async function handleFunctionCall(
-  functionCall: FunctionCall
+  functionCall: Omit<FunctionCall, "args"> & { args: GetClassesParams }
 ): Promise<ReturnType<typeof getClassesByFilter>> {
   try {
     const { name, args } = functionCall;
@@ -15,20 +15,20 @@ export async function handleFunctionCall(
     // Kiểm tra loại function và gọi hàm tương ứng
     if (name === "getClassInfo") {
       const {
+        learningSection,
+        subjectId,
+        subjectName,
         yearStudyId,
         semesterId,
-        classId,
-        lecturerName,
-        subjectName,
         limit,
-      } = args as any;
+      } = args;
 
       // Gọi service để lấy dữ liệu từ database
       const classes = await getClassesByFilter({
         yearStudyId,
         semesterId,
-        classId,
-        lecturerName,
+        learningSection,
+        subjectId,
         subjectName,
         limit: limit || 50,
       });

@@ -27,7 +27,7 @@ export function loadClassFromLocal(): ClassData[] {
 /**
  * Interface định nghĩa các tham số tìm kiếm cho lớp học
  */
-interface GetClassesParams {
+export interface GetClassesParams {
   /**
    * Năm học cần tìm
    */
@@ -41,23 +41,37 @@ interface GetClassesParams {
   /**
    * Mã lớp học
    */
-  classId?: string;
+  classId?: string | string[];
 
   /**
    * Tên hoặc một phần tên của giảng viên
    */
-  lecturerName?: string;
+  lecturerName?: string | string[];
+
+  /**
+   * Mã môn học
+   */
+  subjectId?: string | string[];
 
   /**
    * Tên hoặc một phần tên của môn học
    */
-  subjectName?: string;
+  subjectName?: string | string[];
 
   /**
    * Giới hạn số lượng kết quả trả về
    * @default 50
    */
   limit?: number;
+
+  /**
+   * Ngày trong tuần
+   */
+  learningSection?: {
+    weekDay: string;
+    time: string;
+    room: string;
+  };
 }
 
 /**
@@ -69,59 +83,97 @@ interface GetClassesParams {
 export async function getClassesByFilter(
   params: GetClassesParams
 ): Promise<ClassData[]> {
+  console.log("===== DEBUG: Bắt đầu tìm kiếm lớp học =====");
+  console.log("Tham số tìm kiếm:", JSON.stringify(params, null, 2));
+
   const {
     yearStudyId,
     semesterId,
     classId,
+    learningSection,
     lecturerName,
     subjectName,
     limit = 50,
   } = params;
 
-  return await prisma.class.findMany({
-    where: {
-      // Lọc theo năm học và học kỳ
-      ...(yearStudyId && {
-        yearStudyId,
-      }),
-      ...(semesterId && {
-        semesterId,
-      }),
+  // Xây dựng điều kiện tìm kiếm
+  const where: any = {};
 
-      // Lọc theo mã lớp học
-      ...(classId && {
-        classId: {
-          contains: classId,
-        },
-      }),
+  // Thêm các điều kiện nếu có
+  if (yearStudyId) where.yearStudyId = yearStudyId;
+  if (semesterId) where.semesterId = semesterId;
 
-      // Lọc theo tên giảng viên
-      ...(lecturerName && {
-        Lecturer: {
-          name: {
-            contains: lecturerName,
-            mode: "insensitive",
-          },
-        },
-      }),
+  // Xử lý classId (có thể là string hoặc mảng string)
+  if (classId) {
+    if (Array.isArray(classId)) {
+      where.classId = { in: classId };
+      console.log(`DEBUG: Tìm theo nhiều mã lớp: ${classId.join(", ")}`);
+    } else {
+      where.classId = classId;
+      console.log(`DEBUG: Tìm theo mã lớp: ${classId}`);
+    }
+  }
 
-      // Lọc theo tên môn học
-      ...(subjectName && {
-        Subject: {
-          name: {
-            contains: subjectName,
-            mode: "insensitive",
-          },
-        },
-      }),
-    },
-    include: {
-      Subject: true,
-      Lecturer: true,
-    },
-    take: limit,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  // Xử lý learningSection (thông tin về buổi học)
+  if (learningSection) {
+    where.learningSection = {
+      some: {
+        weekDay: learningSection.weekDay,
+        ...(learningSection.time && { time: learningSection.time }),
+        ...(learningSection.room && { room: learningSection.room }),
+      },
+    };
+    console.log(`DEBUG: Tìm theo lịch học: ${JSON.stringify(learningSection)}`);
+  }
+
+  // Xử lý điều kiện tìm kiếm cho giảng viên
+  if (lecturerName) {
+    where.Lecturer = {
+      name: Array.isArray(lecturerName)
+        ? { in: lecturerName }
+        : { contains: lecturerName, mode: "insensitive" },
+    };
+    console.log(`DEBUG: Tìm theo giảng viên: ${lecturerName}`);
+  }
+
+  // Xử lý điều kiện tìm kiếm cho môn học
+  if (subjectName) {
+    where.Subject = {
+      name: Array.isArray(subjectName)
+        ? { in: subjectName }
+        : { contains: subjectName, mode: "insensitive" },
+    };
+    console.log(`DEBUG: Tìm theo tên môn học: ${subjectName}`);
+  }
+
+  console.log(
+    "DEBUG: Câu truy vấn Prisma:",
+    JSON.stringify({ where, limit }, null, 2)
+  );
+
+  try {
+    const results = await prisma.class.findMany({
+      where,
+      include: {
+        Subject: true,
+        Lecturer: true,
+      },
+      take: limit,
+    });
+
+    console.log(`DEBUG: Tìm thấy ${results.length} kết quả`);
+
+    if (process.env.NODE_ENV === "development" && results.length > 0) {
+      console.log(
+        `DEBUG: Mẫu kết quả đầu tiên: ${JSON.stringify(results[0], null, 2)}`
+      );
+    }
+
+    return results;
+  } catch (error) {
+    console.error("DEBUG: Lỗi khi tìm kiếm lớp học:", error);
+    throw error;
+  } finally {
+    console.log("===== DEBUG: Kết thúc tìm kiếm lớp học =====");
+  }
 }

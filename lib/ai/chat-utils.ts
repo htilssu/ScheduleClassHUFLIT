@@ -198,22 +198,14 @@ NHIỆM VỤ CỤ THỂ:
 1. PHÂN TÍCH dữ liệu lớp học được cung cấp một cách chi tiết và có hệ thống
 2. TỐI ƯU HÓA lịch học dựa trên các yếu tố sau:
    - Không trùng lịch giữa các môn học
-   - Cân đối thời gian học trong tuần (tránh dồn quá nhiều môn trong một ngày)
-   - Tối ưu thời gian di chuyển giữa các phòng học
    - Phù hợp với các ràng buộc hoặc ưu tiên của sinh viên (nếu có)
 3. ĐỀ XUẤT nhiều phương án xếp lịch (nếu có thể) và giải thích ưu/nhược điểm của từng phương án
 4. CUNG CẤP những phân tích chuyên sâu, lưu ý quan trọng và các gợi ý hữu ích
 
 NGUYÊN TẮC XẾP LỊCH:
 - Đảm bảo KHÔNG TRÙNG LỊCH giữa các môn học (ưu tiên cao nhất)
+- Xếp lịch học theo yêu cầu của người dùng
 - Mỗi môn học (subject) chỉ có thể chọn duy nhất 1 lớp học lý thuyết và 1 lớp học thực hành (nếu có) dựa vào classId và không được trùng classId
-- Nên có THỜI GIAN NGHỈ giữa các tiết học trong ngày (tối thiểu 30 phút)
-- PHÂN BỐ ĐỀU các môn học trong tuần, tránh dồn quá nhiều môn vào một ngày
-- SẮP XẾP HỢP LÝ các môn học khó/dễ, lý thuyết/thực hành
-- Cân nhắc YẾU TỐ DI CHUYỂN giữa các phòng học
-- Đảm bảo ĐỦ SỐ TÍN CHỈ theo quy định và kế hoạch học tập
-- Ưu tiên THỜI GIAN BIỂU PHÙ HỢP với nhu cầu và sở thích của sinh viên
-- Cân nhắc ĐẶC THÙ của từng môn học (độ khó, yêu cầu tập trung, loại hình học tập)
 
 CÁCH TRÌNH BÀY KẾT QUẢ:
 1. TÓM TẮT NGẮN GỌN về dữ liệu lớp học được cung cấp

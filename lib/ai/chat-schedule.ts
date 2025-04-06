@@ -42,17 +42,43 @@ export const availableFunctions: FunctionDeclaration[] = [
           type: SchemaType.STRING,
           description: "Học kỳ cần tìm (ví dụ: 'HK01' hoặc 'HK02')",
         },
-        classId: {
-          type: SchemaType.STRING,
-          description: "Mã lớp học cần tìm",
-        },
         lecturerName: {
           type: SchemaType.STRING,
           description: "Tên hoặc một phần tên của giảng viên",
         },
+        learningSection: {
+          type: SchemaType.ARRAY,
+          items: {
+            type: SchemaType.OBJECT,
+            properties: {
+              weekDay: {
+                type: SchemaType.STRING,
+                description: "Ngày trong tuần (ví dụ: 'Thứ 2' hoặc 'Thứ 3')",
+              },
+              time: {
+                type: SchemaType.STRING,
+                description: "Tiết học (ví dụ: '1-2' hoặc '3-4')",
+              },
+              room: {
+                type: SchemaType.STRING,
+                description: "Phòng học (ví dụ: 'A101' hoặc 'B202')",
+              },
+            },
+          },
+        },
         subjectName: {
-          type: SchemaType.STRING,
-          description: "Tên hoặc một phần tên của môn học",
+          type: SchemaType.ARRAY,
+          description: "Danh sách tên hoặc một phần tên của môn học",
+          items: {
+            type: SchemaType.STRING,
+          },
+        },
+        subjectId: {
+          type: SchemaType.ARRAY,
+          description: "Danh sách mã môn học",
+          items: {
+            type: SchemaType.STRING,
+          },
         },
         limit: {
           type: SchemaType.INTEGER,
