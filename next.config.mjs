@@ -14,12 +14,17 @@ const nextConfig = {
         '.json',
       ],
     },
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mdx'],
   images: {
     remotePatterns: [
       {
         hostname: 'via.placeholder.com',
+      },{
+        hostname: 'res.cloudinary.com',
       },
     ],
   },

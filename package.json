@@ -37,6 +37,7 @@
     "bcryptjs": "^3.0.2",
     "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.6.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
