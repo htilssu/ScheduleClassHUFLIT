@@ -112,7 +112,7 @@ export async function generateScheduleResponse(
       model: defaultModel,
       generationConfig: {
         ...getDefaultGenerationConfig(),
-        temperature: 0,
+        temperature: 0.2,
         responseMimeType: "application/json",
         responseSchema: {
           type: SchemaType.ARRAY,

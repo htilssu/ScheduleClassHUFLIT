@@ -106,7 +106,7 @@ export async function getClassesByFilter(
   // Xử lý classId (có thể là string hoặc mảng string)
   if (classId) {
     if (Array.isArray(classId)) {
-      where.classId = { in: classId };
+      where.classId = { $in: classId };
       console.log(`DEBUG: Tìm theo nhiều mã lớp: ${classId.join(", ")}`);
     } else {
       where.classId = classId;
