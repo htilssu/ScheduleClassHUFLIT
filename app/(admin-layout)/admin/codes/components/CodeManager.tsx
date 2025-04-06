@@ -3,7 +3,7 @@
 import {
   createCodeAction,
   deleteCodeAction,
-} from "@/app/actions/admin-code-actions";
+} from "@/lib/actions/admin-code-actions";
 import useUser from "@/lib/hook/useUser";
 import {
   ActionIcon,

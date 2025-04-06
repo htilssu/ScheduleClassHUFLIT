@@ -1,8 +1,20 @@
-import { processChat } from "@/app/actions/chat";
+import { processChat } from "@/lib/actions/chat";
 import { ChatMessage, ChatRole } from "@/lib/types/chat";
 import { useUser } from "@/lib/hook/useUser";
-import { Button, Flex, Stack, TextInput } from "@mantine/core";
-import { IconSend2 } from "@tabler/icons-react";
+import {
+  Button,
+  Flex,
+  Stack,
+  TextInput,
+  Switch,
+  Group,
+  Text,
+} from "@mantine/core";
+import {
+  IconSend2,
+  IconCalendar,
+  IconMessageCircle,
+} from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Message } from "./Message";
 import { TypingIndicator } from "./TypingIndicator";
@@ -23,6 +35,7 @@ function ChatBox() {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isScheduleMode, setIsScheduleMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // Thay vì sử dụng ref trực tiếp, chúng ta sẽ tạo tham chiếu đến phần tử DOM
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -57,13 +70,26 @@ function ChatBox() {
       ) {
         limitedMessages = [updatedMessages[2]];
       } else {
-        limitedMessages = updatedMessages.slice(-5);
+        // Lấy tối đa 6 message cuối cùng
+        const lastSixMessages = updatedMessages.slice(-6);
+
+        while (lastSixMessages[0].role === ChatRole.ASSISTANT) {
+          lastSixMessages.shift();
+        }
+
+        limitedMessages = lastSixMessages;
       }
 
       const response = await processChat(inputMessage, limitedMessages);
 
       if (response.success && response.reply) {
-        setMessages((prev) => [...prev, response.reply!]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            content: response.reply as string,
+            role: ChatRole.ASSISTANT,
+          },
+        ]);
       } else {
         setError(response.error || "Có lỗi xảy ra khi xử lý tin nhắn");
         const errorMessage: ChatMessage = {
@@ -101,6 +127,20 @@ function ChatBox() {
     }
   };
 
+  const handleToggleMode = () => {
+    setIsScheduleMode(!isScheduleMode);
+    // Thêm thông báo chuyển chế độ
+    setMessages((prev) => [
+      ...prev,
+      {
+        content: isScheduleMode
+          ? "Đã chuyển sang chế độ hỏi đáp. Bạn có thể hỏi tôi bất kỳ câu hỏi nào liên quan đến HUFLIT."
+          : "Đã chuyển sang chế độ xếp lịch học. Tôi sẽ giúp bạn xếp lịch học tối ưu. Vui lòng cung cấp thông tin về các môn học, thời gian và các ràng buộc (nếu có).",
+        role: ChatRole.ASSISTANT,
+      },
+    ]);
+  };
+
   return (
     <>
       <Flex
@@ -109,6 +149,32 @@ function ChatBox() {
         direction={"column"}
         justify={"space-between"}
       >
+        <Group style={{ justifyContent: "flex-end" }} mb={5}>
+          <Group style={{ gap: "xs" }}>
+            <IconMessageCircle
+              size={16}
+              color={!isScheduleMode ? "blue" : "gray"}
+            />
+            <Switch
+              checked={isScheduleMode}
+              onChange={handleToggleMode}
+              size="md"
+              color="blue"
+              thumbIcon={
+                isScheduleMode ? (
+                  <IconCalendar size={12} stroke={2.5} color="white" />
+                ) : (
+                  <IconMessageCircle size={12} stroke={2.5} color="white" />
+                )
+              }
+            />
+            <IconCalendar size={16} color={isScheduleMode ? "blue" : "gray"} />
+            <Text size="sm" fw={500}>
+              {isScheduleMode ? "Chế độ xếp lịch" : "Chế độ hỏi đáp"}
+            </Text>
+          </Group>
+        </Group>
+
         <Stack className={"mt-3 overflow-y-auto"} flex={1}>
           <div className="space-y-4">
             {messages.map((message, index) => (
@@ -134,11 +200,14 @@ function ChatBox() {
             }}
             size={"md"}
             flex={1}
-            placeholder={"Nhập tin nhắn..."}
+            placeholder={
+              isScheduleMode
+                ? "Mô tả yêu cầu xếp lịch học của bạn..."
+                : "Nhập tin nhắn..."
+            }
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={isTyping}
             autoFocus
           />
           <Button

@@ -1,6 +1,6 @@
 "use client";
 
-import { signUp } from "@/app/actions/auth-actions";
+import { signUp } from "@/lib/actions/auth-actions";
 import { AppDispatch, loadingSlice } from "@/lib/state";
 import { RegisterData } from "@/lib/types/auth";
 import {

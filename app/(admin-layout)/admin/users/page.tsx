@@ -21,14 +21,16 @@ import { UserEditModal } from "./components/UserEditModal";
 import { AddUserModal } from "./components/AddUserModal";
 import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 import { UserDetailModal } from "./components/UserDetailModal";
-import { updateUser, deleteUser } from "@/app/actions/admin-actions";
+import { updateUser, deleteUser } from "@/lib/actions/admin-actions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || "");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
   const [activePage, setActivePage] = useState(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function AdminUsersPage() {
 
   // Update searchQuery when URL changes
   useEffect(() => {
-    const search = searchParams.get('search');
+    const search = searchParams.get("search");
     if (search !== null) {
       setSearchQuery(search);
     }
