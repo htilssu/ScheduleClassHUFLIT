@@ -15,8 +15,9 @@ import {
   IconCheck,
   IconX,
   IconEye,
-  IconMail,
+  IconMail
 } from "@tabler/icons-react";
+import { GrSchedules } from "react-icons/gr";
 import { User } from "@/lib/hook/useUsers";
 
 interface UserTableProps {
@@ -110,6 +111,12 @@ export const UserTable = ({
                 onClick={() => onViewDetails(user)}
               >
                 Xem chi tiết
+              </Menu.Item>
+              <Menu.Item
+                  leftSection={<GrSchedules size={14} />}
+                  onClick={() => onViewDetails(user)}
+              >
+                Xem lịch học
               </Menu.Item>
               <Menu.Item
                 leftSection={<IconMail size={14} />}
