@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const teamMembers = [
     {
         name: 'Tran Trung Hieu',
-        role: 'SoftWare Engineer',
+        role: 'Software Engineer',
         image: '/images/Tuan&Shu01.png',
         avatar: '/images/Tuan&Shu02.png',
         bio: 'Sinh viên năm 3 - Đại học Ngoại ngữ - Tin Học TP HCM',
@@ -59,7 +59,7 @@ const Team: React.FC = () => {
                                 className="object-cover w-auto h-full transition-transform duration-700 group-hover:scale-110"
                             />
                         </Card.Section>
-                        <div className="absolute top-38 left-1/2 transform -translate-x-1/2 z-10">
+                        <div className="absolute top-36 left-1/2 transform -translate-x-1/2 z-10">
                             <Avatar
                                 src={member.avatar}
                                 size={80}
