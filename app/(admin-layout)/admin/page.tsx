@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
   Title,
-  Skeleton,
+  Skeleton, Button,
 } from "@mantine/core";
 import {
   IconCalendar,
@@ -30,6 +30,7 @@ import {
   Bar,
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 interface ChartData {
   date: string;
@@ -328,7 +329,14 @@ export default function AdminDashboardPage() {
           <Card shadow="sm" padding="md" radius="md" withBorder>
             <Stack>
               <div>
-                <Title order={4}>Phân loại phản hồi</Title>
+                <div className="flex items-center gap-2">
+                  <Title order={4}>Phân loại phản hồi</Title>
+                  <Link href="/admin/feedbacks" passHref>
+                    <Button component="a" variant="light" size="xs">
+                      Xem chi tiết
+                    </Button>
+                  </Link>
+                </div>
                 <Text size="sm" c="dimmed">
                   Số lượng phản hồi theo từng mức đánh giá trong tháng
                 </Text>
@@ -336,7 +344,7 @@ export default function AdminDashboardPage() {
               <Box h={400} w="100%">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={stats.feedbackByDay}
+                      data={stats.feedbackByDay}
                     margin={{
                       top: 5,
                       right: 30,
