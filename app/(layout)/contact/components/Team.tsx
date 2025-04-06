@@ -59,7 +59,7 @@ const Team: React.FC = () => {
                                 className="object-cover w-auto h-full transition-transform duration-700 group-hover:scale-110"
                             />
                         </Card.Section>
-                        <div className="absolute top-38 left-1/2 transform -translate-x-1/2 z-10">
+                        <div className="absolute top-36 left-1/2 transform -translate-x-1/2 z-10">
                             <Avatar
                                 src={member.avatar}
                                 size={80}
