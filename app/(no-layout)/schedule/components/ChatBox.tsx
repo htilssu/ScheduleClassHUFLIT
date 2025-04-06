@@ -1,5 +1,5 @@
 import { processChat } from "@/app/actions/chat";
-import { ChatMessage, ChatRole } from "@/app/types/chat";
+import { ChatMessage, ChatRole } from "@/lib/types/chat";
 import { useUser } from "@/lib/hook/useUser";
 import { Button, Flex, Stack, TextInput } from "@mantine/core";
 import { IconSend2 } from "@tabler/icons-react";

@@ -1,6 +1,6 @@
 import { Avatar, Text } from "@mantine/core";
 import { Bot } from "lucide-react";
-import { ChatRole } from "@/app/types/chat";
+import { ChatRole } from "@/lib/types/chat";
 interface MessageProps {
   text: string;
   sender: ChatRole;

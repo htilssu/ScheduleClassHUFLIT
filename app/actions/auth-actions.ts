@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { RegisterData, RegisterResponse } from "../types/auth";
+import { RegisterData, RegisterResponse } from "../../lib/types/auth";
 
 // Hàm kiểm tra định dạng email
 function isValidEmail(email: string): boolean {

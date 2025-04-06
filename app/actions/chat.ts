@@ -1,7 +1,7 @@
 "use server";
 
 import { ClassData } from "@/lib/types";
-import { ChatRole, ChatMessage } from "../types/chat";
+import { ChatRole, ChatMessage } from "../../lib/types/chat";
 import { revalidatePath } from "next/cache";
 import { generateChatResponse } from "@/lib/ai/chat";
 

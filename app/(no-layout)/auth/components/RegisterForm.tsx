@@ -1,9 +1,8 @@
 "use client";
 
 import { signUp } from "@/app/actions/auth-actions";
-import { RegisterData } from "@/app/types/auth";
 import { AppDispatch, loadingSlice } from "@/lib/state";
-import { resetUser } from "@/lib/state/user";
+import { RegisterData } from "@/lib/types/auth";
 import {
   Alert,
   Box,
