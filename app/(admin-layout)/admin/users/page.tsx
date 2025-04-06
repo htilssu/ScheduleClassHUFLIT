@@ -138,7 +138,7 @@ export default function AdminUsersPage() {
         <Title order={2}>Quản lý người dùng</Title>
         <Button
           leftSection={<IconPlus size={16} />}
-          color="blue"
+          color="orange"
           onClick={handleAddUser}
         >
           Thêm người dùng
