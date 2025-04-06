@@ -84,42 +84,32 @@ function convertToGenerativeAIMessage(message: ChatMessage) {
 /**
  * Lấy danh sách tin nhắn lịch sử và giới hạn số lượng tin nhắn
  * @param history - Danh sách tin nhắn lịch sử
- * @param maxMessages - Số tin nhắn tối đa cần giữ lại (mặc định là 20)
+ * @param maxMessages - Số tin nhắn tối đa cần giữ lại (mặc định là 5)
  * @returns Array - Danh sách tin nhắn đã giới hạn
  */
 export function limitChatHistory(
   history: ChatMessage[],
-  maxMessages: number = 20
+  maxMessages: number = 5
 ): ChatMessage[] {
   // Nếu không có lịch sử, trả về mảng rỗng
   if (!history || history.length === 0) {
     return [];
   }
 
-  // Cắt bớt lịch sử nếu quá dài
+  // Cắt bớt lịch sử nếu quá dài, chỉ giữ lại 5 tin nhắn gần nhất
   let limitedHistory =
     history.length <= maxMessages
       ? [...history]
       : history.slice(history.length - maxMessages);
 
-  // Kiểm tra xem tin nhắn đầu tiên có phải của người dùng không
-  // Nếu 2 tin nhắn đầu tiên là của model, loại bỏ tin nhắn đầu tiên
-  if (
-    limitedHistory.length >= 2 &&
-    limitedHistory[0].role === ChatRole.ASSISTANT &&
-    limitedHistory[1].role === ChatRole.ASSISTANT
-  ) {
-    limitedHistory = limitedHistory.slice(1);
-  }
-
-  // Nếu tin nhắn đầu tiên vẫn không phải của người dùng và có nhiều hơn 1 tin nhắn
+  // Nếu tin nhắn đầu tiên không phải của người dùng, tìm và cắt đến tin nhắn đầu tiên của người dùng
   if (limitedHistory.length > 0 && limitedHistory[0].role !== ChatRole.USER) {
     // Tìm vị trí tin nhắn đầu tiên của người dùng
     const firstUserIndex = limitedHistory.findIndex(
       (msg) => msg.role === ChatRole.USER
     );
 
-    // Nếu tìm thấy tin nhắn người dùng, bỏ qua các tin nhắn trước đó
+    // Nếu tìm thấy tin nhắn người dùng, cắt đến tin nhắn đó
     if (firstUserIndex > 0) {
       limitedHistory = limitedHistory.slice(firstUserIndex);
     }
@@ -163,7 +153,7 @@ export async function generateChatResponse(
 
   try {
     // ===== BƯỚC 2: CHUẨN BỊ GỌI AI =====
-    // Giới hạn lịch sử chat (tối đa 20 tin nhắn)
+    // Giới hạn lịch sử chat (tối đa 5 tin nhắn)
     const limitedHistory = limitChatHistory(history);
 
     // Lấy system context đã được củng cố
@@ -193,30 +183,10 @@ export async function generateChatResponse(
     // Tạo mảng tin nhắn lịch sử từ lịch sử hiện có
     const historyMessages = limitedHistory.map(convertToGenerativeAIMessage);
 
-    // Định nghĩa type cho mảng allMessages dựa trên kết quả của convertToGenerativeAIMessage
-    type GenerativeAIMessage = ReturnType<typeof convertToGenerativeAIMessage>;
-    let allMessages: GenerativeAIMessage[] = [];
-
-    if (historyMessages.length > 0) {
-      // Logic đảm bảo tin nhắn đầu tiên từ user vẫn giữ nguyên
-      if (historyMessages[0].role !== "user") {
-        const firstUserMsgIndex = historyMessages.findIndex(
-          (msg) => msg.role === "user"
-        );
-        if (firstUserMsgIndex !== -1) {
-          allMessages = historyMessages.slice(firstUserMsgIndex);
-        } else {
-          allMessages = [];
-        }
-      } else {
-        allMessages = historyMessages;
-      }
-    }
-
     // ===== BƯỚC 3: GỌI AI VÀ LẤY PHẢN HỒI =====
     // Tạo chat session với lịch sử tin nhắn đã được kiểm tra
     const chat = model.startChat({
-      history: allMessages,
+      history: historyMessages,
     });
 
     // Gửi tin nhắn hiện tại (đã được kiểm tra ở Bước 1) đến model

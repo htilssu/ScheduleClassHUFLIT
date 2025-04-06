@@ -21,7 +21,7 @@ export interface ChatResponse {
 /**
  * Xử lý tin nhắn chat từ người dùng và trả về phản hồi
  * @param message - Nội dung tin nhắn từ người dùng
- * @param history - Lịch sử chat (tối đa 20 tin nhắn gần nhất sẽ được sử dụng)
+ * @param history - Lịch sử chat (tối đa 5 tin nhắn gần nhất sẽ được sử dụng)
  * @returns ChatResponse - Kết quả xử lý tin nhắn
  */
 export async function processChat(

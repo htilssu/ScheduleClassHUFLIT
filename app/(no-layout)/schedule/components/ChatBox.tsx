@@ -57,7 +57,7 @@ function ChatBox() {
       ) {
         limitedMessages = [updatedMessages[2]];
       } else {
-        limitedMessages = updatedMessages.slice(-20);
+        limitedMessages = updatedMessages.slice(-5);
       }
 
       const response = await processChat(inputMessage, limitedMessages);
