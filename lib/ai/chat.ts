@@ -15,6 +15,65 @@ import {
 const defaultModel = process.env.AI_MODEL_NAME || "gemini-pro";
 
 /**
+ * Định nghĩa cấu trúc của response khi có function call
+ */
+interface ResponseWithFunctionCall {
+  text: string | null;
+  functionCall: {
+    name: string;
+    arguments: string;
+  };
+}
+
+/**
+ * Định nghĩa cấu trúc của response khi có function result
+ */
+interface ResponseWithFunctionResult {
+  text: string;
+  functionResult: any;
+}
+
+/**
+ * Định nghĩa các function có thể gọi từ AI
+ */
+const availableFunctions = [
+  {
+    name: "getClassInfo",
+    description: "Lấy thông tin lớp học dựa trên các tiêu chí tìm kiếm",
+    parameters: {
+      type: "object",
+      properties: {
+        yearStudyId: {
+          type: "string",
+          description: "Năm học cần tìm (ví dụ: '2023-2024')",
+        },
+        semesterId: {
+          type: "string",
+          description: "Học kỳ cần tìm (ví dụ: '1' hoặc '2')",
+        },
+        classId: {
+          type: "string",
+          description: "Mã lớp học cần tìm",
+        },
+        lecturerName: {
+          type: "string",
+          description: "Tên hoặc một phần tên của giảng viên",
+        },
+        subjectName: {
+          type: "string",
+          description: "Tên hoặc một phần tên của môn học",
+        },
+        limit: {
+          type: "integer",
+          description: "Giới hạn số lượng kết quả trả về (mặc định: 50)",
+        },
+      },
+      required: [],
+    },
+  },
+];
+
+/**
  * Lấy system context (system prompt) từ biến môi trường hoặc sử dụng giá trị mặc định
  * @returns string - System context cho model
  */
@@ -54,6 +113,12 @@ KHI ĐƯỢC YÊU CẦU XẾP LỊCH HỌC:
 - Sẵn sàng điều chỉnh lịch học dựa trên phản hồi của sinh viên
 - Giải thích rõ ràng nếu có yêu cầu khó thực hiện hoặc không khả thi
 
+KHI ĐƯỢC YÊU CẦU TÌM KIẾM THÔNG TIN LỚP HỌC:
+- Sử dụng function "getClassInfo" để lấy thông tin lớp học từ cơ sở dữ liệu
+- Bạn có thể tìm kiếm dựa trên năm học, học kỳ, mã lớp, tên giảng viên, tên môn học
+- Từ thông tin sinh viên cung cấp, hãy trích xuất các tiêu chí tìm kiếm phù hợp và gọi function
+- Sau khi nhận kết quả, hiển thị thông tin lớp học một cách rõ ràng, dễ hiểu
+
 QUY TẮC NGHIÊM NGẶT (TUYỆT ĐỐI KHÔNG VI PHẠM):
 - NGHIÊM CẤM trả lời các câu hỏi về bất kỳ chủ đề nào khác ngoài các nhiệm vụ đã nêu. Ví dụ (không giới hạn): chính trị, tôn giáo, tin tức, thể thao, giải trí, lời khuyên cá nhân, tình yêu, sức khỏe, tài chính, sản phẩm/dịch vụ không liên quan, các trường đại học khác...
 - TUYỆT ĐỐI KHÔNG thực hiện các tác vụ sáng tạo như viết văn, làm thơ, viết code, vẽ, dịch thuật không liên quan đến học tập HUFLIT.
@@ -77,82 +142,158 @@ KẾT THÚC CHỈ THỊ HỆ THỐNG.`;
  * @param currentMessage - Tin nhắn hiện tại của người dùng
  * @param history - Lịch sử chat trước đó
  * @param modelName - Tên model AI (mặc định: từ biến môi trường hoặc "gemini-pro")
- * @returns Promise<string> - Phản hồi từ AI
+ * @returns Promise<string | ResponseWithFunctionCall | ResponseWithFunctionResult> - Phản hồi từ AI
  */
 export async function generateChatResponse(
   currentMessage: string,
   history: ChatMessage[] = [],
   modelName: string = defaultModel
-): Promise<string> {
+): Promise<string | ResponseWithFunctionCall | ResponseWithFunctionResult> {
   // ===== BƯỚC 1: LỌC ĐẦU VÀO =====
-  // Kiểm tra nghiêm ngặt tin nhắn người dùng trước khi gửi đến AI
   if (containsProhibitedContent(currentMessage)) {
-    // Trả về câu từ chối tiêu chuẩn nếu phát hiện nội dung cấm
     return "Xin lỗi bạn, tôi chỉ có thể trả lời các câu hỏi liên quan đến lịch học, thời khóa biểu, môn học, giáo viên và các vấn đề học tập tại HUFLIT. Vui lòng đặt câu hỏi liên quan đến những chủ đề này.";
   }
 
   try {
     // ===== BƯỚC 2: CHUẨN BỊ GỌI AI =====
-    // Giới hạn lịch sử chat (tối đa 5 tin nhắn)
     const limitedHistory = limitChatHistory(history);
-
-    // Lấy system context đã được củng cố
     const systemContext = getSystemContext();
 
-    // Tạo model và cấu hình với systemInstruction
+    // Kiểm tra xem tin nhắn có liên quan đến tìm kiếm lớp học không
+    const isClassInfoRequest =
+      /lớp|giảng viên|môn học|lịch học|thời khóa biểu|tkb/i.test(
+        currentMessage
+      );
+
+    // Cấu hình generation với function calling
+    const generationConfig = {
+      ...getDefaultGenerationConfig(),
+      temperature: 0, // Sử dụng temperature thấp cho function calling
+      ...(isClassInfoRequest && {
+        tools: [
+          {
+            functionDeclarations: availableFunctions,
+          },
+        ],
+      }),
+    };
+
+    // Tạo model với cấu hình mới
     const model = ai.getGenerativeModel({
       model: modelName,
-      generationConfig: getDefaultGenerationConfig(),
-      systemInstruction: systemContext, // Sử dụng system instruction đã cập nhật
+      generationConfig: generationConfig,
+      systemInstruction: systemContext,
     });
 
-    // In thông tin debug nếu ở môi trường phát triển
+    // Debug info
     if (process.env.NODE_ENV === "development") {
       console.log("=== AI CHAT DEBUG INFO ===");
       console.log("Model:", modelName);
-      console.log("Current message (Cleaned):", currentMessage); // Đã qua kiểm tra
-      console.log("System context (Enhanced):", systemContext);
-      console.log("History length:", limitedHistory.length);
-      console.log(
-        "First message role:",
-        limitedHistory.length > 0 ? limitedHistory[0].role : "N/A"
-      );
+      console.log("Current message:", currentMessage);
+      console.log("Using function calling:", isClassInfoRequest);
+      console.log("Generation config:", generationConfig);
       console.log("==========================");
     }
 
-    // Tạo mảng tin nhắn lịch sử từ lịch sử hiện có
-    const historyMessages = limitedHistory.map(convertToGenerativeAIMessage);
-
-    // ===== BƯỚC 3: GỌI AI VÀ LẤY PHẢN HỒI =====
-    // Tạo chat session với lịch sử tin nhắn đã được kiểm tra
+    // Tạo chat session
     const chat = model.startChat({
-      history: historyMessages,
+      history: limitedHistory.map(convertToGenerativeAIMessage),
     });
 
-    // Gửi tin nhắn hiện tại (đã được kiểm tra ở Bước 1) đến model
+    // Gửi tin nhắn và lấy kết quả
     const result = await chat.sendMessage(currentMessage);
-    const responseText = result.response.text();
 
-    // ===== BƯỚC 4: LỌC ĐẦU RA =====
-    // Kiểm tra phản hồi của AI trước khi trả về cho người dùng
-    if (containsProhibitedResponse(responseText, currentMessage)) {
-      // Nếu phản hồi chứa nội dung không phù hợp hoặc lệch hướng, trả về câu từ chối tiêu chuẩn
+    // Kiểm tra function call trong response
+    const functionCalls = result.response?.functionCalls?.();
+    if (functionCalls && functionCalls.length > 0) {
+      const functionCall = functionCalls[0];
+      return {
+        text: result.response.text() || null,
+        functionCall: {
+          name: functionCall.name,
+          arguments: JSON.stringify(functionCall.args || {}),
+        },
+      };
+    }
+
+    // Nếu không có function call, trả về text response
+    const responseContent = result.response?.text() || "";
+
+    // Kiểm tra nội dung cấm trong response
+    if (containsProhibitedResponse(responseContent, currentMessage)) {
       return "Xin lỗi, tôi không thể cung cấp thông tin về chủ đề này. Tôi chỉ có thể hỗ trợ bạn về lịch học, thời khóa biểu, môn học, giáo viên và các vấn đề học tập tại HUFLIT.";
     }
 
-    // Nếu phản hồi hợp lệ, trả về cho người dùng
-    return responseText;
+    return responseContent;
   } catch (error: any) {
     console.error("Lỗi khi gửi tin nhắn đến AI:", error);
-    // Có thể thêm kiểm tra lỗi cụ thể từ API nếu cần
-    if (
-      error.message &&
-      error.message.includes("Candidate was blocked due to safety")
-    ) {
+    if (error.message?.includes("Candidate was blocked due to safety")) {
       return "Yêu cầu của bạn không thể được xử lý vì lý do an toàn nội dung.";
     }
     throw new Error(
       error.message || "Không thể kết nối với dịch vụ AI. Vui lòng thử lại sau."
+    );
+  }
+}
+
+/**
+ * Xử lý kết quả function call và gửi tiếp cho AI phân tích
+ * @param functionResult - Kết quả từ function call
+ * @param currentMessage - Tin nhắn hiện tại của người dùng
+ * @param history - Lịch sử chat trước đó
+ * @param modelName - Tên model AI
+ * @returns Promise<string> - Phản hồi từ AI sau khi phân tích kết quả
+ */
+export async function processFunctionResult(
+  functionResult: any,
+  currentMessage: string,
+  history: ChatMessage[] = [],
+  modelName: string = defaultModel
+): Promise<string> {
+  try {
+    // Tạo model với cấu hình mặc định
+    const model = ai.getGenerativeModel({
+      model: modelName,
+      generationConfig: getDefaultGenerationConfig(),
+      systemInstruction: getSystemContext(),
+    });
+
+    // Tạo chat session với lịch sử
+    const chat = model.startChat({
+      history: limitChatHistory(history).map(convertToGenerativeAIMessage),
+    });
+
+    // Tạo prompt phân tích kết quả
+    const analysisPrompt = `Dựa trên kết quả tìm kiếm lớp học sau đây, hãy phân tích và đề xuất cách xếp lịch học phù hợp nhất:
+
+Kết quả tìm kiếm:
+${JSON.stringify(functionResult, null, 2)}
+
+Yêu cầu của người dùng:
+${currentMessage}
+
+Hãy phân tích và đề xuất:
+1. Các lớp học phù hợp với yêu cầu
+2. Cách sắp xếp lịch học tối ưu
+3. Các lưu ý quan trọng khi đăng ký
+4. Các lựa chọn thay thế nếu cần
+
+Vui lòng trình bày kết quả một cách rõ ràng, dễ hiểu và có cấu trúc.`;
+
+    // Gửi prompt và lấy kết quả
+    const result = await chat.sendMessage(analysisPrompt);
+    const responseContent = result.response?.text() || "";
+
+    // Kiểm tra nội dung cấm trong response
+    if (containsProhibitedResponse(responseContent, currentMessage)) {
+      return "Xin lỗi, tôi không thể cung cấp thông tin về chủ đề này. Tôi chỉ có thể hỗ trợ bạn về lịch học, thời khóa biểu, môn học, giáo viên và các vấn đề học tập tại HUFLIT.";
+    }
+
+    return responseContent;
+  } catch (error: any) {
+    console.error("Lỗi khi xử lý kết quả function:", error);
+    throw new Error(
+      error.message || "Không thể xử lý kết quả tìm kiếm. Vui lòng thử lại sau."
     );
   }
 }
