@@ -5,13 +5,13 @@ interface PricingToggleProps {
 
 const PricingToggle = ({ isAnnual, setIsAnnual }: PricingToggleProps) => {
     return (
-        <div className="flex justify-center items-center space-x-4 mb-8">
+        <div className="flex justify-center items-center space-x-4 md:mb-8 mb-2">
             <span className={`text-lg ${!isAnnual ? 'text-orange-600 font-semibold' : 'text-gray-600'}`}>
                 Hàng tháng
             </span>
             <button
                 onClick={() => setIsAnnual(!isAnnual)}
-                className="relative inline-flex h-6 w-11 items-center rounded-full bg-orange-200 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                className="relative inline-flex h-6 w-11 items-center rounded-full bg-orange-200 transition-colors focus:outline-none focus:ring-1 focus:ring-orange-500 focus:ring-offset-2"
             >
                 <span
                     className={`${

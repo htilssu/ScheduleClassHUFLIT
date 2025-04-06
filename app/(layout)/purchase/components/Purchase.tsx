@@ -74,18 +74,18 @@ const Purchase = () => {
     return (
         <div className="py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                <div className="text-center gap-8">
+                    <h1 className="text-xl md:text-4xl font-bold text-gray-900 md:mb-4 mb-2">
                         Xếp Lịch Thông Minh Cho Sinh Viên
                     </h1>
-                    <p className="text-xl text-gray-600 mb-8">
+                    <p className="md:text-xl text-lg text-gray-600 md:mb-8 mb-2">
                         Chọn gói phù hợp với nhu cầu của bạn
                     </p>
                 </div>
 
                 <PricingToggle isAnnual={isAnnual} setIsAnnual={setIsAnnual} />
 
-                <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                <div className="md:mt-12 mt-8 grid gap-8 lg:grid-cols-3 md:grid-cols-2">
                     <PricingCard
                         plan="free"
                         data={pricingData.free}
