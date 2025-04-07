@@ -9,6 +9,10 @@ type FeedbackResult = {
     currentPage: number;
     limit: number;
   };
+  statistics: {
+    ratingStats: Array<{ rating: number; _count: { rating: number } }>;
+    averageRating: number;
+  };
 };
 
 /**
@@ -47,6 +51,21 @@ export const getFeedbacks = unstable_cache(
       feedbacksPromise,
     ]);
 
+    // Get rating statistics
+    const ratingStats = await prisma.feedback.groupBy({
+      by: ['rating'],
+      _count: {
+        rating: true
+      }
+    });
+
+    // Get average rating
+    const totalRating = await prisma.feedback.aggregate({
+      _avg: {
+        rating: true
+      }
+    });
+
     const totalPages = Math.ceil(totalCount / limit);
 
     return {
@@ -57,6 +76,10 @@ export const getFeedbacks = unstable_cache(
         currentPage: page,
         limit,
       },
+      statistics: {
+        ratingStats,
+        averageRating: totalRating._avg.rating || 0
+      }
     };
   },
   ["feedbacks"],

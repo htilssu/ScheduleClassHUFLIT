@@ -15,11 +15,12 @@ import {IconCheck, IconX} from "@tabler/icons-react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Image from "next/image";
+import "dayjs/locale/vi";
 import {useEffect, useState} from "react";
 import {FaStar, FaTrash} from "react-icons/fa";
 
 dayjs.extend(relativeTime);
+dayjs.locale("vi");
 
 interface Feedback {
     id: string;
@@ -73,6 +74,7 @@ export default function Feedback() {
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [content, setContent] = useState("");
     const [rating, setRating] = useState(0);
+    const [hoveredStar, setHoveredStar] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [isLoadingFeedbacks, setIsLoadingFeedbacks] = useState(true); // State kiểm soát loading skeleton
@@ -93,6 +95,22 @@ export default function Feedback() {
         type: "success" | "error";
     } | null>(null);
 
+    // Add useEffect for auto-dismissing alert
+    useEffect(() => {
+        if (alert) {
+            const timer = setTimeout(() => {
+                setAlert(null);
+            }, 4000); // 4 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [alert]);
+
+    const [statistics, setStatistics] = useState({
+        averageRating: 0,
+        ratingStats: Array(5).fill(0).map((_, i) => ({ rating: i + 1, _count: { rating: 0 } }))
+    });
+
     useEffect(() => {
         fetchFeedbacks(pagination.currentPage, pagination.limit);
     }, [pagination.currentPage, pagination.limit]);
@@ -107,12 +125,37 @@ export default function Feedback() {
             const data = await response.json();
             setFeedbacks(data.data);
             setPagination(data.pagination);
+            if (data.statistics) {
+                setStatistics(data.statistics);
+            }
         } catch (error) {
             console.error("Error fetching feedbacks:", error);
         } finally {
             setIsLoadingFeedbacks(false); // Kết thúc loading
         }
     };
+
+    // Helper function to get color based on rating
+    const getRatingColor = (rating: number) => {
+        if (rating >= 4.5) return "green";
+        if (rating >= 4) return "blue";
+        if (rating >= 3) return "yellow";
+        if (rating >= 2) return "orange";
+        return "red";
+    };
+
+    // Helper function to render stars
+    const renderStars = (rating: number) => {
+        return Array(5).fill(0).map((_, i) => (
+            <FaStar
+                key={i}
+                className={`${i < rating ? "text-yellow-400" : "text-gray-300"}`}
+            />
+        ));
+    };
+
+    // Calculate total number of feedbacks
+    const totalFeedbacks = statistics.ratingStats.reduce((sum: number, stat: { _count: { rating: number } }) => sum + stat._count.rating, 0);
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -284,7 +327,22 @@ export default function Feedback() {
 
     return (
         <div className="w-full p-6">
-            <h2 className="text-2xl font-bold mb-6">Đánh giá của người dùng</h2>
+            <h2 className="text-2xl font-bold mb-2">Đánh giá của người dùng</h2>
+
+            <div className={"mb-4"}>
+                <Group gap={"sm"}>
+                    <Text size="sm" c="dimmed">Đánh giá trung bình</Text>
+                    <Badge color={"gray"} variant="light">
+                        ({totalFeedbacks})
+                    </Badge>
+                </Group>
+                <Group gap="xs">
+                    <Text size="xl" fw={700} c={getRatingColor(Math.round(statistics.averageRating))}>
+                        {statistics.averageRating.toFixed(1)}
+                    </Text>
+                    <Group gap={2}>{renderStars(Math.round(statistics.averageRating))}</Group>
+                </Group>
+            </div>
 
             {/* Hiển thị Alert */}
             {alert && (
@@ -318,11 +376,13 @@ export default function Feedback() {
                                     key={star}
                                     type="button"
                                     onClick={() => setRating(star)}
+                                    onMouseEnter={() => setHoveredStar(star)}
+                                    onMouseLeave={() => setHoveredStar(0)}
                                     className="text-2xl focus:outline-hidden"
                                 >
                                     <FaStar
                                         className={`${
-                                            star <= rating ? "text-yellow-400" : "text-gray-300"
+                                            star <= (hoveredStar || rating) ? "text-yellow-400" : "text-gray-300"
                                         }`}
                                     />
                                 </button>
@@ -331,8 +391,8 @@ export default function Feedback() {
                         <textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-orange-500"
-                            rows={4}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-orange-500"
+                            rows={3}
                             placeholder="Nhập đánh giá của bạn..."
                             required
                         />
@@ -347,6 +407,7 @@ export default function Feedback() {
                     </button>
                 </form>
             )}
+
 
             {/* Modal xác nhận xóa */}
             <Modal
@@ -393,44 +454,44 @@ export default function Feedback() {
                                         size="md"
                                         mr={"sm"}
                                     />
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <p className="font-medium">
-                                                    {feedback.user.name || "Anonymous"}
-                                                </p>
-                                                {/* Hiển thị badge role nếu người dùng hiện tại là admin */}
-                                                {user && user.role === "ADMIN" && feedback.user.role && (
-                                                    <Badge
-                                                        size="xs"
-                                                        color={
-                                                            feedback.user.role === "ADMIN"
-                                                                ? "red"
-                                                                : feedback.user.role === "PREMIUM_USER"
-                                                                    ? "violet"
-                                                                    : "blue"
-                                                        }
-                                                    >
-                                                        {feedback.user.role === "DEFAULT_USER"
-                                                            ? "Người dùng"
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-medium">
+                                                {feedback.user.name || "Anonymous"}
+                                            </p>
+                                            {/* Hiển thị badge role nếu người dùng hiện tại là admin */}
+                                            {user && user.role === "ADMIN" && feedback.user.role && (
+                                                <Badge
+                                                    size="xs"
+                                                    color={
+                                                        feedback.user.role === "ADMIN"
+                                                            ? "red"
                                                             : feedback.user.role === "PREMIUM_USER"
-                                                                ? "Premium"
-                                                                : "Admin"}
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                            <div className="flex gap-1">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <FaStar
-                                                        key={i}
-                                                        className={`${
-                                                            i < feedback.rating
-                                                                ? "text-yellow-400"
-                                                                : "text-gray-300"
-                                                        }`}
-                                                    />
-                                                ))}
-                                            </div>
+                                                                ? "violet"
+                                                                : "blue"
+                                                    }
+                                                >
+                                                    {feedback.user.role === "DEFAULT_USER"
+                                                        ? "Người dùng"
+                                                        : feedback.user.role === "PREMIUM_USER"
+                                                            ? "Premium"
+                                                            : "Admin"}
+                                                </Badge>
+                                            )}
                                         </div>
+                                        <div className="flex gap-1">
+                                            {[...Array(5)].map((_, i) => (
+                                                <FaStar
+                                                    key={i}
+                                                    className={`${
+                                                        i < feedback.rating
+                                                            ? "text-yellow-400"
+                                                            : "text-gray-300"
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Nút xóa feedback - chỉ hiển thị nếu người dùng là chủ feedback hoặc là admin */}
@@ -447,23 +508,23 @@ export default function Feedback() {
                             </div>
                             <p className="text-gray-700">{feedback.content}</p>
                             <p className="text-sm text-gray-500 mt-2">
-                                {new Date(feedback.createdAt).toLocaleDateString("vi-VN")}
+                                {dayjs(feedback.createdAt).fromNow()}
                             </p>
                         </div>
                     ))
-                    ) : (
+                ) : (
                     <p className="text-center text-gray-500">Chưa có đánh giá nào.</p>
-                    )}
+                )}
             </div>
 
             {renderPagination()}
 
             {!isLoadingFeedbacks && pagination.total > 0 && (
-            <p className="text-center text-sm text-gray-500 mt-4">
-                Hiển thị {Math.min(pagination.limit, feedbacks.length)} trong tổng số{" "}
-                {pagination.total} đánh giá
-            </p>
+                <p className="text-center text-sm text-gray-500 mt-4">
+                    Hiển thị {Math.min(pagination.limit, feedbacks.length)} trong tổng số{" "}
+                    {pagination.total} đánh giá
+                </p>
             )}
         </div>
-);
+    );
 }
