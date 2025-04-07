@@ -1,4 +1,8 @@
-import { FunctionCall } from "@google/generative-ai";
+import {
+  FunctionCall,
+  FunctionDeclaration,
+  SchemaType,
+} from "@google/generative-ai";
 import { getClassesByFilter, GetClassesParams } from "../service/class";
 
 /**
@@ -13,7 +17,7 @@ export async function handleFunctionCall(
     const { name, args } = functionCall;
 
     // Kiểm tra loại function và gọi hàm tương ứng
-    if (name === "getClassInfo") {
+    if (name === "getClassByFilter") {
       const {
         learningSection,
         subjectId,
@@ -42,3 +46,41 @@ export async function handleFunctionCall(
     throw new Error(`Lỗi khi xử lý function call: ${error.message}`);
   }
 }
+
+export const availableFunctions: FunctionDeclaration[] = [
+  {
+    name: "getClassByFilter",
+    description: "Lấy danh sách lớp học theo các tiêu chí được cung cấp",
+    parameters: {
+      type: SchemaType.OBJECT,
+      properties: {
+        learningSection: {
+          type: SchemaType.OBJECT,
+          description: "Mã tiết học",
+          properties: {
+            weekDay: {
+              type: SchemaType.ARRAY,
+              description: "Ngày trong tuần",
+              items: {
+                type: SchemaType.STRING,
+                description: "Ngày trong tuần giá trị là 2, 3, 4, 5, 6, 7",
+              },
+            },
+          },
+        },
+        subjectId: {
+          type: SchemaType.STRING,
+          description: "Mã môn học",
+        },
+        subjectName: {
+          type: SchemaType.STRING,
+          description: "Tên môn học",
+        },
+        lectureName: {
+          type: SchemaType.STRING,
+          description: "Tên giảng viên hoặc một phần tên giảng viên",
+        },
+      },
+    },
+  },
+];

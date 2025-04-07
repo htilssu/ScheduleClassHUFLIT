@@ -1,7 +1,6 @@
+import { getClass } from "@/lib/actions/class";
 import { Metadata } from "next";
 import ScheduleMain from "./components/ScheduleMain";
-import { cookies } from "next/headers";
-import { getClass } from "@/lib/actions/class";
 
 export const metadata: Metadata = {
   title: "Xếp lịch Học - HUFLIT",
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 async function Page() {
- 
   const classes = await getClass();
 
   return <ScheduleMain classes={classes} />;

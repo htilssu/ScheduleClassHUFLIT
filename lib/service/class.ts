@@ -68,9 +68,7 @@ export interface GetClassesParams {
    * Ngày trong tuần
    */
   learningSection?: {
-    weekDay: string;
-    time: string;
-    room: string;
+    weekDay: string[];
   };
 }
 
@@ -114,9 +112,7 @@ export async function getClassesByFilter(
   if (learningSection) {
     where.learningSection = {
       some: {
-        weekDay: learningSection.weekDay,
-        ...(learningSection.time && { time: learningSection.time }),
-        ...(learningSection.room && { room: learningSection.room }),
+        weekDay: { in: learningSection.weekDay },
       },
     };
     console.log(`DEBUG: Tìm theo lịch học: ${JSON.stringify(learningSection)}`);
@@ -125,9 +121,11 @@ export async function getClassesByFilter(
   // Xử lý điều kiện tìm kiếm cho giảng viên
   if (lecturerName) {
     where.Lecturer = {
-      name: Array.isArray(lecturerName)
-        ? { in: lecturerName }
-        : { contains: lecturerName, mode: "insensitive" },
+      OR: Array.isArray(lecturerName)
+        ? lecturerName.map((name) => ({
+            name: { contains: name, mode: "insensitive" },
+          }))
+        : [{ name: { contains: lecturerName, mode: "insensitive" } }],
     };
     console.log(`DEBUG: Tìm theo giảng viên: ${lecturerName}`);
   }
@@ -159,12 +157,6 @@ export async function getClassesByFilter(
     });
 
     console.log(`DEBUG: Tìm thấy ${results.length} kết quả`);
-
-    if (process.env.NODE_ENV === "development" && results.length > 0) {
-      console.log(
-        `DEBUG: Mẫu kết quả đầu tiên: ${JSON.stringify(results[0], null, 2)}`
-      );
-    }
 
     return results;
   } catch (error) {

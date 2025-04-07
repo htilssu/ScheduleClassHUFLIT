@@ -1,10 +1,9 @@
 "use server";
 
-import { generateChatResponse } from "@/lib/ai/chat";
 import { ClassData } from "@/lib/types";
-import { ScheduleResponse } from "../ai/chat-regular";
 import { ChatMessage } from "../types/chat";
 import { encode } from "gpt-tokenizer";
+import { generateChatResponse } from "@/lib/ai/chat";
 
 /**
  * Kết quả trả về từ quá trình xử lý chat
@@ -30,7 +29,7 @@ export async function processChat(
   schedules: ClassData[],
   chatHistory: ChatMessage[] = []
 ): Promise<{
-  reply: string | ScheduleResponse;
+  reply: string;
   success: boolean;
   error?: string;
 }> {

@@ -18,9 +18,15 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { Message } from "./Message";
 import { TypingIndicator } from "./TypingIndicator";
+import { TimeLineState } from "@/lib/state/timeline";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/state";
 
 function ChatBox() {
   const { data: user } = useUser();
+  const { classes } = useSelector<RootState, TimeLineState>(
+    (state) => state.timeline
+  );
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       content: "Chào bạn! Tôi là trợ lý lịch học HUFLIT.",
@@ -60,27 +66,17 @@ function ChatBox() {
     setError(null);
 
     try {
-      let limitedMessages = updatedMessages;
+      const lastestMessages = messages.slice(-10);
 
-      if (
-        updatedMessages.length === 3 &&
-        updatedMessages[0].role === ChatRole.ASSISTANT &&
-        updatedMessages[1].role === ChatRole.ASSISTANT &&
-        updatedMessages[2].role === ChatRole.USER
-      ) {
-        limitedMessages = [updatedMessages[2]];
-      } else {
-        // Lấy tối đa 6 message cuối cùng
-        const lastSixMessages = updatedMessages.slice(-6);
-
-        while (lastSixMessages[0].role === ChatRole.ASSISTANT) {
-          lastSixMessages.shift();
-        }
-
-        limitedMessages = lastSixMessages;
+      while (lastestMessages[0].role === ChatRole.ASSISTANT) {
+        lastestMessages.shift();
       }
 
-      const response = await processChat(inputMessage, limitedMessages);
+      const response = await processChat(
+        inputMessage,
+        classes,
+        lastestMessages
+      );
 
       if (response.success && response.reply) {
         setMessages((prev) => [

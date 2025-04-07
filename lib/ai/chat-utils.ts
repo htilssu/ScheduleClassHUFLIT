@@ -46,95 +46,13 @@ export function convertToGenerativeAIMessage(message: ChatMessage) {
  */
 export function getDefaultGenerationConfig(): any {
   return {
-    temperature: 2,
+    temperature: 1,
     topK: 32,
     topP: 0.95,
     maxOutputTokens: 4096,
   };
 }
 
-/**
- * Kiểm tra có chứa nội dung cấm trong input không
- * @param content - Nội dung cần kiểm tra
- * @returns boolean - true nếu phát hiện nội dung cấm
- */
-export function containsProhibitedContent(content: string): boolean {
-  // Danh sách từ khóa cấm
-  const prohibitedKeywords = [
-    // Nội dung người lớn/tình dục
-    /\b(sex|porn|xxx|nude|khiêu dâm|tình dục|quan hệ tình dục)\b/i,
-
-    // Chính trị nhạy cảm
-    /\b(chính trị|đảng|tổng bí thư|chính phủ|đấu tranh chính trị)\b/i,
-
-    // Tôn giáo nhạy cảm
-    /\b(tôn giáo|đạo|tín ngưỡng|thờ phụng|giáo phái)\b/i,
-
-    // Bạo lực
-    /\b(giết|đánh bom|khủng bố|bạo lực|tấn công|vũ khí|súng|đạn|đánh nhau)\b/i,
-
-    // Ma túy
-    /\b(ma túy|cocaine|cần sa|heroin|thuốc phiện|chất gây nghiện)\b/i,
-
-    // Các hoạt động bất hợp pháp
-    /\b(hack|crack|phá khóa|ăn cắp|trộm cắp|lừa đảo|gian lận)\b/i,
-
-    // Từ ngữ xúc phạm
-    /\b(đm|đéo|cút|mẹ mày|con mẹ|dcm|cmm|địt|lồn|buồi|cặc)\b/i,
-  ];
-
-  // Kiểm tra từng từ khóa
-  for (const pattern of prohibitedKeywords) {
-    if (pattern.test(content)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Kiểm tra có chứa nội dung cấm trong phản hồi của AI không
- * @param response - Phản hồi của AI
- * @param query - Câu hỏi ban đầu của người dùng
- * @returns boolean - true nếu phát hiện phản hồi không phù hợp
- */
-export function containsProhibitedResponse(
-  response: string,
-  query: string
-): boolean {
-  // Các mẫu câu từ chối thường thấy từ AI
-  const refusalPatterns = [
-    /không thể|không được phép|xin lỗi, tôi không|tôi không thể|không có khả năng|không được phép|không có thẩm quyền|nằm ngoài phạm vi/i,
-    /I cannot|I'm not able to|I am not able to|I'm unable to|I am unable to|I don't have the ability to|I do not have the ability to/i,
-    /as an AI|as an assistant|as a language model|as a helpful assistant|không phù hợp|không thích hợp/i,
-  ];
-
-  // Từ chối mà có kèm theo chủ đề cấm
-  const prohibitedTopics = [
-    /chính trị|politics|political|politicians|tổng thống|chính phủ|thủ tướng|đảng viên|đảng phái|chủ tịch nước/i,
-    /tình dục|sex|sexy|khiêu dâm|pornography|porn|adult content|nội dung người lớn|quan hệ tình dục/i,
-    /tôn giáo|religion|religious|tín ngưỡng|god|thần thánh|đạo|giáo|giáo phái/i,
-    /ma túy|drugs|cocaine|heroin|cần sa|marijuana|chất gây nghiện|hút|tiêm chích/i,
-    /vũ khí|weapons|súng|đạn|weapon|guns|explosives|bomb|bom|mìn|thuốc nổ|bạo lực|violence/i,
-    /hack|hacking|crack|phá khóa|bẻ khóa|lách luật|phạm pháp|illegal activities|hoạt động bất hợp pháp/i,
-  ];
-
-  // Kiểm tra xem có phải câu từ chối không
-  for (const pattern of refusalPatterns) {
-    if (pattern.test(response)) {
-      // Nếu là câu từ chối, kiểm tra xem có liên quan đến chủ đề cấm không
-      for (const topic of prohibitedTopics) {
-        if (topic.test(response) || topic.test(query)) {
-          return true;
-        }
-      }
-    }
-  }
-
-  // Kiểm tra các nội dung cấm khác
-  return containsProhibitedContent(response);
-}
 
 /**
  * Lấy system context (system prompt) từ biến môi trường hoặc sử dụng giá trị mặc định
