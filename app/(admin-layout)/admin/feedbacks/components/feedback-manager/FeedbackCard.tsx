@@ -1,4 +1,4 @@
-import { Card, Group, Stack, Text, ActionIcon, Button, Menu, Tooltip, Textarea } from "@mantine/core";
+import { Card, Group, Stack, Text, ActionIcon, Button, Menu, Tooltip, Textarea, Avatar } from "@mantine/core";
 import { Star, MoreVertical, Trash2, Eye, MessageSquare, Copy, Check, Send } from "lucide-react";
 import { Feedback } from "./types";
 import { User } from "@/lib/hook/useUsers";
@@ -57,6 +57,14 @@ export const FeedbackCard = ({
                         </Group>
                     </Group>
                     <Group gap="xs">
+                        <Avatar 
+                            src={feedback.user.image}
+                            alt={feedback.user.name || feedback.user.email}
+                            radius="xl"
+                            size="sm"
+                        >
+                            {(feedback.user.name || feedback.user.email).charAt(0).toUpperCase()}
+                        </Avatar>
                         <Text size="sm" fw={500}>
                             {feedback.user.name || feedback.user.email}
                         </Text>

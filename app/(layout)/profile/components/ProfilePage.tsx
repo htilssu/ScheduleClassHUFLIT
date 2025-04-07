@@ -82,7 +82,7 @@ const ProfilePage = () => {
     <div className="container mx-auto px-4 py-0">
       <Stack gap="xl">
         <Paper shadow="sm" p="xl" radius="md">
-          <ProfileHeader user={user} />
+          <ProfileHeader />
         </Paper>
         <Grid>
           <Grid.Col span={{ base: 12, md: 8 }}>

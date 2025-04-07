@@ -26,9 +26,9 @@ export async function fetchUserData() {
 
 export interface User {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
-  image: string;
+  image: string | null;
   username: string;
   phone?: string;
   address?: string;

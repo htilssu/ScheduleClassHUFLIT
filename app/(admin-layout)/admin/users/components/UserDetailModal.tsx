@@ -25,7 +25,7 @@ import {
 } from "@tabler/icons-react";
 import { User } from "@/lib/hook/useUsers";
 import { notifications } from "@mantine/notifications";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface UserDetailModalProps {
   opened: boolean;
@@ -145,9 +145,7 @@ export const UserDetailModal = ({
         {/* Header Section */}
         <Paper p="lg" radius="md" withBorder>
           <Group align="center" justify="center" mb="md">
-            <Avatar size={120} radius="xl" color="blue" variant="light">
-              {user.name?.[0]?.toUpperCase() || user.username[0].toUpperCase()}
-            </Avatar>
+            <Avatar src={user.image} size="xl" radius="xl" />
           </Group>
           <Group justify="center" gap="xs">
             <Text fw={700} size="xl">
