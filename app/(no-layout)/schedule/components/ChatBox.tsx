@@ -40,7 +40,6 @@ function ChatBox() {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isScheduleMode, setIsScheduleMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // Thay vì sử dụng ref trực tiếp, chúng ta sẽ tạo tham chiếu đến phần tử DOM
@@ -63,7 +62,6 @@ function ChatBox() {
 
     setInputMessage("");
     setIsTyping(true);
-    setError(null);
 
     try {
       const lastestMessages = messages.slice(-10);
@@ -87,7 +85,6 @@ function ChatBox() {
           },
         ]);
       } else {
-        setError(response.error || "Có lỗi xảy ra khi xử lý tin nhắn");
         const errorMessage: ChatMessage = {
           content:
             response.error ||
@@ -98,7 +95,6 @@ function ChatBox() {
       }
     } catch (error: any) {
       console.error("Lỗi khi gửi tin nhắn:", error);
-      setError("Có lỗi xảy ra khi gửi tin nhắn");
 
       const errorMessage: ChatMessage = {
         content: "Có lỗi xảy ra khi xử lý tin nhắn, vui lòng thử lại sau.",
