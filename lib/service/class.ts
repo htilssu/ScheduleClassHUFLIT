@@ -1,4 +1,4 @@
-import { Class } from "@prisma/client";
+import { Class, Prisma } from "@prisma/client";
 import { ClassData } from "../types";
 import prisma from "../prisma";
 
@@ -97,7 +97,7 @@ export async function getClassesByFilter(
   } = params;
 
   // Xây dựng điều kiện tìm kiếm
-  const where: any = {};
+  const where: Prisma.ClassWhereInput = {};
 
   // Thêm các điều kiện nếu có
   if (yearStudyId) where.yearStudyId = yearStudyId;
@@ -106,7 +106,7 @@ export async function getClassesByFilter(
   // Xử lý classId (có thể là string hoặc mảng string)
   if (classId) {
     if (Array.isArray(classId)) {
-      where.classId = { $in: classId };
+      where.classId = { in: classId };
       console.log(`DEBUG: Tìm theo nhiều mã lớp: ${classId.join(", ")}`);
     } else {
       where.classId = classId;
@@ -139,9 +139,11 @@ export async function getClassesByFilter(
   // Xử lý điều kiện tìm kiếm cho môn học
   if (subjectName) {
     where.Subject = {
-      name: Array.isArray(subjectName)
-        ? { in: subjectName }
-        : { contains: subjectName, mode: "insensitive" },
+      OR: Array.isArray(subjectName)
+        ? subjectName.map((name) => ({
+            name: { contains: name, mode: "insensitive" },
+          }))
+        : [{ name: { contains: subjectName, mode: "insensitive" } }],
     };
     console.log(`DEBUG: Tìm theo tên môn học: ${subjectName}`);
   }
