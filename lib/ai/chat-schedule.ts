@@ -80,10 +80,6 @@ export const availableFunctions: FunctionDeclaration[] = [
             type: SchemaType.STRING,
           },
         },
-        limit: {
-          type: SchemaType.INTEGER,
-          description: "Giới hạn số lượng kết quả trả về (mặc định: 50)",
-        },
       },
       required: [],
     },
@@ -112,7 +108,7 @@ export async function generateScheduleResponse(
       model: defaultModel,
       generationConfig: {
         ...getDefaultGenerationConfig(),
-        temperature: 0.2,
+        temperature: 0,
         responseMimeType: "application/json",
         responseSchema: {
           type: SchemaType.ARRAY,

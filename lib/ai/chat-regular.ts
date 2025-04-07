@@ -34,6 +34,7 @@ export type ScheduleResponse = {
 export async function generateChatResponse(
   currentMessage: string,
   history: ChatMessage[] = [],
+  schedules: string,
   modelName: string = defaultModel
 ): Promise<string | ScheduleResponse> {
   // ===== BƯỚC 1: LỌC ĐẦU VÀO =====
@@ -70,7 +71,10 @@ export async function generateChatResponse(
 
     // Gửi tin nhắn và lấy kết quả
     console.log("currentMessage", currentMessage);
-    const result = await chat.sendMessage(currentMessage);
+    const result = await chat.sendMessage(`
+      LỊCH HỌC HIỆN TẠI CỦA NGƯỜI DÙNG: ${schedules}
+      CÂU HỎI CỦA NGƯỜI DÙNG: ${currentMessage}
+      `);
 
     //check function call
     const functionCalls = result.response?.functionCalls();

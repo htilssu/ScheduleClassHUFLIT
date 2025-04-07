@@ -4,6 +4,7 @@ import { generateChatResponse } from "@/lib/ai/chat";
 import { ClassData } from "@/lib/types";
 import { ScheduleResponse } from "../ai/chat-regular";
 import { ChatMessage } from "../types/chat";
+import { encode } from "gpt-tokenizer";
 
 /**
  * Kết quả trả về từ quá trình xử lý chat
@@ -26,6 +27,7 @@ export interface ChatResponse {
  */
 export async function processChat(
   message: string,
+  schedules: ClassData[],
   chatHistory: ChatMessage[] = []
 ): Promise<{
   reply: string | ScheduleResponse;
@@ -33,8 +35,23 @@ export async function processChat(
   error?: string;
 }> {
   try {
-    // Gọi generateChatResponse - sẽ tự động chuyển qua generateScheduleResponse nếu cần
-    const aiResponse = await generateChatResponse(message, chatHistory);
+    // Tính số token của message
+    const messageTokens = encode(message).length;
+    const MAX_TOKENS = 2000;
+
+    if (messageTokens > MAX_TOKENS) {
+      return {
+        reply: "",
+        success: false,
+        error: "Tin nhắn của bạn quá dài.",
+      };
+    }
+
+    const aiResponse = await generateChatResponse(
+      message,
+      chatHistory,
+      JSON.stringify(schedules)
+    );
 
     return { reply: aiResponse, success: true };
   } catch (error: any) {

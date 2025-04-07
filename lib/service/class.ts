@@ -83,9 +83,6 @@ export interface GetClassesParams {
 export async function getClassesByFilter(
   params: GetClassesParams
 ): Promise<ClassData[]> {
-  console.log("===== DEBUG: Bắt đầu tìm kiếm lớp học =====");
-  console.log("Tham số tìm kiếm:", JSON.stringify(params, null, 2));
-
   const {
     yearStudyId,
     semesterId,
@@ -93,7 +90,6 @@ export async function getClassesByFilter(
     learningSection,
     lecturerName,
     subjectName,
-    limit = 50,
   } = params;
 
   // Xây dựng điều kiện tìm kiếm
@@ -150,7 +146,7 @@ export async function getClassesByFilter(
 
   console.log(
     "DEBUG: Câu truy vấn Prisma:",
-    JSON.stringify({ where, limit }, null, 2)
+    JSON.stringify({ where }, null, 2)
   );
 
   try {
@@ -160,7 +156,6 @@ export async function getClassesByFilter(
         Subject: true,
         Lecturer: true,
       },
-      take: limit,
     });
 
     console.log(`DEBUG: Tìm thấy ${results.length} kết quả`);
