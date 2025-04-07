@@ -51,7 +51,6 @@ export async function processChat(
       chatHistory,
       JSON.stringify(schedules)
     );
-
     return { reply: aiResponse, success: true };
   } catch (error: any) {
     console.error("Lỗi khi xử lý chat:", error);

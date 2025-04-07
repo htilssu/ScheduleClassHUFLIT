@@ -66,7 +66,10 @@ function ChatBox() {
     try {
       const lastestMessages = messages.slice(-10);
 
-      while (lastestMessages[0].role === ChatRole.ASSISTANT) {
+      while (
+        lastestMessages.length > 0 &&
+        lastestMessages[0].role === ChatRole.ASSISTANT
+      ) {
         lastestMessages.shift();
       }
 
