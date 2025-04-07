@@ -99,15 +99,12 @@ export function Message({
                       {...props}
                     />
                   ),
-                  code: ({ node, inline, ...props }) =>
-                    inline ? (
-                      <code className="bg-gray-100 px-1 rounded" {...props} />
-                    ) : (
-                      <code
-                        className="block bg-gray-100 p-2 rounded my-2 whitespace-pre-wrap overflow-x-auto"
-                        {...props}
-                      />
-                    ),
+                  code: ({ node, ...props }) => (
+                    <code
+                      className="block bg-gray-100 p-2 rounded my-2 whitespace-pre-wrap overflow-x-auto"
+                      {...props}
+                    />
+                  ),
                   blockquote: ({ node, ...props }) => (
                     <blockquote
                       className="border-l-4 border-gray-300 pl-4 italic my-2"
