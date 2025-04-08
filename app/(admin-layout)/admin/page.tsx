@@ -77,8 +77,6 @@ function formatFullDate(dateString: string): string {
     year: "numeric",
     month: "long",
     day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
   });
 }
 
@@ -185,11 +183,11 @@ export default function AdminDashboardPage() {
               <IconUsers size={18} color="gray" />
             </Group>
             <Text fw={700} size="xl">
-              {stats.totalUsers.toLocaleString()}
+              {stats.totalUsers?.toLocaleString() || 0}
             </Text>
             <Text size="xs" c="dimmed">
-              +{stats.newUsersThisMonth.toLocaleString()} người dùng mới trong
-              tháng này
+              +{stats.newUsersThisMonth?.toLocaleString() || 0} người dùng mới
+              trong tháng này
             </Text>
           </Card>
         </Grid.Col>
@@ -203,11 +201,11 @@ export default function AdminDashboardPage() {
               <IconSchool size={18} color="gray" />
             </Group>
             <Text fw={700} size="xl">
-              {stats.totalClasses.toLocaleString()}
+              {stats.totalClasses?.toLocaleString() || 0}
             </Text>
             <Text size="xs" c="dimmed">
-              +{stats.newClassesThisMonth.toLocaleString()} lớp học mới trong
-              tháng này
+              +{stats.newClassesThisMonth?.toLocaleString() || 0} lớp học mới
+              trong tháng này
             </Text>
           </Card>
         </Grid.Col>
@@ -221,11 +219,11 @@ export default function AdminDashboardPage() {
               <IconCalendar size={18} color="gray" />
             </Group>
             <Text fw={700} size="xl">
-              {stats.activeTimelines.toLocaleString()}
+              {stats.activeTimelines?.toLocaleString() || 0}
             </Text>
             <Text size="xs" c="dimmed">
-              {stats.recentlyUpdatedClasses.toLocaleString()} lớp học vừa cập
-              nhật lịch
+              {stats.recentlyUpdatedClasses?.toLocaleString() || 0} lớp học vừa
+              cập nhật lịch
             </Text>
           </Card>
         </Grid.Col>
@@ -239,11 +237,11 @@ export default function AdminDashboardPage() {
               <IconMessage size={18} color="gray" />
             </Group>
             <Text fw={700} size="xl">
-              {stats.totalFeedbacks.toLocaleString()}
+              {stats.totalFeedbacks?.toLocaleString() || 0}
             </Text>
             <Text size="xs" c="dimmed">
-              +{stats.feedbacksThisMonth.toLocaleString()} phản hồi trong tháng
-              này
+              +{stats.feedbacksThisMonth?.toLocaleString() || 0} phản hồi trong
+              tháng này
             </Text>
           </Card>
         </Grid.Col>
