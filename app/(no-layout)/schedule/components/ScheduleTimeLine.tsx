@@ -16,7 +16,7 @@ import { TimeLine as TimeLineType } from "@prisma/client";
 import {
   checkScheduleConflict,
   parseTimeSection,
-} from "../utils/schedule-utils";
+} from "@/lib/utils/schedule-utils";
 
 interface ScheduleTimeLineProps {
   classes: ClassData[];
