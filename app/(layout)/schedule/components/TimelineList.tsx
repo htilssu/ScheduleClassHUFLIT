@@ -1,62 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Card,
-  Text,
-  SimpleGrid,
-  Button,
-  Group,
-  Modal,
-  TextInput,
-  ActionIcon,
-  Menu,
-  Textarea,
-  Container,
-  Title,
-  Paper,
-  Badge,
-  Center,
-  Loader,
-  Image,
-  Skeleton,
-  Box,
-  Flex,
-  rem,
-} from "@mantine/core";
-import {
-  IconCalendar,
-  IconPlus,
-  IconDotsVertical,
-  IconPencil,
-  IconTrash,
-  IconCalendarTime,
-  IconEye,
-  IconEdit,
-} from "@tabler/icons-react";
+import { useState } from "react";
+import { SimpleGrid, Button, Container, Title, Box, Flex } from "@mantine/core";
+import { IconPlus, IconCalendarTime } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import Link from "next/link";
 import {
   createTimeline,
   deleteTimeline,
   updateTimeline,
 } from "@/lib/actions/timeline-actions";
-interface Timeline {
-  id: string;
-  name: string;
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import useUser from "@/lib/hook/useUser";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { TimelineSkeleton } from "./TimelineSkeleton";
+import { TimelineEmptyState } from "./TimelineEmptyState";
+import { TimelineCard } from "./TimelineCard";
+import { CreateTimelineModal } from "./CreateTimelineModal";
+import { EditTimelineModal } from "./EditTimelineModal";
+import { DeleteTimelineModal } from "./DeleteTimelineModal";
+import { Timeline } from "./types";
 
-interface TimelineListProps {
-  userId: string;
-}
-
-export function TimelineList({ userId }: TimelineListProps) {
-  const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [loading, setLoading] = useState(true);
+export function TimelineList() {
+  const { data: userData } = useUser();
+  const queryClient = useQueryClient();
   const [timelineName, setTimelineName] = useState("");
   const [timelineDesc, setTimelineDesc] = useState("");
   const [selectedTimeline, setSelectedTimeline] = useState<Timeline | null>(
@@ -69,30 +35,36 @@ export function TimelineList({ userId }: TimelineListProps) {
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
 
-  useEffect(() => {
-    fetchTimelines();
-  }, []);
+  // Fetch timelines với useQuery
+  const {
+    data: timelines = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Timeline[], Error>({
+    queryKey: ["timelines", userData?.id],
+    queryFn: async () => {
+      if (!userData?.id) return [];
 
-  const fetchTimelines = async () => {
-    try {
-      setLoading(true);
       const response = await fetch("/v1/timeline");
       if (!response.ok) {
         throw new Error("Không thể tải danh sách lịch học");
       }
-      const data = await response.json();
-      setTimelines(data);
-    } catch (error) {
-      console.error("Lỗi khi tải timeline:", error);
-      notifications.show({
-        title: "Lỗi",
-        message: "Không thể tải danh sách lịch học",
-        color: "red",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      return response.json();
+    },
+    enabled: !!userData?.id,
+    staleTime: 5 * 60 * 1000, // Cache trong 5 phút
+    refetchOnWindowFocus: false,
+  });
+
+  if (isError) {
+    notifications.show({
+      title: "Lỗi",
+      message: error?.message || "Không thể tải danh sách lịch học",
+      color: "red",
+    });
+    // Optionally render an error state UI here
+  }
 
   const handleCreateTimeline = async () => {
     try {
@@ -110,7 +82,7 @@ export function TimelineList({ userId }: TimelineListProps) {
         setTimelineName("");
         setTimelineDesc("");
         closeCreate();
-        fetchTimelines();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
       } else {
         notifications.show({
           title: "Lỗi",
@@ -148,7 +120,7 @@ export function TimelineList({ userId }: TimelineListProps) {
         setTimelineName("");
         setTimelineDesc("");
         closeEdit();
-        fetchTimelines();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
       } else {
         notifications.show({
           title: "Lỗi",
@@ -180,7 +152,7 @@ export function TimelineList({ userId }: TimelineListProps) {
         });
         setSelectedTimeline(null);
         closeDelete();
-        fetchTimelines();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
       } else {
         notifications.show({
           title: "Lỗi",
@@ -248,275 +220,55 @@ export function TimelineList({ userId }: TimelineListProps) {
           </Button>
         </Flex>
 
-        {loading ? (
-          <Paper p="xl" radius="md" withBorder>
-            <Center style={{ height: 200 }}>
-              <Loader size="lg" />
-            </Center>
-          </Paper>
+        {isLoading ? (
+          <TimelineSkeleton />
         ) : timelines.length === 0 ? (
-          <Paper p="xl" radius="md" withBorder>
-            <Center
-              style={{ flexDirection: "column", height: 300, padding: 20 }}
-            >
-              <IconCalendar
-                size={60}
-                style={{ opacity: 0.3, marginBottom: 20 }}
-              />
-              <Text fw={600} size="xl" ta="center" mb={10}>
-                Bạn chưa có lịch học nào
-              </Text>
-              <Text c="dimmed" ta="center" mb={20}>
-                Tạo lịch học mới để quản lý thời gian học tập hiệu quả hơn
-              </Text>
-              <Button
-                onClick={openCreate}
-                variant="light"
-                leftSection={<IconPlus size={14} />}
-              >
-                Tạo lịch học đầu tiên
-              </Button>
-            </Center>
-          </Paper>
+          <TimelineEmptyState onOpenCreate={openCreate} />
         ) : (
           <SimpleGrid
             cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
             spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
             verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
           >
-            {timelines.map((timeline) => {
-              const updatedDate = formatDate(timeline.updatedAt);
-
-              return (
-                <Card
-                  key={timeline.id}
-                  shadow="md"
-                  radius="md"
-                  withBorder
-                  padding="lg"
-                  styles={{
-                    root: {
-                      borderWidth: 2,
-                      borderColor: "#e9ecef",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        borderColor: "#4dabf7",
-                        transform: "translateY(-5px)",
-                        boxShadow: "0 10px 25px rgba(34, 139, 230, 0.15)",
-                      },
-                    },
-                  }}
-                >
-                  <Card.Section
-                    style={{
-                      borderBottom: "3px solid #4dabf7",
-                      background: "linear-gradient(to right, #4dabf7, #228be6)",
-                      position: "relative",
-                    }}
-                  >
-                    <Image
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                        timeline.name
-                      )}&background=random&color=fff&size=256`}
-                      height={100}
-                      alt={timeline.name}
-                    />
-                    <Badge
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        background: "#1A365D",
-                        color: "white",
-                        fontWeight: 600,
-                        padding: "5px 10px",
-                        border: "1px solid rgba(255, 255, 255, 0.5)",
-                        fontSize: "0.75rem",
-                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      }}
-                      radius="sm"
-                    >
-                      Lịch học
-                    </Badge>
-                  </Card.Section>
-
-                  <Group justify="space-between" mt="md" mb="xs">
-                    <Text fw={600} size="lg" lineClamp={1} style={{ flex: 1 }}>
-                      {timeline.name}
-                    </Text>
-                    <Menu position="right-end" shadow="lg">
-                      <Menu.Target>
-                        <ActionIcon variant="light">
-                          <IconDotsVertical size={14} />
-                        </ActionIcon>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          leftSection={<IconEye size={14} />}
-                          component={Link}
-                          href={`/schedule/${timeline.id}`}
-                        >
-                          Xem chi tiết
-                        </Menu.Item>
-                        <Menu.Item
-                          leftSection={<IconEdit size={14} />}
-                          onClick={() => openEditModal(timeline)}
-                        >
-                          Chỉnh sửa
-                        </Menu.Item>
-                        <Menu.Divider />
-                        <Menu.Item
-                          leftSection={<IconTrash size={14} />}
-                          c="red"
-                          onClick={() => openDeleteModal(timeline)}
-                        >
-                          Xóa
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                  </Group>
-
-                  {timeline.description && (
-                    <Text c="dimmed" size="sm" lineClamp={2} mb="md">
-                      {timeline.description}
-                    </Text>
-                  )}
-
-                  <Text size="xs" c="dimmed" mb="md">
-                    Cập nhật lần cuối: {updatedDate}
-                  </Text>
-
-                  <Button
-                    variant="light"
-                    c="#4dabf7"
-                    fullWidth
-                    radius="md"
-                    component={Link}
-                    href={`/schedule/${timeline.id}`}
-                    leftSection={<IconEye size={14} />}
-                    style={{ borderColor: "#4dabf7" }}
-                  >
-                    Xem chi tiết
-                  </Button>
-                </Card>
-              );
-            })}
+            {timelines.map((timeline: Timeline) => (
+              <TimelineCard
+                key={timeline.id}
+                timeline={timeline}
+                onOpenEdit={openEditModal}
+                onOpenDelete={openDeleteModal}
+                formatDate={formatDate}
+              />
+            ))}
           </SimpleGrid>
         )}
       </Box>
 
-      {/* Modal tạo timeline mới */}
-      <Modal
+      <CreateTimelineModal
         opened={createOpened}
         onClose={closeCreate}
-        title="Tạo lịch học mới"
-        centered
-        size="md"
-      >
-        <TextInput
-          label="Tên lịch học"
-          placeholder="Nhập tên lịch học"
-          value={timelineName}
-          onChange={(e) => setTimelineName(e.target.value)}
-          required
-          mb="md"
-          radius="md"
-        />
-        <Textarea
-          label="Mô tả (tùy chọn)"
-          placeholder="Mô tả ngắn gọn về lịch học này"
-          value={timelineDesc}
-          onChange={(e) => setTimelineDesc(e.target.value)}
-          mb="xl"
-          radius="md"
-          autosize
-          minRows={3}
-        />
-        <Group justify="flex-end">
-          <Button variant="outline" onClick={closeCreate} radius="md">
-            Hủy
-          </Button>
-          <Button
-            onClick={handleCreateTimeline}
-            disabled={!timelineName.trim()}
-            radius="md"
-            c="blue"
-          >
-            Tạo
-          </Button>
-        </Group>
-      </Modal>
+        timelineName={timelineName}
+        setTimelineName={setTimelineName}
+        timelineDesc={timelineDesc}
+        setTimelineDesc={setTimelineDesc}
+        handleCreate={handleCreateTimeline}
+      />
 
-      {/* Modal chỉnh sửa timeline */}
-      <Modal
+      <EditTimelineModal
         opened={editOpened}
         onClose={closeEdit}
-        title="Chỉnh sửa lịch học"
-        centered
-        size="md"
-      >
-        <TextInput
-          label="Tên lịch học"
-          placeholder="Nhập tên lịch học"
-          value={timelineName}
-          onChange={(e) => setTimelineName(e.target.value)}
-          required
-          mb="md"
-          radius="md"
-        />
-        <Textarea
-          label="Mô tả (tùy chọn)"
-          placeholder="Mô tả ngắn gọn về lịch học này"
-          value={timelineDesc}
-          onChange={(e) => setTimelineDesc(e.target.value)}
-          mb="xl"
-          radius="md"
-          autosize
-          minRows={3}
-        />
-        <Group justify="flex-end">
-          <Button variant="outline" onClick={closeEdit} radius="md">
-            Hủy
-          </Button>
-          <Button
-            onClick={handleEditTimeline}
-            disabled={!timelineName.trim()}
-            radius="md"
-            c="blue"
-          >
-            Lưu
-          </Button>
-        </Group>
-      </Modal>
+        timelineName={timelineName}
+        setTimelineName={setTimelineName}
+        timelineDesc={timelineDesc}
+        setTimelineDesc={setTimelineDesc}
+        handleEdit={handleEditTimeline}
+      />
 
-      {/* Modal xác nhận xóa */}
-      <Modal
+      <DeleteTimelineModal
         opened={deleteOpened}
         onClose={closeDelete}
-        title="Xóa lịch học"
-        centered
-        size="md"
-      >
-        <Text size="md" mb="xs" c="black" fw={500}>
-          Bạn có chắc chắn muốn xóa lịch học &quot;
-          <span style={{ fontWeight: 700, color: "#e03131" }}>
-            {selectedTimeline?.name}
-          </span>
-          &quot;?
-        </Text>
-        <Text size="sm" c="gray.7" mb="xl">
-          Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan đến lịch
-          học này sẽ bị xóa vĩnh viễn.
-        </Text>
-        <Group justify="flex-end">
-          <Button variant="outline" onClick={closeDelete} radius="md">
-            Hủy
-          </Button>
-          <Button onClick={handleDeleteTimeline} radius="md">
-            Xóa
-          </Button>
-        </Group>
-      </Modal>
+        selectedTimeline={selectedTimeline}
+        handleDelete={handleDeleteTimeline}
+      />
     </Container>
   );
 }

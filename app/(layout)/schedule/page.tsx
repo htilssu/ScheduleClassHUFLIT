@@ -9,14 +9,8 @@ export const metadata: Metadata = {
 };
 
 async function SchedulePage() {
-  const session = await auth();
 
-  // Chuyển hướng nếu chưa đăng nhập
-  if (!session?.user) {
-    redirect("/auth?redirect=/schedule");
-  }
-
-  return <TimelineList userId={session.user.id} />;
+  return <TimelineList />;
 }
 
 export default SchedulePage;
