@@ -8,9 +8,10 @@ export const metadata: Metadata = {
   description: "Trang hiển thị lịch học của HUFLIT",
 };
 
-async function Page({ params }: { params: { schedule_id: string } }) {
+async function Page({ params }: { params: Promise<{ schedule_id: string }> }) {
   const classes = await getClass();
-  const timeLine = await getTimeLine(params.schedule_id);
+  const { schedule_id } = await params;
+  const timeLine = await getTimeLine(schedule_id);
 
   return <ScheduleMain classes={classes} timeLine={timeLine} />;
 }

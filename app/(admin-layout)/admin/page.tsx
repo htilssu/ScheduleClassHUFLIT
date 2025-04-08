@@ -8,7 +8,8 @@ import {
   Stack,
   Text,
   Title,
-  Skeleton, Button,
+  Skeleton,
+  Button,
 } from "@mantine/core";
 import {
   IconCalendar,
@@ -16,7 +17,6 @@ import {
   IconUsers,
   IconMessage,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -48,19 +48,6 @@ interface FeedbackByDay {
   };
 }
 
-interface DashboardStats {
-  totalUsers: number;
-  newUsersThisMonth: number;
-  totalClasses: number;
-  newClassesThisMonth: number;
-  activeTimelines: number;
-  recentlyUpdatedClasses: number;
-  totalFeedbacks: number;
-  feedbacksThisMonth: number;
-  feedbackByDay: FeedbackByDay[];
-  chartData: ChartData[];
-}
-
 const RATING_COLORS = {
   "1 sao": "#ff0000",
   "2 sao": "#ff6b00",
@@ -68,8 +55,6 @@ const RATING_COLORS = {
   "4 sao": "#00b894",
   "5 sao": "#00c853",
 };
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 async function fetchDashboardStats() {
   const response = await fetch("/v1/admin/stats/dashboard");
@@ -80,23 +65,21 @@ async function fetchDashboardStats() {
   return response.json();
 }
 
-// Cập nhật hàm chuyển đổi múi giờ
-function convertToVietnamTime(dateString: string): Date {
-  const date = new Date(dateString);
-  return new Date(date.getTime() + 7 * 60 * 60 * 1000);
-}
-
-// Thêm hàm format ngày tháng
 function formatDate(dateString: string): string {
-  const vietnamTime = convertToVietnamTime(dateString);
-  return `${vietnamTime.getDate()}/${vietnamTime.getMonth() + 1}`;
+  return new Date(dateString).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+  });
 }
 
 function formatFullDate(dateString: string): string {
-  const vietnamTime = convertToVietnamTime(dateString);
-  return `Ngày ${vietnamTime.getDate()}/${
-    vietnamTime.getMonth() + 1
-  }/${vietnamTime.getFullYear()}`;
+  return new Date(dateString).toLocaleDateString("vi-VN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function DashboardSkeleton() {
@@ -344,7 +327,7 @@ export default function AdminDashboardPage() {
               <Box h={400} w="100%">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                      data={stats.feedbackByDay}
+                    data={stats.feedbackByDay}
                     margin={{
                       top: 5,
                       right: 30,

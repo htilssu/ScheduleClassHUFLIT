@@ -26,10 +26,6 @@ function TimeLine(props: TimeLineProps) {
   const [mergeMark] = useState(mm);
   const [classes, setClasses] = useState(props.classes);
   const dndContext = useDndContext();
-  const [highlightCell, setHighlightCell] = useState<{
-    row: number;
-    col: number;
-  } | null>(null);
 
   // State để lưu thông tin class đang được drag
   const [dragClassData, setDragClassData] = useState<ClassData | null>(null);
@@ -49,8 +45,11 @@ function TimeLine(props: TimeLineProps) {
   );
 
   useEffect(() => {
+    console.log("props.classes", props.classes);
     setClasses(() => {
-      props.classes.map((value) => handleUpdateMergeSplit(value));
+      if (Array.isArray(props.classes)) {
+        props.classes.map((value) => handleUpdateMergeSplit(value));
+      }
       return props.classes;
     });
   }, [handleUpdateMergeSplit, props.classes]);
@@ -92,39 +91,6 @@ function TimeLine(props: TimeLineProps) {
     );
   }
 
-  // Theo dõi khi có drag event xảy ra
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!dndContext.refData.current.refDragging) {
-        setHighlightCell(null);
-        return;
-      }
-
-      // Lấy tất cả các ô trong bảng thời khóa biểu
-      const cells = document.querySelectorAll(".timeline-cell");
-
-      // Kiểm tra xem chuột đang ở trên ô nào
-      cells.forEach((cell) => {
-        const rect = cell.getBoundingClientRect();
-        if (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
-        ) {
-          const row = parseInt(cell.getAttribute("data-row") || "0");
-          const col = parseInt(cell.getAttribute("data-col") || "0");
-          setHighlightCell({ row, col });
-        }
-      });
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [dndContext.refData]);
-
   // Xử lý sự kiện drag từ ClassCard
   useEffect(() => {
     const handleClassCardDrag = (event: Event) => {
@@ -159,13 +125,6 @@ function TimeLine(props: TimeLineProps) {
     },
     [dragClassData]
   );
-
-  // Xóa highlight khi không còn kéo nữa
-  useEffect(() => {
-    if (!dndContext.refData.current.refDragging) {
-      setHighlightCell(null);
-    }
-  }, [dndContext.refData.current.refDragging]);
 
   // Tạo placeholder component cho cell đang hover
   const PlaceholderCell = ({ classData }: { classData: ClassData }) => {

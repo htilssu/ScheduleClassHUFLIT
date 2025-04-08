@@ -22,7 +22,7 @@ const ScheduleMain = ({ classes, timeLine }: ScheduleMainProps) => {
             <div className="w-2/6">
               <SelectSection classes={classes || []} />
             </div>
-            <ScheduleTimeLine classes={classes} timeLine={timeLine} />
+            <ScheduleTimeLine timeLine={timeLine} />
           </div>
         </DndContext>
       </div>

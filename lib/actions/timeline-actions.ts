@@ -3,11 +3,12 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { ClassData } from "../types";
 
 interface TimeLineData {
   name: string;
   description?: string;
-  classes: string[];
+  classes: ClassData[];
   isPublic?: boolean;
 }
 
@@ -50,7 +51,7 @@ export async function createTimeLine(
       data: {
         name: data.name,
         description: data.description || "",
-        classes: JSON.stringify(data.classes || []),
+        classes: [],
         isPublic: data.isPublic || false,
         userId: session.user.id,
       },
@@ -117,7 +118,7 @@ export async function updateTimeLine(
       data: {
         name: data.name,
         description: data.description,
-        classes: JSON.stringify(data.classes || []),
+        classes: data.classes || [],
         isPublic: data.isPublic,
       },
     });

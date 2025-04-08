@@ -19,16 +19,13 @@ import {
 } from "@/lib/utils/schedule-utils";
 
 interface ScheduleTimeLineProps {
-  classes: ClassData[];
   timeLine: TimeLineType | null;
 }
 
-function ScheduleTimeLine({ classes, timeLine }: ScheduleTimeLineProps) {
+function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
   const { classes: reduxClasses } = useSelector<RootState, TimeLineState>(
     (state) => state.timeline
   );
-  const params = useParams();
-  const timeLineId = params?.schedule_id as string;
   const dispatch = useDispatch();
   const actions = timeLineSlice.actions;
 
@@ -43,18 +40,24 @@ function ScheduleTimeLine({ classes, timeLine }: ScheduleTimeLineProps) {
   // State để theo dõi xem đã có thay đổi trạng thái chưa
   const [hasCheckedForConflicts, setHasCheckedForConflicts] = useState(false);
 
+  // Set classes từ timeline vào redux state khi component mount hoặc timeline thay đổi
+  useEffect(() => {
+    console.log("timeLine", timeLine);
+    if (timeLine?.classes) {
+      dispatch(actions.setClasses(timeLine.classes as unknown as ClassData[]));
+    }
+  }, [timeLine, dispatch, actions]);
+
   // Hàm cập nhật timeline khi có thay đổi classes
   const updateTimeLineWithClasses = useCallback(async () => {
-    if (!timeLineId) return;
+    if (!timeLine) return;
 
     try {
-      const classIds = reduxClasses.map((c) => c.id);
-
       const result = await updateTimeLine({
-        id: timeLineId,
-        name: "",
-        description: undefined,
-        classes: classIds,
+        id: timeLine.id,
+        name: timeLine?.name || "",
+        description: timeLine?.description || undefined,
+        classes: reduxClasses,
       });
 
       if (!result.success) {
@@ -67,7 +70,7 @@ function ScheduleTimeLine({ classes, timeLine }: ScheduleTimeLineProps) {
     } catch (error) {
       console.error("Lỗi khi cập nhật timeline:", error);
     }
-  }, [reduxClasses, timeLineId]);
+  }, [reduxClasses, timeLine]);
 
   const handleAddClass = useCallback(
     (classData: ClassData) => {
