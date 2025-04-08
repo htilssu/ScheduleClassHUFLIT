@@ -4,50 +4,54 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-interface TimelineData {
+interface TimeLineData {
   name: string;
   description?: string;
+  classes: string[];
+  isPublic?: boolean;
 }
 
-interface UpdateTimelineData extends TimelineData {
+interface UpdateTimeLineData extends TimeLineData {
   id: string;
 }
 
-interface TimelineResult {
+interface TimeLineResult {
   success: boolean;
   error?: string;
   data?: any;
 }
 
 /**
- * Server action tạo timeline mới
- * @param data Dữ liệu timeline
+ * Server action tạo timeLine mới
+ * @param data Dữ liệu timeLine
  * @returns Kết quả thao tác
  */
-export async function createTimeline(
-  data: TimelineData
-): Promise<TimelineResult> {
+export async function createTimeLine(
+  data: TimeLineData
+): Promise<TimeLineResult> {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        error: "Người dùng chưa đăng nhập",
+        error: "Bạn cần đăng nhập để thực hiện hành động này",
       };
     }
 
-    if (!data.name || data.name.trim() === "") {
+    if (!data.name || data.name.trim().length === 0) {
       return {
         success: false,
         error: "Tên lịch học không được để trống",
       };
     }
 
-    const timeline = await prisma.timeline.create({
+    const timeLine = await prisma.timeLine.create({
       data: {
-        name: data.name.trim(),
-        description: data.description,
+        name: data.name,
+        description: data.description || "",
+        classes: JSON.stringify(data.classes || []),
+        isPublic: data.isPublic || false,
         userId: session.user.id,
       },
     });
@@ -56,62 +60,65 @@ export async function createTimeline(
 
     return {
       success: true,
-      data: timeline,
+      data: timeLine,
     };
-  } catch (error) {
-    console.error("Lỗi khi tạo timeline:", error);
+  } catch (error: any) {
+    console.error("Lỗi khi tạo timeLine:", error);
     return {
       success: false,
-      error: "Không thể tạo lịch học mới",
+      error: error.message || "Có lỗi xảy ra khi tạo lịch học",
     };
   }
 }
 
 /**
- * Server action cập nhật timeline
- * @param data Dữ liệu timeline cần cập nhật
+ * Server action cập nhật timeLine
+ * @param data Dữ liệu timeLine cần cập nhật
  * @returns Kết quả thao tác
  */
-export async function updateTimeline(
-  data: UpdateTimelineData
-): Promise<TimelineResult> {
+export async function updateTimeLine(
+  data: UpdateTimeLineData
+): Promise<TimeLineResult> {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        error: "Người dùng chưa đăng nhập",
+        error: "Bạn cần đăng nhập để thực hiện hành động này",
       };
     }
 
-    if (!data.name || data.name.trim() === "") {
+    if (!data.id) {
       return {
         success: false,
-        error: "Tên lịch học không được để trống",
+        error: "ID lịch học không được để trống",
       };
     }
 
-    // Kiểm tra quyền
-    const existingTimeline = await prisma.timeline.findUnique({
+    const existingTimeLine = await prisma.timeLine.findUnique({
       where: {
         id: data.id,
         userId: session.user.id,
       },
     });
 
-    if (!existingTimeline) {
+    if (!existingTimeLine) {
       return {
         success: false,
-        error: "Không tìm thấy lịch học hoặc không có quyền chỉnh sửa",
+        error: "Lịch học không tồn tại hoặc bạn không có quyền truy cập",
       };
     }
 
-    const timeline = await prisma.timeline.update({
-      where: { id: data.id },
+    const timeLine = await prisma.timeLine.update({
+      where: {
+        id: data.id,
+      },
       data: {
-        name: data.name.trim(),
+        name: data.name,
         description: data.description,
+        classes: JSON.stringify(data.classes || []),
+        isPublic: data.isPublic,
       },
     });
 
@@ -119,50 +126,51 @@ export async function updateTimeline(
 
     return {
       success: true,
-      data: timeline,
+      data: timeLine,
     };
-  } catch (error) {
-    console.error("Lỗi khi cập nhật timeline:", error);
+  } catch (error: any) {
+    console.error("Lỗi khi cập nhật timeLine:", error);
     return {
       success: false,
-      error: "Không thể cập nhật lịch học",
+      error: error.message || "Có lỗi xảy ra khi cập nhật lịch học",
     };
   }
 }
 
 /**
- * Server action xóa timeline
- * @param id ID của timeline cần xóa
+ * Server action xóa timeLine
+ * @param id ID của timeLine cần xóa
  * @returns Kết quả thao tác
  */
-export async function deleteTimeline(id: string): Promise<TimelineResult> {
+export async function deleteTimeLine(id: string): Promise<TimeLineResult> {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        error: "Người dùng chưa đăng nhập",
+        error: "Bạn cần đăng nhập để thực hiện hành động này",
       };
     }
 
-    // Kiểm tra quyền
-    const existingTimeline = await prisma.timeline.findUnique({
+    const existingTimeLine = await prisma.timeLine.findUnique({
       where: {
         id,
         userId: session.user.id,
       },
     });
 
-    if (!existingTimeline) {
+    if (!existingTimeLine) {
       return {
         success: false,
-        error: "Không tìm thấy lịch học hoặc không có quyền xóa",
+        error: "Lịch học không tồn tại hoặc bạn không có quyền truy cập",
       };
     }
 
-    await prisma.timeline.delete({
-      where: { id },
+    await prisma.timeLine.delete({
+      where: {
+        id,
+      },
     });
 
     revalidatePath("/schedule");
@@ -170,11 +178,11 @@ export async function deleteTimeline(id: string): Promise<TimelineResult> {
     return {
       success: true,
     };
-  } catch (error) {
-    console.error("Lỗi khi xóa timeline:", error);
+  } catch (error: any) {
+    console.error("Lỗi khi xóa timeLine:", error);
     return {
       success: false,
-      error: "Không thể xóa lịch học",
+      error: error.message || "Có lỗi xảy ra khi xóa lịch học",
     };
   }
 }

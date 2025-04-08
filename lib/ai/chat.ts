@@ -12,6 +12,7 @@ import ai, {
 
 import { availableFunctions, handleFunctionCall } from "./function-calling";
 import { ChatMessage, ChatRole, ClassData } from "../types";
+import { getScheduleSystemInstruction } from "./chat-utils";
 export function createModel() {
   return ai.getGenerativeModel({
     model: MODEL_NAME,
@@ -25,10 +26,50 @@ export function createModel() {
     ],
     toolConfig: {
       functionCallingConfig: {
-        mode: FunctionCallingMode.ANY,
+        mode: FunctionCallingMode.AUTO,
       },
     },
+    systemInstruction: getScheduleSystemInstruction(),
   });
+}
+
+/**
+ * Phân tích message để xác định yêu cầu về thời gian trong ngày (buổi sáng/chiều/tối)
+ * @param message Tin nhắn của người dùng
+ * @returns Buổi học được yêu cầu hoặc undefined nếu không có
+ */
+function detectTimeOfDay(message: string): string | undefined {
+  const lowerMessage = message.toLowerCase();
+
+  // Kiểm tra từ khóa về buổi học
+  if (
+    lowerMessage.includes("buổi sáng") ||
+    lowerMessage.includes("sáng") ||
+    lowerMessage.includes("tiết sáng") ||
+    lowerMessage.includes("học sáng")
+  ) {
+    return "sáng";
+  }
+
+  if (
+    lowerMessage.includes("buổi chiều") ||
+    lowerMessage.includes("chiều") ||
+    lowerMessage.includes("tiết chiều") ||
+    lowerMessage.includes("học chiều")
+  ) {
+    return "chiều";
+  }
+
+  if (
+    lowerMessage.includes("buổi tối") ||
+    lowerMessage.includes("tối") ||
+    lowerMessage.includes("tiết tối") ||
+    lowerMessage.includes("học tối")
+  ) {
+    return "tối";
+  }
+
+  return undefined;
 }
 
 export async function generateChatResponse(
@@ -37,7 +78,7 @@ export async function generateChatResponse(
   schedules: string
 ): Promise<string> {
   const model = createModel();
-  const aiChatHistory: Content[] = chatHistory.map((message) =>
+  let aiChatHistory: Content[] = chatHistory.map((message) =>
     convertToGenerativeAIMessage(message)
   );
 
@@ -52,8 +93,18 @@ export async function generateChatResponse(
     history: aiChatHistory,
   });
 
+  // Phân tích yêu cầu về thời gian trong ngày
+  const timeOfDay = detectTimeOfDay(message);
+
+  // Bổ sung thông tin về thời gian trong ngày vào tin nhắn nếu có
+  let messageToSend = message;
+  if (timeOfDay) {
+    console.log(`Phát hiện yêu cầu về buổi học: ${timeOfDay}`);
+    messageToSend = `${message}`;
+  }
+
   // Gửi message
-  const result = await chat.sendMessage(message);
+  const result = await chat.sendMessage(messageToSend);
 
   // Kiểm tra function calls
   const functionCalls = result.response.functionCalls();
@@ -61,6 +112,16 @@ export async function generateChatResponse(
     // Xử lý từng function call và thêm response
     for (const call of functionCalls) {
       try {
+        // Bổ sung timeOfDay vào tham số của function call nếu được phát hiện
+        // và nếu trong args chưa có timeOfDay
+        if (timeOfDay && call.name === "getClassByFilter") {
+          // Sử dụng any để có thể thêm thuộc tính động
+          const args = call.args as any;
+          if (!args.timeOfDay) {
+            args.timeOfDay = timeOfDay;
+          }
+        }
+
         const functionResult = await handleFunctionCall(call);
 
         // Thêm function response vào history

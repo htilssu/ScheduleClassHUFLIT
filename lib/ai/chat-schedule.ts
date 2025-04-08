@@ -4,9 +4,8 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { ClassData } from "../types";
 import {
-  containsProhibitedContent,
   getDefaultGenerationConfig,
-  getScheduleSystemContext,
+  getScheduleSystemInstruction,
 } from "./chat-utils";
 import ai from "./index";
 
@@ -97,11 +96,6 @@ export async function generateScheduleResponse(
   currentMessage: string,
   classes: ClassData[]
 ): Promise<string> {
-  // ===== BƯỚC 1: LỌC ĐẦU VÀO =====
-  if (containsProhibitedContent(currentMessage)) {
-    return "Xin lỗi bạn, tôi chỉ có thể trả lời các câu hỏi liên quan đến lịch học, thời khóa biểu, môn học, giáo viên và các vấn đề học tập tại HUFLIT. Vui lòng đặt câu hỏi liên quan đến những chủ đề này.";
-  }
-
   try {
     // Tạo model với cấu hình function calling
     const model = ai.getGenerativeModel({
@@ -130,7 +124,7 @@ export async function generateScheduleResponse(
           },
         },
       },
-      systemInstruction: getScheduleSystemContext(),
+      systemInstruction: getScheduleSystemInstruction(),
     });
 
     // Debug info

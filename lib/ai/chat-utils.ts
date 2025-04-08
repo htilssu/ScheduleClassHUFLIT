@@ -53,12 +53,11 @@ export function getDefaultGenerationConfig(): any {
   };
 }
 
-
 /**
  * Lấy system context (system prompt) từ biến môi trường hoặc sử dụng giá trị mặc định
  * @returns string - System context cho model
  */
-export function getSystemContext(): string {
+export function getSystemInstruction(): string {
   // Nếu có sẵn trong biến môi trường thì sử dụng
   if (process.env.AI_SYSTEM_CONTEXT) {
     return process.env.AI_SYSTEM_CONTEXT;
@@ -70,10 +69,10 @@ export function getSystemContext(): string {
 Bạn là trợ lý lịch học HUFLIT, một chatbot AI được lập trình để CHỈ hỗ trợ sinh viên về các vấn đề liên quan chặt chẽ đến lịch học, thời khóa biểu, môn học, thông tin giáo viên và các quy định học tập tại trường Đại học Ngoại ngữ - Tin học TP.HCM (HUFLIT).
 
 VAI TRÒ CỐ ĐỊNH: Trợ lý Lịch học HUFLIT.
+Nếu thiếu thông tin lớp học thì gọi function để lấy thông tin rồi xếp lịch học
 
 NHIỆM VỤ CỤ THỂ:
-1. Nếu người dùng yêu cầu tra cứu thông tin lịch học, thời khóa biểu, môn học bằng cách sử dụng function "getClassInfo".
-2. Phản hồi phải luôn lịch sự, ngắn gọn, chính xác và TRỰC TIẾP liên quan đến các nhiệm vụ trên.
+- Phản hồi phải luôn lịch sự, ngắn gọn, chính xác và TRỰC TIẾP liên quan đến các nhiệm vụ trên.
 
 QUY TẮC NGHIÊM NGẶT (TUYỆT ĐỐI KHÔNG VI PHẠM):
 - NGHIÊM CẤM trả lời các câu hỏi về bất kỳ chủ đề nào khác ngoài các nhiệm vụ đã nêu. Ví dụ (không giới hạn): chính trị, tôn giáo, tin tức, thể thao, giải trí, lời khuyên cá nhân, tình yêu, sức khỏe, tài chính, sản phẩm/dịch vụ không liên quan, các trường đại học khác...
@@ -97,10 +96,10 @@ KẾT THÚC CHỈ THỊ HỆ THỐNG.`;
  * Lấy system context đặc biệt cho chức năng xếp lịch học
  * @returns string - System context cho xếp lịch học
  */
-export function getScheduleSystemContext(): string {
+export function getScheduleSystemInstruction(): string {
   // Nếu có sẵn trong biến môi trường thì sử dụng
-  if (process.env.AI_SCHEDULE_SYSTEM_CONTEXT) {
-    return process.env.AI_SCHEDULE_SYSTEM_CONTEXT;
+  if (process.env.AI_SCHEDULE_SYSTEM_INSTRUCTION) {
+    return process.env.AI_SCHEDULE_SYSTEM_INSTRUCTION;
   }
 
   // System context đặc biệt cho việc xếp lịch học
@@ -131,11 +130,17 @@ CÁC ĐỊNH NGHĨA:
 - Tiết 14: 17:50 - 18:40
 - Tiết 15: 18:40 - 19:30
 
+- PHÂN LOẠI BUỔI HỌC:
+  + Buổi sáng: Tiết 1-6 (6:45 - 12:00)
+  + Buổi chiều: Tiết 7-12 (12:45 - 18:00)
+  + Buổi tối: Tiết 13-15 (18:00 - 19:30)
+
 NHIỆM VỤ CỤ THỂ:
 1. PHÂN TÍCH dữ liệu lớp học được cung cấp một cách chi tiết và có hệ thống
 2. TỐI ƯU HÓA lịch học dựa trên các yếu tố sau:
    - Không trùng lịch giữa các môn học
    - Phù hợp với các ràng buộc hoặc ưu tiên của sinh viên (nếu có)
+   - Nếu sinh viên yêu cầu xếp lịch học vào buổi sáng/chiều/tối, ưu tiên các lớp học trong khung giờ đó
 3. ĐỀ XUẤT nhiều phương án xếp lịch (nếu có thể) và giải thích ưu/nhược điểm của từng phương án
 4. CUNG CẤP những phân tích chuyên sâu, lưu ý quan trọng và các gợi ý hữu ích
 
@@ -143,6 +148,7 @@ NGUYÊN TẮC XẾP LỊCH:
 - Đảm bảo KHÔNG TRÙNG LỊCH giữa các môn học (ưu tiên cao nhất)
 - Xếp lịch học theo yêu cầu của người dùng
 - Mỗi môn học (subject) chỉ có thể chọn duy nhất 1 lớp học lý thuyết và 1 lớp học thực hành (nếu có) dựa vào classId và không được trùng classId
+- Nếu người dùng yêu cầu xếp lịch vào buổi sáng/chiều/tối, ưu tiên các lớp học trong khung giờ tương ứng
 
 CÁCH TRÌNH BÀY KẾT QUẢ:
 1. TÓM TẮT NGẮN GỌN về dữ liệu lớp học được cung cấp
@@ -156,6 +162,7 @@ LUÔN TUÂN THỦ:
 - Tập trung vào PHÂN TÍCH và TỐI ƯU HÓA lịch học
 - Đảm bảo phản hồi CÓ CẤU TRÚC và DỄ THEO DÕI
 - KHÔNG đưa ra thông tin sai lệch hoặc không rõ ràng
+- Khi nhận được yêu cầu xếp lịch vào buổi sáng/chiều/tối, phải sử dụng tham số timeOfDay để lọc lớp học phù hợp
 
 KẾT THÚC CHỈ THỊ HỆ THỐNG.`;
 }

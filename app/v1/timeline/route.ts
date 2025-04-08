@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /v1/timeline - Lấy danh sách timeline của người dùng
+ * GET /v1/timeline - Lấy danh sách timeLine của người dùng
  */
 export async function GET(req: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const timelines = await prisma.timeline.findMany({
+    const timeLines = await prisma.timeLine.findMany({
       where: {
         userId: session.user.id,
       },
@@ -27,9 +27,9 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(timelines);
+    return NextResponse.json(timeLines);
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách timeline:", error);
+    console.error("Lỗi khi lấy danh sách timeLine:", error);
     return NextResponse.json(
       { error: "Lỗi khi lấy danh sách lịch học" },
       { status: 500 }

@@ -6,9 +6,9 @@ import { IconPlus, IconCalendarTime } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
-  createTimeline,
-  deleteTimeline,
-  updateTimeline,
+  createTimeLine,
+  deleteTimeLine,
+  updateTimeLine,
 } from "@/lib/actions/timeline-actions";
 import useUser from "@/lib/hook/useUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -68,9 +68,10 @@ export function TimelineList() {
 
   const handleCreateTimeline = async () => {
     try {
-      const result = await createTimeline({
+      const result = await createTimeLine({
         name: timelineName,
         description: timelineDesc || undefined,
+        classes: [],
       });
 
       if (result.success) {
@@ -104,10 +105,13 @@ export function TimelineList() {
     if (!selectedTimeline) return;
 
     try {
-      const result = await updateTimeline({
+      const result = await updateTimeLine({
         id: selectedTimeline.id,
         name: timelineName,
         description: timelineDesc || undefined,
+        classes: selectedTimeline.classes
+          ? JSON.parse(selectedTimeline.classes as string)
+          : [],
       });
 
       if (result.success) {
@@ -142,7 +146,7 @@ export function TimelineList() {
     if (!selectedTimeline) return;
 
     try {
-      const result = await deleteTimeline(selectedTimeline.id);
+      const result = await deleteTimeLine(selectedTimeline.id);
 
       if (result.success) {
         notifications.show({

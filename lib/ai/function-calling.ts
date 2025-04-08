@@ -25,6 +25,7 @@ export async function handleFunctionCall(
         yearStudyId,
         semesterId,
         limit,
+        timeOfDay,
       } = args;
 
       // Gọi service để lấy dữ liệu từ database
@@ -34,6 +35,7 @@ export async function handleFunctionCall(
         learningSection,
         subjectId,
         subjectName,
+        timeOfDay,
         limit: limit || 50,
       });
 
@@ -67,6 +69,10 @@ export const availableFunctions: FunctionDeclaration[] = [
               },
             },
           },
+        },
+        timeOfDay: {
+          type: SchemaType.STRING,
+          description: "Buổi học trong ngày (sáng/chiều/tối)",
         },
         subjectId: {
           type: SchemaType.STRING,

@@ -5,6 +5,9 @@ export interface Timeline {
   id: string;
   name: string;
   description?: string;
+  userId: string;
+  classes?: string;
+  isPublic?: boolean;
   createdAt: string;
   updatedAt: string;
 }

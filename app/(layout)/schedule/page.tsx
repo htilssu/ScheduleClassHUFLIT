@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
+
 import { TimelineList } from "./components/TimelineList";
 
 export const metadata: Metadata = {
@@ -9,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 async function SchedulePage() {
-
   return <TimelineList />;
 }
 

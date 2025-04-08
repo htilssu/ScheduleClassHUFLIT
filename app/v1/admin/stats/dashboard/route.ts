@@ -42,8 +42,8 @@ export async function GET() {
       }),
     ]);
 
-    // Lấy số timeline đang hoạt động và số timeline vừa cập nhật
-    const [activeTimelines, recentlyUpdatedTimelines] = await Promise.all([
+    // Lấy số timeLine đang hoạt động và số timeLine vừa cập nhật
+    const [activeTimeLines, recentlyUpdatedTimeLines] = await Promise.all([
       prisma.timeLine.count({
         where: {
           updatedAt: {
@@ -168,11 +168,11 @@ export async function GET() {
               },
             },
           }),
-        ]).then(([users, classes, timelines, feedbacks]) => ({
+        ]).then(([users, classes, timeLines, feedbacks]) => ({
           date: startOfDay.toISOString(),
           users,
           classes,
-          timelines,
+          timeLines,
           feedbacks,
         }));
       })
@@ -183,8 +183,8 @@ export async function GET() {
       newUsersThisMonth,
       totalClasses,
       newClassesThisMonth,
-      activeTimelines,
-      recentlyUpdatedClasses: recentlyUpdatedTimelines,
+      activeTimeLines,
+      recentlyUpdatedClasses: recentlyUpdatedTimeLines,
       totalFeedbacks,
       feedbacksThisMonth,
       feedbackByDay,
