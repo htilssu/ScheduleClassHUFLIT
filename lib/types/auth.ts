@@ -14,3 +14,11 @@ export interface RegisterResponse {
     name?: string | null;
   };
 }
+/**
+ * Mã lỗi xác thực.
+ */
+export type AuthenticateErrorCode =
+  | "user_not_found"
+  | "invalid_password"
+  | "account_locked"
+  | "default";

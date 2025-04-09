@@ -1,3 +1,3 @@
-export function isExpired(target: Date, expiredTime: Date) {
-    return target > expiredTime
+export function isExpired(now: Date, expiredTime: Date) {
+  return now > expiredTime;
 }

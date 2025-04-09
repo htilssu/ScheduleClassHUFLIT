@@ -12,7 +12,7 @@ import ChangePasswordModal from "./modals/ChangePasswordModal";
 import { useDispatch } from "react-redux";
 import { setUserSuccess, User } from "@/lib/state/user";
 import { notifications } from "@mantine/notifications";
-import { changePassword } from "@/app/actions/auth-actions";
+import { changePassword } from "@/lib/actions/auth-actions";
 
 const ProfilePage = () => {
   const { data: user, loading } = useUser();

@@ -29,7 +29,7 @@ import {
   createBadWordAction,
   deleteBadWordAction,
   getBadWordsAction,
-} from "@/app/actions/admin-badword-actions";
+} from "@/lib/actions/admin-badword-actions";
 
 interface BadWord {
   id: string;

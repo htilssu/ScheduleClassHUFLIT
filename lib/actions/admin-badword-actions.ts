@@ -27,7 +27,7 @@ export async function getBadWordsAction() {
 // Thêm bad word mới
 export async function createBadWordAction(words: string[]) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
+  if (!session?.user?.isAdmin) {
     return { success: false, error: "Không có quyền truy cập." };
   }
 
@@ -95,7 +95,7 @@ export async function createBadWordAction(words: string[]) {
 // Xóa bad word
 export async function deleteBadWordAction(id: string) {
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") {
+  if (!session?.user?.isAdmin) {
     return { success: false, error: "Không có quyền truy cập." };
   }
 

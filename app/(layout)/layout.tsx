@@ -1,6 +1,5 @@
 import React from "react";
 import { Metadata } from "next";
-import { AuthProvider } from "@/lib/context/AuthContext";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@/app/globals.css";
@@ -16,12 +15,10 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <AuthProvider>
-      <MantineProvider>
-        <Navbar />
-        <div className="mt-16">{children}</div>
-        <Footer />
-      </MantineProvider>
-    </AuthProvider>
+    <MantineProvider>
+      <Navbar />
+      <div className="mt-16">{children}</div>
+      <Footer />
+    </MantineProvider>
   );
 }

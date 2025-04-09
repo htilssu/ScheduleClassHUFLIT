@@ -1,6 +1,6 @@
 "use client";
 
-import {createFeedback, deleteFeedback} from "@/app/actions/feedback";
+import {createFeedback, deleteFeedback} from "@/lib/actions/feedback";
 import {useUser} from "@/lib/hook/useUser"; // Import hook useUser
 import {
     Alert,
