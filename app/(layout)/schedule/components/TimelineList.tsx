@@ -20,7 +20,7 @@ import { EditTimelineModal } from "./EditTimelineModal";
 import { DeleteTimelineModal } from "./DeleteTimelineModal";
 import { Timeline } from "./types";
 
-export function TimelineList() {
+export function TimeLineList() {
   const { data: userData } = useUser();
   const queryClient = useQueryClient();
   const [timelineName, setTimelineName] = useState("");
@@ -44,17 +44,13 @@ export function TimelineList() {
   } = useQuery<Timeline[], Error>({
     queryKey: ["timelines", userData?.id],
     queryFn: async () => {
-      if (!userData?.id) return [];
-
       const response = await fetch("/v1/timeline");
       if (!response.ok) {
         throw new Error("Không thể tải danh sách lịch học");
       }
       return response.json();
     },
-    enabled: !!userData?.id,
     staleTime: 5 * 60 * 1000, // Cache trong 5 phút
-    refetchOnWindowFocus: false,
   });
 
   if (isError) {
@@ -197,6 +193,8 @@ export function TimelineList() {
       minute: "2-digit",
     }).format(date);
   };
+
+  console.log(isLoading);
 
   return (
     <Container

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { TimelineList } from "./components/TimelineList";
+import { TimeLineList } from "./components/TimelineList";
 
 export const metadata: Metadata = {
   title: "Lịch học của tôi - HUFLIT",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 async function SchedulePage() {
-  return <TimelineList />;
+  return <TimeLineList />;
 }
 
 export default SchedulePage;
