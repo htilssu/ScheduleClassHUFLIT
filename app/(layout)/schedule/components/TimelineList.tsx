@@ -1,6 +1,5 @@
 "use client";
 
-import { LoginModal } from "@/app/components/LoginModal";
 import {
   createTimeLine,
   deleteTimeLine,
@@ -12,7 +11,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconCalendarTime, IconPlus } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { CreateTimelineModal } from "./CreateTimelineModal";
@@ -39,9 +38,6 @@ export function TimeLineList() {
     useDisclosure(false);
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
-  const [showLoginModal, setShowLoginModal] = useState(
-    !userData && !isUserLoading
-  );
 
   // Fetch timelines với useQuery
   const {
@@ -57,25 +53,16 @@ export function TimeLineList() {
       const response = await fetch("/v1/timeline");
       if (!response.ok) {
         if (response.status === 401) {
-          // Hiển thị modal đăng nhập
-          setShowLoginModal(true);
+          // Chuyển hướng đến trang đăng nhập
+          router.push("/auth");
           return [];
         }
         throw new Error("Không thể tải danh sách lịch học");
       }
       return response.json();
     },
-    enabled: !!userData?.id,
     staleTime: 5 * 60 * 1000,
-    initialData: [],
   });
-
-  // Cập nhật trạng thái modal đăng nhập khi userData thay đổi
-  useEffect(() => {
-    if (!userData && !isUserLoading) {
-      setShowLoginModal(true);
-    }
-  }, [userData, isUserLoading]);
 
   if (isError) {
     notifications.show({
@@ -243,18 +230,17 @@ export function TimeLineList() {
             )}
           </Flex>
 
-          {isUserLoading ? (
+          {isUserLoading || userData === undefined ? (
             <TimelineSkeleton />
           ) : !userData ? (
-            // Nếu không có userData và không đang loading, hiển thị button đăng nhập
-            <Box py="xl" ta="center">
+            <Box py="xl" className="!py-20" ta="center">
               <Title order={3} mb="md">
                 Bạn cần đăng nhập để xem lịch học
               </Title>
               <Button
                 size="md"
                 onClick={() => {
-                  router.push("/auth");
+                  router.push("/auth?redirect=/schedule");
                 }}
               >
                 Đăng nhập ngay
@@ -308,13 +294,6 @@ export function TimeLineList() {
           onClose={closeDelete}
           selectedTimeline={selectedTimeline}
           handleDelete={handleDeleteTimeline}
-        />
-
-        <LoginModal
-          opened={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
-          title="Đăng nhập để tiếp tục"
-          message="Vui lòng đăng nhập để xem và quản lý lịch học của bạn."
         />
       </div>
     </div>
