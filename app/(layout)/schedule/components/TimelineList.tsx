@@ -1,27 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { SimpleGrid, Button, Container, Title, Box, Flex } from "@mantine/core";
-import { IconPlus, IconCalendarTime } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
 import {
   createTimeLine,
   deleteTimeLine,
   updateTimeLine,
 } from "@/lib/actions/timeline-actions";
 import useUser from "@/lib/hook/useUser";
+import { Box, Button, Container, Flex, SimpleGrid, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconCalendarTime, IconPlus } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { TimelineSkeleton } from "./TimelineSkeleton";
-import { TimelineEmptyState } from "./TimelineEmptyState";
-import { TimelineCard } from "./TimelineCard";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { CreateTimelineModal } from "./CreateTimelineModal";
-import { EditTimelineModal } from "./EditTimelineModal";
 import { DeleteTimelineModal } from "./DeleteTimelineModal";
+import { EditTimelineModal } from "./EditTimelineModal";
+import { TimelineCard } from "./TimelineCard";
+import { TimelineEmptyState } from "./TimelineEmptyState";
+import { TimelineSkeleton } from "./TimelineSkeleton";
 import { Timeline } from "./types";
 
-export function TimelineList() {
-  const { data: userData } = useUser();
+export function TimeLineList() {
+  const router = useRouter();
+  const userState = useUser();
+  const { data: userData, loading: isUserLoading } = userState;
   const queryClient = useQueryClient();
   const [timelineName, setTimelineName] = useState("");
   const [timelineDesc, setTimelineDesc] = useState("");
@@ -48,13 +52,16 @@ export function TimelineList() {
 
       const response = await fetch("/v1/timeline");
       if (!response.ok) {
+        if (response.status === 401) {
+          // Chuyển hướng đến trang đăng nhập
+          router.push("/auth");
+          return [];
+        }
         throw new Error("Không thể tải danh sách lịch học");
       }
       return response.json();
     },
-    enabled: !!userData?.id,
-    staleTime: 5 * 60 * 1000, // Cache trong 5 phút
-    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   if (isError) {
@@ -199,80 +206,96 @@ export function TimelineList() {
   };
 
   return (
-    <Container
-      size="lg"
-      py="xl"
-      className="border-[1px] border-gray-200 rounded-md my-20"
-    >
-      <Box>
-        <Flex justify="space-between" align="center" mb="lg">
-          <Title order={2}>
-            <IconCalendarTime
-              size={22}
-              style={{ marginRight: 10, marginBottom: -2 }}
-            />
-            Lịch học của tôi
-          </Title>
-          <Button
-            leftSection={<IconPlus size={14} />}
-            onClick={openCreate}
-            variant="filled"
-            radius="md"
-            size="md"
-          >
-            Tạo lịch học mới
-          </Button>
-        </Flex>
-
-        {isLoading ? (
-          <TimelineSkeleton />
-        ) : timelines.length === 0 ? (
-          <TimelineEmptyState onOpenCreate={openCreate} />
-        ) : (
-          <SimpleGrid
-            cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
-            spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-            verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-          >
-            {timelines.map((timeline: Timeline) => (
-              <TimelineCard
-                key={timeline.id}
-                timeline={timeline}
-                onOpenEdit={openEditModal}
-                onOpenDelete={openDeleteModal}
-                formatDate={formatDate}
+    <div className="p-1">
+      <div className="border-[1px] py-10 px-10 my-20 mx-40 border-gray-200 rounded-md">
+        <div className="">
+          <Flex justify="space-between" align="center" mb="lg">
+            <Title order={2}>
+              <IconCalendarTime
+                size={22}
+                style={{ marginRight: 10, marginBottom: -2 }}
               />
-            ))}
-          </SimpleGrid>
-        )}
-      </Box>
+              Lịch học của tôi
+            </Title>
+            {userData && (
+              <Button
+                leftSection={<IconPlus size={14} />}
+                onClick={openCreate}
+                variant="filled"
+                radius="md"
+                size="md"
+              >
+                Tạo lịch học mới
+              </Button>
+            )}
+          </Flex>
 
-      <CreateTimelineModal
-        opened={createOpened}
-        onClose={closeCreate}
-        timelineName={timelineName}
-        setTimelineName={setTimelineName}
-        timelineDesc={timelineDesc}
-        setTimelineDesc={setTimelineDesc}
-        handleCreate={handleCreateTimeline}
-      />
+          {isUserLoading || userData === undefined ? (
+            <TimelineSkeleton />
+          ) : !userData ? (
+            <Box py="xl" className="!py-20" ta="center">
+              <Title order={3} mb="md">
+                Bạn cần đăng nhập để xem lịch học
+              </Title>
+              <Button
+                size="md"
+                onClick={() => {
+                  router.push("/auth?redirect=/schedule");
+                }}
+              >
+                Đăng nhập ngay
+              </Button>
+            </Box>
+          ) : isLoading ? (
+            <TimelineSkeleton />
+          ) : timelines.length === 0 ? (
+            <TimelineEmptyState onOpenCreate={openCreate} />
+          ) : (
+            <SimpleGrid
+              cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
+              spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+              verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+            >
+              {timelines.map((timeline: Timeline) => (
+                <TimelineCard
+                  key={timeline.id}
+                  timeline={timeline}
+                  onOpenEdit={openEditModal}
+                  onOpenDelete={openDeleteModal}
+                  formatDate={formatDate}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </div>
 
-      <EditTimelineModal
-        opened={editOpened}
-        onClose={closeEdit}
-        timelineName={timelineName}
-        setTimelineName={setTimelineName}
-        timelineDesc={timelineDesc}
-        setTimelineDesc={setTimelineDesc}
-        handleEdit={handleEditTimeline}
-      />
+        <CreateTimelineModal
+          opened={createOpened}
+          onClose={closeCreate}
+          timelineName={timelineName}
+          setTimelineName={setTimelineName}
+          timelineDesc={timelineDesc}
+          setTimelineDesc={setTimelineDesc}
+          handleCreate={handleCreateTimeline}
+        />
 
-      <DeleteTimelineModal
-        opened={deleteOpened}
-        onClose={closeDelete}
-        selectedTimeline={selectedTimeline}
-        handleDelete={handleDeleteTimeline}
-      />
-    </Container>
+        <EditTimelineModal
+          opened={editOpened}
+          onClose={closeEdit}
+          timelineName={timelineName}
+          setTimelineName={setTimelineName}
+          timelineDesc={timelineDesc}
+          setTimelineDesc={setTimelineDesc}
+          handleEdit={handleEditTimeline}
+        />
+
+        <DeleteTimelineModal
+          opened={deleteOpened}
+          onClose={closeDelete}
+          selectedTimeline={selectedTimeline}
+          handleDelete={handleDeleteTimeline}
+        />
+      </div>
+    </div>
   );
 }
