@@ -19,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         username: {},
         password: {},
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials, request) => {
         let user = null;
 
         user = await getUserFromDb(credentials.username as string);
@@ -40,7 +40,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new WrongPasswordException();
         }
 
-        return user;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          image: user.image,
+          isAdmin: user.role === "ADMIN",
+          isUser: user.role === "DEFAULT_USER",
+          isPremiumUser: user.role === "PREMIUM_USER",
+        };
       },
     }),
   ],
@@ -60,6 +69,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email || "";
         session.user.name = token.name || "";
         session.user.role = token.role as Role;
+        session.user.isAdmin = token.role === "ADMIN";
+        session.user.isUser = token.role === "DEFAULT_USER";
+        session.user.isPremiumUser = token.role === "PREMIUM_USER";
       }
       return session;
     },
@@ -86,3 +98,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   experimental: { enableWebAuthn: true },
 });
+
+export class Auth {}

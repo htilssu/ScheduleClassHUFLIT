@@ -5,8 +5,17 @@ import SelectSection from "@/app/(no-layout)/schedule/components/SelectSection";
 import { DndContext } from "@/lib/hook/use-dnd-context";
 import { ClassData } from "@/lib/types";
 import FilterBar from "./FilterBar";
+import { TimeLine } from "@prisma/client";
+import { useDispatch } from "react-redux";
+import { timeLineSlice } from "@/lib/state/timeline";
+import { useEffect } from "react";
 
-const ScheduleMain = ({ classes }: { classes: ClassData[] }) => {
+interface ScheduleMainProps {
+  classes: ClassData[];
+  timeLine: TimeLine | null;
+}
+
+const ScheduleMain = ({ classes, timeLine }: ScheduleMainProps) => {
   return (
     <div className={"select-none"}>
       <div className={"relative"}>
@@ -16,7 +25,7 @@ const ScheduleMain = ({ classes }: { classes: ClassData[] }) => {
             <div className="w-2/6">
               <SelectSection classes={classes || []} />
             </div>
-            <ScheduleTimeLine />
+            <ScheduleTimeLine timeLine={timeLine} />
           </div>
         </DndContext>
       </div>

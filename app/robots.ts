@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://huflit-schedule.vercel.app/sitemap.xml",
+    sitemap: "https://xeplich.htilssu.id.vn/sitemap.xml",
   };
 }

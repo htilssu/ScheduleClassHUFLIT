@@ -1,6 +1,6 @@
 import React from "react";
 import LandingPage from "@/app/(layout)/components/LandingPage";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Xếp lịch học HUFLIT Online - Tra cứu lịch học HUFLIT",
@@ -12,7 +12,6 @@ export const metadata: Metadata = {
   creator: "HUFLIT Schedule Team",
   publisher: "HUFLIT Schedule",
   robots: "index, follow",
-  themeColor: "#f97316", // Orange color
   viewport: "width=device-width, initial-scale=1",
   openGraph: {
     title: "Xếp lịch học HUFLIT Online - Tra cứu lịch học HUFLIT",
@@ -41,6 +40,12 @@ export const metadata: Metadata = {
     canonical: "https://xeplich.htilssu.id.vn",
   },
   metadataBase: new URL("https://xeplich.htilssu.id.vn"),
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f97316", // Orange color
+  width: "device-width",
+  initialScale: 1,
 };
 
 function Page() {

@@ -78,7 +78,7 @@ export async function createFeedbackAction(formData: FormData) {
 
 export async function deleteFeedbackAction(id: string) {
   const session = await auth();
-  if (!session?.user?.id || session.user.role !== "ADMIN") {
+  if (!session?.user?.id || !session?.user?.isAdmin) {
     return {
       error: "Không có quyền truy cập.",
       success: false,

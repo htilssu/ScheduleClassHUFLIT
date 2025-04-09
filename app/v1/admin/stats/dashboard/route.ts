@@ -3,6 +3,29 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { ForbiddenError } from "@/lib/exceptions/ForbiddenError";
 
+/**
+ * Tạo đối tượng Date ở múi giờ UTC với giờ cụ thể
+ * @param year - Năm
+ * @param month - Tháng (0-11)
+ * @param day - Ngày
+ * @param hours - Giờ
+ * @param minutes - Phút
+ * @param seconds - Giây
+ * @param ms - Mili giây
+ * @returns Đối tượng Date ở múi giờ UTC
+ */
+function createUTCDate(
+  year: number,
+  month: number,
+  day: number,
+  hours = 0,
+  minutes = 0,
+  seconds = 0,
+  ms = 0
+): Date {
+  return new Date(Date.UTC(year, month, day, hours, minutes, seconds, ms));
+}
+
 export async function GET() {
   try {
     const session = await auth();
@@ -13,8 +36,16 @@ export async function GET() {
 
     // Lấy thời gian đầu và cuối tháng hiện tại
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const startOfMonth = createUTCDate(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = createUTCDate(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
 
     // Lấy tổng số người dùng và số người dùng mới trong tháng
     const [totalUsers, newUsersThisMonth] = await Promise.all([
@@ -42,19 +73,38 @@ export async function GET() {
       }),
     ]);
 
-    // Lấy số timeline đang hoạt động và số timeline vừa cập nhật
-    const [activeTimelines, recentlyUpdatedTimelines] = await Promise.all([
+    // Tạo thời gian 7 ngày trước và 24 giờ trước theo UTC
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const sevenDaysAgoUTC = createUTCDate(
+      sevenDaysAgo.getFullYear(),
+      sevenDaysAgo.getMonth(),
+      sevenDaysAgo.getDate()
+    );
+
+    const oneDayAgoUTC = createUTCDate(
+      oneDayAgo.getFullYear(),
+      oneDayAgo.getMonth(),
+      oneDayAgo.getDate(),
+      oneDayAgo.getHours(),
+      oneDayAgo.getMinutes(),
+      oneDayAgo.getSeconds()
+    );
+
+    // Lấy số timeLine đang hoạt động và số timeLine vừa cập nhật
+    const [activeTimeLines, recentlyUpdatedTimeLines] = await Promise.all([
       prisma.timeLine.count({
         where: {
           updatedAt: {
-            gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 ngày qua
+            gte: sevenDaysAgoUTC, // 7 ngày qua với UTC
           },
         },
       }),
       prisma.timeLine.count({
         where: {
           updatedAt: {
-            gte: new Date(now.getTime() - 24 * 60 * 60 * 1000), // 24 giờ qua
+            gte: oneDayAgoUTC, // 24 giờ qua với UTC
           },
         },
       }),
@@ -82,8 +132,21 @@ export async function GET() {
     const feedbackByDay = await Promise.all(
       Array.from({ length: daysInMonth }, (_, i) => {
         const date = new Date(now.getFullYear(), now.getMonth(), i + 1);
-        const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-        const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+        // Tạo startOfDay và endOfDay theo UTC
+        const startOfDay = createUTCDate(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+        const endOfDay = createUTCDate(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23,
+          59,
+          59,
+          999
+        );
 
         return Promise.all([
           prisma.feedback.count({
@@ -132,8 +195,21 @@ export async function GET() {
     const chartData = await Promise.all(
       Array.from({ length: 7 }, (_, i) => {
         const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-        const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-        const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+        // Tạo startOfDay và endOfDay theo UTC
+        const startOfDay = createUTCDate(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+        const endOfDay = createUTCDate(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23,
+          59,
+          59,
+          999
+        );
 
         return Promise.all([
           prisma.user.count({
@@ -168,11 +244,11 @@ export async function GET() {
               },
             },
           }),
-        ]).then(([users, classes, timelines, feedbacks]) => ({
+        ]).then(([users, classes, timeLines, feedbacks]) => ({
           date: startOfDay.toISOString(),
           users,
           classes,
-          timelines,
+          timeLines,
           feedbacks,
         }));
       })
@@ -183,8 +259,8 @@ export async function GET() {
       newUsersThisMonth,
       totalClasses,
       newClassesThisMonth,
-      activeTimelines,
-      recentlyUpdatedClasses: recentlyUpdatedTimelines,
+      activeTimeLines,
+      recentlyUpdatedClasses: recentlyUpdatedTimeLines,
       totalFeedbacks,
       feedbacksThisMonth,
       feedbackByDay,

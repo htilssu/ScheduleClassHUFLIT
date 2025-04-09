@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { isExpired } from "@/lib/utils/time";
-import { Code } from "@prisma/client";
 
 /**
  * CodeService verifies and creates codes for various purposes.
@@ -34,19 +33,5 @@ export namespace CodeService {
     });
 
     return matchCode;
-  }
-
-  /**
-   * Creates a new code.
-   * @param code The code object to create.
-   */
-  export async function createCode(code: Code) {
-    /*return await prisma.code.create({
-            data: {
-                code: code.code,
-                expiredAt: new Date(code.expiredAt),
-                codeTypeId: code.codeTypeId,
-            }
-        });*/
   }
 }

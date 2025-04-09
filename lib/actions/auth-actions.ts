@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { RegisterData, RegisterResponse } from "../types/auth";
+import { nanoid } from "nanoid";
 
 // Hàm kiểm tra định dạng email
 function isValidEmail(email: string): boolean {
@@ -15,7 +16,7 @@ function isValidEmail(email: string): boolean {
 function generateUsernameFromEmail(email: string): string {
   // Lấy phần trước @ và thêm vài ký tự ngẫu nhiên để tránh trùng lặp
   const baseUsername = email.split("@")[0];
-  const randomChars = Math.random().toString(36).substring(2, 5);
+  const randomChars = nanoid(3);
   return `${baseUsername}_${randomChars}`;
 }
 
@@ -95,7 +96,7 @@ export async function signUp(data: RegisterData): Promise<RegisterResponse> {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Tạo người dùng mới
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: name,
         username: username,
