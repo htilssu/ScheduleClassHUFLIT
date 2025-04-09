@@ -19,7 +19,6 @@ export async function fetchUserData() {
 
     return userData;
   } catch (error: any) {
-    console.error("Lỗi khi lấy thông tin người dùng:", error);
     return null;
   }
 }
@@ -34,7 +33,7 @@ export interface User {
   address?: string;
   createdAt?: string;
   role: "DEFAULT_USER" | "PREMIUM_USER" | "ADMIN";
-  status?: 'active' | 'inactive';
+  status?: "active" | "inactive";
 }
 
 export interface UserState {

@@ -1,27 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { SimpleGrid, Button, Container, Title, Box, Flex } from "@mantine/core";
-import { IconPlus, IconCalendarTime } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
+import { LoginModal } from "@/app/components/LoginModal";
 import {
   createTimeLine,
   deleteTimeLine,
   updateTimeLine,
 } from "@/lib/actions/timeline-actions";
 import useUser from "@/lib/hook/useUser";
+import { Box, Button, Container, Flex, SimpleGrid, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconCalendarTime, IconPlus } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { TimelineSkeleton } from "./TimelineSkeleton";
-import { TimelineEmptyState } from "./TimelineEmptyState";
-import { TimelineCard } from "./TimelineCard";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import { CreateTimelineModal } from "./CreateTimelineModal";
-import { EditTimelineModal } from "./EditTimelineModal";
 import { DeleteTimelineModal } from "./DeleteTimelineModal";
+import { EditTimelineModal } from "./EditTimelineModal";
+import { TimelineCard } from "./TimelineCard";
+import { TimelineEmptyState } from "./TimelineEmptyState";
+import { TimelineSkeleton } from "./TimelineSkeleton";
 import { Timeline } from "./types";
 
 export function TimeLineList() {
-  const { data: userData } = useUser();
+  const router = useRouter();
+  const userState = useUser();
+  const { data: userData, loading: isUserLoading } = userState;
   const queryClient = useQueryClient();
   const [timelineName, setTimelineName] = useState("");
   const [timelineDesc, setTimelineDesc] = useState("");
@@ -34,6 +39,9 @@ export function TimeLineList() {
     useDisclosure(false);
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
+  const [showLoginModal, setShowLoginModal] = useState(
+    !userData && !isUserLoading
+  );
 
   // Fetch timelines với useQuery
   const {
@@ -44,14 +52,30 @@ export function TimeLineList() {
   } = useQuery<Timeline[], Error>({
     queryKey: ["timelines", userData?.id],
     queryFn: async () => {
+      if (!userData?.id) return [];
+
       const response = await fetch("/v1/timeline");
       if (!response.ok) {
+        if (response.status === 401) {
+          // Hiển thị modal đăng nhập
+          setShowLoginModal(true);
+          return [];
+        }
         throw new Error("Không thể tải danh sách lịch học");
       }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // Cache trong 5 phút
+    enabled: !!userData?.id,
+    staleTime: 5 * 60 * 1000,
+    initialData: [],
   });
+
+  // Cập nhật trạng thái modal đăng nhập khi userData thay đổi
+  useEffect(() => {
+    if (!userData && !isUserLoading) {
+      setShowLoginModal(true);
+    }
+  }, [userData, isUserLoading]);
 
   if (isError) {
     notifications.show({
@@ -194,83 +218,105 @@ export function TimeLineList() {
     }).format(date);
   };
 
-  console.log(isLoading);
-
   return (
-    <Container
-      size="lg"
-      py="xl"
-      className="border-[1px] border-gray-200 rounded-md my-20"
-    >
-      <Box>
-        <Flex justify="space-between" align="center" mb="lg">
-          <Title order={2}>
-            <IconCalendarTime
-              size={22}
-              style={{ marginRight: 10, marginBottom: -2 }}
-            />
-            Lịch học của tôi
-          </Title>
-          <Button
-            leftSection={<IconPlus size={14} />}
-            onClick={openCreate}
-            variant="filled"
-            radius="md"
-            size="md"
-          >
-            Tạo lịch học mới
-          </Button>
-        </Flex>
-
-        {isLoading ? (
-          <TimelineSkeleton />
-        ) : timelines.length === 0 ? (
-          <TimelineEmptyState onOpenCreate={openCreate} />
-        ) : (
-          <SimpleGrid
-            cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
-            spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-            verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-          >
-            {timelines.map((timeline: Timeline) => (
-              <TimelineCard
-                key={timeline.id}
-                timeline={timeline}
-                onOpenEdit={openEditModal}
-                onOpenDelete={openDeleteModal}
-                formatDate={formatDate}
+    <div className="p-1">
+      <div className="border-[1px] py-10 px-10 my-20 mx-40 border-gray-200 rounded-md">
+        <div className="">
+          <Flex justify="space-between" align="center" mb="lg">
+            <Title order={2}>
+              <IconCalendarTime
+                size={22}
+                style={{ marginRight: 10, marginBottom: -2 }}
               />
-            ))}
-          </SimpleGrid>
-        )}
-      </Box>
+              Lịch học của tôi
+            </Title>
+            {userData && (
+              <Button
+                leftSection={<IconPlus size={14} />}
+                onClick={openCreate}
+                variant="filled"
+                radius="md"
+                size="md"
+              >
+                Tạo lịch học mới
+              </Button>
+            )}
+          </Flex>
 
-      <CreateTimelineModal
-        opened={createOpened}
-        onClose={closeCreate}
-        timelineName={timelineName}
-        setTimelineName={setTimelineName}
-        timelineDesc={timelineDesc}
-        setTimelineDesc={setTimelineDesc}
-        handleCreate={handleCreateTimeline}
-      />
+          {isUserLoading ? (
+            <TimelineSkeleton />
+          ) : !userData ? (
+            // Nếu không có userData và không đang loading, hiển thị button đăng nhập
+            <Box py="xl" ta="center">
+              <Title order={3} mb="md">
+                Bạn cần đăng nhập để xem lịch học
+              </Title>
+              <Button
+                size="md"
+                onClick={() => {
+                  router.push("/auth");
+                }}
+              >
+                Đăng nhập ngay
+              </Button>
+            </Box>
+          ) : isLoading ? (
+            <TimelineSkeleton />
+          ) : timelines.length === 0 ? (
+            <TimelineEmptyState onOpenCreate={openCreate} />
+          ) : (
+            <SimpleGrid
+              cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
+              spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+              verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+            >
+              {timelines.map((timeline: Timeline) => (
+                <TimelineCard
+                  key={timeline.id}
+                  timeline={timeline}
+                  onOpenEdit={openEditModal}
+                  onOpenDelete={openDeleteModal}
+                  formatDate={formatDate}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </div>
 
-      <EditTimelineModal
-        opened={editOpened}
-        onClose={closeEdit}
-        timelineName={timelineName}
-        setTimelineName={setTimelineName}
-        timelineDesc={timelineDesc}
-        setTimelineDesc={setTimelineDesc}
-        handleEdit={handleEditTimeline}
-      />
+        <CreateTimelineModal
+          opened={createOpened}
+          onClose={closeCreate}
+          timelineName={timelineName}
+          setTimelineName={setTimelineName}
+          timelineDesc={timelineDesc}
+          setTimelineDesc={setTimelineDesc}
+          handleCreate={handleCreateTimeline}
+        />
 
-      <DeleteTimelineModal
-        opened={deleteOpened}
-        onClose={closeDelete}
-        selectedTimeline={selectedTimeline}
-        handleDelete={handleDeleteTimeline}
-      />
-    </Container>
+        <EditTimelineModal
+          opened={editOpened}
+          onClose={closeEdit}
+          timelineName={timelineName}
+          setTimelineName={setTimelineName}
+          timelineDesc={timelineDesc}
+          setTimelineDesc={setTimelineDesc}
+          handleEdit={handleEditTimeline}
+        />
+
+        <DeleteTimelineModal
+          opened={deleteOpened}
+          onClose={closeDelete}
+          selectedTimeline={selectedTimeline}
+          handleDelete={handleDeleteTimeline}
+        />
+
+        <LoginModal
+          opened={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          title="Đăng nhập để tiếp tục"
+          message="Vui lòng đăng nhập để xem và quản lý lịch học của bạn."
+        />
+      </div>
+    </div>
   );
 }
