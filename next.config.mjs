@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
+    authInterrupts: true,
     ppr: true,
     dynamicIO: true,
     useCache: true,
