@@ -34,7 +34,7 @@ export interface User {
   createdAt?: string;
   role: "DEFAULT_USER" | "PREMIUM_USER" | "ADMIN";
   status?: "active" | "inactive";
-  isLocked: boolean;
+  isLocked?: boolean;
 }
 
 export interface UserState {
