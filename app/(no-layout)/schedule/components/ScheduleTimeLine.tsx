@@ -75,7 +75,7 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
 
   // Theo dõi thay đổi redux state để cập nhật timeline
   useEffect(() => {
-    if (timeLine && reduxClasses.length > 0) {
+    if (timeLine) {
       updateTimelineData();
     }
   }, [reduxClasses, updateTimelineData, timeLine]);
