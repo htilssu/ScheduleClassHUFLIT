@@ -6,6 +6,9 @@ import { DndContext } from "@/lib/hook/use-dnd-context";
 import { ClassData } from "@/lib/types";
 import FilterBar from "./FilterBar";
 import { TimeLine } from "@prisma/client";
+import { useDispatch } from "react-redux";
+import { timeLineSlice } from "@/lib/state/timeline";
+import { useEffect } from "react";
 
 interface ScheduleMainProps {
   classes: ClassData[];

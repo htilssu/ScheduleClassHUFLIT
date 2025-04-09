@@ -1,22 +1,21 @@
 "use client";
 
+import { updateTimeLine } from "@/lib/actions/timeline-actions";
 import { useDroppable } from "@/lib/hook/use-droppable";
 import { RootState } from "@/lib/state";
 import { timeLineSlice, TimeLineState } from "@/lib/state/timeline";
 import { ClassData } from "@/lib/types";
-import { Alert } from "@mantine/core";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import ConflictModal from "./ConflictModal";
-import TimeLine from "./TimeLine";
-import { updateTimeLine } from "@/lib/actions/timeline-actions";
-import { useParams } from "next/navigation";
-import { notifications } from "@mantine/notifications";
-import { TimeLine as TimeLineType } from "@prisma/client";
 import {
   checkScheduleConflict,
   parseTimeSection,
 } from "@/lib/utils/schedule-utils";
+import { Alert } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { TimeLine as TimeLineType } from "@prisma/client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ConflictModal from "./ConflictModal";
+import TimeLine from "./TimeLine";
 
 interface ScheduleTimeLineProps {
   timeLine: TimeLineType | null;
@@ -36,27 +35,27 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
   );
   const [newClass, setNewClass] = useState<ClassData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isSendRequest = useRef(false);
 
   // State để theo dõi xem đã có thay đổi trạng thái chưa
   const [hasCheckedForConflicts, setHasCheckedForConflicts] = useState(false);
 
   // Set classes từ timeline vào redux state khi component mount hoặc timeline thay đổi
   useEffect(() => {
-    console.log("timeLine", timeLine);
     if (timeLine?.classes) {
       dispatch(actions.setClasses(timeLine.classes as unknown as ClassData[]));
     }
   }, [timeLine, dispatch, actions]);
 
-  // Hàm cập nhật timeline khi có thay đổi classes
-  const updateTimeLineWithClasses = useCallback(async () => {
-    if (!timeLine) return;
+  // Hàm cập nhật timeline
+  const updateTimelineData = useCallback(async () => {
+    if (!timeLine || !isSendRequest.current) return;
 
     try {
       const result = await updateTimeLine({
         id: timeLine.id,
-        name: timeLine?.name || "",
-        description: timeLine?.description || undefined,
+        name: timeLine.name || "",
+        description: timeLine.description || undefined,
         classes: reduxClasses,
       });
 
@@ -69,8 +68,17 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật timeline:", error);
+    } finally {
+      isSendRequest.current = false;
     }
   }, [reduxClasses, timeLine]);
+
+  // Theo dõi thay đổi redux state để cập nhật timeline
+  useEffect(() => {
+    if (timeLine && reduxClasses.length > 0) {
+      updateTimelineData();
+    }
+  }, [reduxClasses, updateTimelineData, timeLine]);
 
   const handleAddClass = useCallback(
     (classData: ClassData) => {
@@ -115,21 +123,10 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
         // Đã có lỗi được hiển thị, không làm gì thêm
       } else {
         dispatch(actions.addOrUpdateClass(classData));
-        setTimeout(() => updateTimeLineWithClasses(), 100);
+        isSendRequest.current = true;
       }
     },
-    [
-      reduxClasses,
-      dispatch,
-      actions,
-      errorMessage,
-      setErrorMessage,
-      setConflictingClass,
-      setNewClass,
-      setModalOpened,
-      setHasCheckedForConflicts,
-      updateTimeLineWithClasses,
-    ]
+    [reduxClasses, dispatch, actions, errorMessage]
   );
 
   const handleAddClassRef = useRef(handleAddClass);
@@ -163,15 +160,9 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
       setHasCheckedForConflicts(false);
       setConflictingClass(null);
       setNewClass(null);
-      setTimeout(() => updateTimeLineWithClasses(), 100);
+      isSendRequest.current = true;
     }
-  }, [
-    newClass,
-    conflictingClass,
-    dispatch,
-    actions,
-    updateTimeLineWithClasses,
-  ]);
+  }, [newClass, conflictingClass, dispatch, actions]);
 
   const handleCancelReplace = useCallback(() => {
     setModalOpened(false);
@@ -183,9 +174,9 @@ function ScheduleTimeLine({ timeLine }: ScheduleTimeLineProps) {
   const handleRemoveClass = useCallback(
     (classId: string) => {
       dispatch(actions.removeClass(classId));
-      setTimeout(() => updateTimeLineWithClasses(), 100);
+      isSendRequest.current = true;
     },
-    [dispatch, actions, updateTimeLineWithClasses]
+    [dispatch, actions]
   );
 
   return (

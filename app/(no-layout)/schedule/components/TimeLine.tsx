@@ -45,7 +45,6 @@ function TimeLine(props: TimeLineProps) {
   );
 
   useEffect(() => {
-    console.log("props.classes", props.classes);
     setClasses(() => {
       if (Array.isArray(props.classes)) {
         props.classes.map((value) => handleUpdateMergeSplit(value));
