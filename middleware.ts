@@ -1,5 +1,4 @@
 import { auth } from "@/lib/auth";
-import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export { auth } from "@/lib/auth";
@@ -16,7 +15,7 @@ export const config = {
  * @returns true nếu có quyền admin, false nếu không
  */
 function checkAdminAccess(session: any) {
-  return session?.user && session.user.role === Role.ADMIN;
+  return session?.user && session.user.isAdmin;
 }
 
 export default async function middleware(req: NextRequest) {

@@ -148,48 +148,6 @@ export async function getClassesByFilter(
     console.log(`DEBUG: Tìm theo tên môn học: ${subjectName}`);
   }
 
-  // Xử lý tìm kiếm theo buổi học (sáng/chiều/tối)
-  if (timeOfDay) {
-    // Xác định các tiết học tương ứng với buổi học
-    let timeRange: string[] = [];
-
-    if (timeOfDay.toLowerCase() === "sáng") {
-      // Tiết 1-6 (6:45 - 12:00)
-      timeRange = ["1-2", "1-3", "2-3", "3-4", "3-5", "4-5", "4-6", "5-6"];
-    } else if (timeOfDay.toLowerCase() === "chiều") {
-      // Tiết 7-12 (12:45 - 18:00)
-      timeRange = [
-        "7-8",
-        "7-9",
-        "8-9",
-        "9-10",
-        "9-11",
-        "10-11",
-        "10-12",
-        "11-12",
-      ];
-    } else if (timeOfDay.toLowerCase() === "tối") {
-      // Tiết 13-15 (18:00 - 19:30)
-      timeRange = ["13-14", "13-15", "14-15"];
-    }
-
-    if (timeRange.length > 0) {
-      // Thêm điều kiện lọc theo tiết học
-      where.learningSection = {
-        ...where.learningSection,
-        some: {
-          ...(where.learningSection?.some || {}),
-          time: { in: timeRange },
-        },
-      };
-      console.log(
-        `DEBUG: Tìm theo buổi học ${timeOfDay}, các tiết: ${timeRange.join(
-          ", "
-        )}`
-      );
-    }
-  }
-
   console.log(
     "DEBUG: Câu truy vấn Prisma:",
     JSON.stringify({ where }, null, 2)

@@ -14,15 +14,18 @@ async function Page({ params }: { params: Promise<{ schedule_id: string }> }) {
   const classes = await getClass();
   const session = await auth();
   const { schedule_id } = await params;
-  const timeLine = await getTimeLine(schedule_id);
+  try {
+    const timeLine = await getTimeLine(schedule_id);
 
-  if (!timeLine) return notFound();
+    if (!timeLine) notFound();
 
-  if (timeLine?.userId !== session?.user?.id && !session?.user.isAdmin) {
-    return unauthorized();
+    if (timeLine?.userId !== session?.user?.id && !session?.user.isAdmin) {
+      unauthorized();
+    }
+    return <ScheduleMain classes={classes} timeLine={timeLine} />;
+  } catch {
+    notFound();
   }
-
-  return <ScheduleMain classes={classes} timeLine={timeLine} />;
 }
 
 export default Page;
