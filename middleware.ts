@@ -23,7 +23,9 @@ export default async function middleware(req: NextRequest) {
 
   if (/admin/i.test(req.nextUrl.pathname)) {
     if (!checkAdminAccess(session)) {
-      return NextResponse.redirect(new URL("/404", req.url));
+      const url = req.nextUrl.clone();
+      url.pathname = '/unauthorized';
+      return NextResponse.redirect(url);
     }
   }
 

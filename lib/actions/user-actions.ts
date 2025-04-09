@@ -148,3 +148,55 @@ export async function updateImageUserProfile(formData: FormData) {
     return { success: false, message: "Có lỗi xảy ra khi cập nhật ảnh đại diện" };
   }
 }
+
+export async function requestAccountDeletion() {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return { success: false, message: "Chưa đăng nhập" };
+    }
+
+    // Update user to mark for deletion
+    await prisma.user.update({
+      where: {
+        id: session.user.id,
+      },
+      data: {
+        isLocked: true,
+      },
+    });
+
+    revalidatePath("/profile");
+    return { success: true, message: "Yêu cầu xóa tài khoản đã được gửi" };
+  } catch (error) {
+    console.error("Lỗi khi gửi yêu cầu xóa tài khoản:", error);
+    return { success: false, message: "Có lỗi xảy ra khi gửi yêu cầu xóa tài khoản" };
+  }
+}
+
+export async function cancelAccountDeletion() {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return { success: false, message: "Chưa đăng nhập" };
+    }
+
+    // Update user to unmark from deletion
+    await prisma.user.update({
+      where: {
+        id: session.user.id,
+      },
+      data: {
+        isLocked: false,
+      },
+    });
+
+    revalidatePath("/profile");
+    return { success: true, message: "Đã hủy yêu cầu xóa tài khoản" };
+  } catch (error) {
+    console.error("Lỗi khi hủy yêu cầu xóa tài khoản:", error);
+    return { success: false, message: "Có lỗi xảy ra khi hủy yêu cầu xóa tài khoản" };
+  }
+}

@@ -9,6 +9,7 @@ export interface User {
   password?: string;
   role: string;
   isActive: boolean;
+  isLocked: boolean;
   createdAt: string;
 }
 
