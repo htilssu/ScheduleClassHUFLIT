@@ -75,7 +75,7 @@ const Purchase = () => {
         <div className="py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center gap-8">
-                    <h1 className="text-xl md:text-4xl font-bold text-gray-900 md:mb-4 mb-2">
+                    <h1 className="text-xl md:text-3xl font-bold text-gray-900 md:mb-2 mb-1">
                         Xếp Lịch Thông Minh Cho Sinh Viên
                     </h1>
                     <p className="md:text-xl text-lg text-gray-600 md:mb-8 mb-2">

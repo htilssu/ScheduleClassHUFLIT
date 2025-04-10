@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Paper, Title, Stack, Tabs, Text } from '@mantine/core';
+import { Paper, Stack, Tabs, Text } from '@mantine/core';
 import useUser from "@/lib/hook/useUser";
-import { User } from "@/lib/state/user";
 import Loading from "@/app/loading";
 import AccountInfo from './components/AccountInfo';
 import SecuritySettings from './components/SecuritySettings';
@@ -39,8 +38,6 @@ const ActivityPage = () => {
     return (
         <Paper shadow="sm" p="md" radius="md" withBorder>
             <Stack>
-                <Title order={2}>Quản lý tài khoản</Title>
-                
                 {/* Basic Account Information */}
                 <AccountInfo user={user} />
 
@@ -48,7 +45,6 @@ const ActivityPage = () => {
                     <Tabs.List>
                         <Tabs.Tab value="activity">Hoạt động</Tabs.Tab>
                         <Tabs.Tab value="security">Bảo mật</Tabs.Tab>
-                        <Tabs.Tab value="feedback">Đánh giá</Tabs.Tab>
                         <Tabs.Tab value="account">Tài khoản</Tabs.Tab>
                     </Tabs.List>
 
@@ -61,13 +57,6 @@ const ActivityPage = () => {
                             is2FAEnabled={is2FAEnabled} 
                             onToggle2FA={handleToggle2FA} 
                         />
-                    </Tabs.Panel>
-
-                    <Tabs.Panel value="feedback" pt="md">
-                        <Stack>
-                            <Title order={3}>Đánh giá</Title>
-                            <Text>Danh sách các đánh giá của bạn sẽ được hiển thị ở đây.</Text>
-                        </Stack>
                     </Tabs.Panel>
 
                     <Tabs.Panel value="account" pt="md">

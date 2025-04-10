@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface PricingCardProps {
     plan: 'free' | 'pro' | 'vip';
     data: {
@@ -28,7 +30,7 @@ const PricingCard = ({ plan, data, isAnnual }: PricingCardProps) => {
         <div className={`relative rounded-2xl bg-gradient-to-b ${data.color} p-8 shadow-xl transition-all`}>
             {data.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                         Best for most students
                     </span>
                 </div>
@@ -81,11 +83,12 @@ const PricingCard = ({ plan, data, isAnnual }: PricingCardProps) => {
             </ul>
 
             {plan !== 'free' && (
-                <button
-                    className={`mt-8 w-full py-3 px-6 rounded-lg font-semibold hover:cursor-pointer ${data.buttonColor} transition-colors shadow-md hover:shadow-lg`}
+                <Link
+                    href={"/profile/service"}
+                    className={`block mt-6 w-full py-3 px-6 rounded-lg font-semibold text-center transition-all duration-300 shadow-md hover:shadow-xl bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600`}
                 >
                     Nâng cấp ngay
-                </button>
+                </Link>
             )}
         </div>
     );

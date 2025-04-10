@@ -89,8 +89,11 @@ const ProfileHeader = () => {
           <Stack gap={0}>
             <Title order={3}>{user!.name || "Chưa có tên"}</Title>
             <Text c="dimmed">{user!.email}</Text>
-            <Badge color="orange" variant="outline">
-              {user!.role}
+            <Badge
+                color={user.role === 'ADMIN' ? 'red' : user.role === 'PREMIUM_USER' ? 'blue' : 'gray'}
+                variant="light"
+            >
+              {user.role === 'ADMIN' ? 'Admin' : user.role === 'PREMIUM_USER' ? 'Premium User' : 'Default User'}
             </Badge>
           </Stack>
         </Group>
