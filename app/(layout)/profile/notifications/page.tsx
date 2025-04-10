@@ -99,9 +99,9 @@ const NotificationItem = ({ notification }: { notification: typeof mockNotificat
             </Text>
             <Group justify="flex-end" mt="md">
                 {notification.isPromotion ? (
-                    <Button 
-                        variant="filled" 
-                        color="blue" 
+                    <Button
+                        variant="filled"
+                        color="blue"
                         size="sm"
                         leftSection={<IconCrown size={16} />}
                         style={{
@@ -140,13 +140,13 @@ const NotificationsPage = () => {
                         {mockNotifications.filter(n => !n.read).length} thông báo mới
                     </Badge>
                 </Group>
-                
+
                 <ScrollArea h={500}>
                     <Stack gap="md">
-                        {mockNotifications.map((notification) => (
+                        {mockNotifications.map((notification, index) => (
                             <React.Fragment key={notification.id}>
                                 <NotificationItem notification={notification} />
-                                {notification.id !== mockNotifications.length && <Divider />}
+                                {index !== mockNotifications.length - 1 && <Divider />}
                             </React.Fragment>
                         ))}
                     </Stack>
