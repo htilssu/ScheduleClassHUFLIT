@@ -143,10 +143,10 @@ const NotificationsPage = () => {
                 
                 <ScrollArea h={500}>
                     <Stack gap="md">
-                        {mockNotifications.map((notification) => (
+                        {mockNotifications.map((notification, index) => (
                             <React.Fragment key={notification.id}>
                                 <NotificationItem notification={notification} />
-                                {notification.id !== mockNotifications.length && <Divider />}
+                                {index !== mockNotifications.length - 1 && <Divider />}
                             </React.Fragment>
                         ))}
                     </Stack>
