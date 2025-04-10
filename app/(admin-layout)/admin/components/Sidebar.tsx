@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Ticket,
   Ban,
-    Star
+  Star,
+  Package
 } from "lucide-react";
 import { cn } from "@/lib/utils/TwMerge";
 
@@ -65,6 +66,11 @@ const sidebarItems: SidebarItem[] = [
     title: "Quản lý Đánh giá",
     href: "/admin/feedbacks",
     icon: Star,
+  },
+  {
+    title: "Quản lý dịch vụ",
+    href: "/admin/services",
+    icon: Package,
   },
   {
     title: "Thống kê",
