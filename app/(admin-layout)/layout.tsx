@@ -6,8 +6,28 @@ import { AdminNavbar } from "./admin/components/Navbar";
 import { AdminSidebar } from "./admin/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard - HUFLIT Schedule",
-  description: "Quản lý hệ thống lịch học HUFLIT",
+  title: "Quản trị hệ thống - HUFLIT Schedule | Trang quản lý dành cho admin",
+  description:
+    "Hệ thống quản trị xếp lịch học HUFLIT. Phân quyền, quản lý người dùng và điều chỉnh thông tin lịch học cho sinh viên HUFLIT.",
+  keywords:
+    "quản trị HUFLIT, admin dashboard, quản lý lịch học, hệ thống quản lý, HUFLIT admin",
+  robots: "noindex, nofollow",
+  authors: [
+    { name: "HUFLIT Schedule Team", url: "https://xeplich.htilssu.id.vn" },
+  ],
+  openGraph: {
+    title: "Quản trị hệ thống - HUFLIT Schedule",
+    description: "Hệ thống quản trị xếp lịch học HUFLIT dành cho admin",
+    type: "website",
+    images: [
+      {
+        url: "https://xeplich.htilssu.id.vn/images/admin-dashboard.png",
+        width: 1200,
+        height: 630,
+        alt: "HUFLIT Admin Dashboard",
+      },
+    ],
+  },
 };
 
 export default function AdminRootLayout({
