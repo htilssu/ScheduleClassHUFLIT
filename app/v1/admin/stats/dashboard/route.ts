@@ -191,10 +191,17 @@ export async function GET() {
       },
     });
 
-    // Lấy dữ liệu cho biểu đồ theo từng ngày trong 7 ngày qua
+    // Lấy dữ liệu cho biểu đồ từ ngày 1 đến cuối tháng hiện tại
+    const daysInCurrentMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0
+    ).getDate();
+
     const chartData = await Promise.all(
-      Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      Array.from({ length: daysInCurrentMonth }, (_, i) => {
+        // Tạo ngày từ đầu tháng đến cuối tháng (i+1 là ngày trong tháng)
+        const date = new Date(now.getFullYear(), now.getMonth(), i + 1);
         // Tạo startOfDay và endOfDay theo UTC
         const startOfDay = createUTCDate(
           date.getFullYear(),
@@ -265,7 +272,7 @@ export async function GET() {
       feedbacksThisMonth,
       feedbackByDay,
       feedbackTypes,
-      chartData: chartData.reverse(),
+      chartData,
     });
   } catch (error) {
     if (error instanceof ForbiddenError) {
