@@ -254,7 +254,7 @@ export default function AdminDashboardPage() {
               <div>
                 <Title order={4}>Lịch sử hoạt động</Title>
                 <Text size="sm" c="dimmed">
-                  Hoạt động của người dùng trong tuần qua
+                  Hoạt động của người dùng trong tháng hiện tại
                 </Text>
               </div>
               <Box h={400} w="100%">
@@ -265,11 +265,18 @@ export default function AdminDashboardPage() {
                       top: 5,
                       right: 30,
                       left: 20,
-                      bottom: 5,
+                      bottom: 20,
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickFormatter={formatDate} />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={formatDate}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                      interval={2}
+                    />
                     <YAxis />
                     <Tooltip labelFormatter={formatFullDate} />
                     <Legend />
@@ -330,11 +337,18 @@ export default function AdminDashboardPage() {
                       top: 5,
                       right: 30,
                       left: 20,
-                      bottom: 5,
+                      bottom: 20,
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickFormatter={formatDate} />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={formatDate}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                      interval={2}
+                    />
                     <YAxis />
                     <Tooltip labelFormatter={formatFullDate} />
                     <Legend />
