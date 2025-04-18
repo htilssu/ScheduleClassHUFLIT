@@ -31,6 +31,10 @@ const nextConfig = {
       },
     ],
   },
+  /**
+   * Cấu hình để hỗ trợ CSS từ swagger-ui-react
+   */
+  transpilePackages: ["swagger-ui-react"],
 };
 
 export default nextConfig;

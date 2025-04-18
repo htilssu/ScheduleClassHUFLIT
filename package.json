@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "swagger-docs": "node scripts/generate-swagger-docs.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "2.7.2",
@@ -53,6 +54,7 @@
     "nanoid": "^5.1.5",
     "next": "15.3.0-canary.45",
     "next-auth": "5.0.0-beta.25",
+    "next-swagger-doc": "^0.4.1",
     "qss": "^3.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -63,6 +65,8 @@
     "react-spinners": "^0.15.0",
     "recharts": "^2.15.1",
     "remark-gfm": "^4.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-react": "^5.21.0",
     "tailwind-merge": "^2.6.0",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
@@ -76,6 +80,7 @@
     "@types/react": "^19.0.12",
     "@types/react-dom": "^18.3.5",
     "@types/react-window": "^1.8.8",
+    "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.1.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",

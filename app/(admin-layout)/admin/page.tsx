@@ -32,22 +32,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
-interface ChartData {
-  date: string;
-  users: number;
-  classes: number;
-  timelines: number;
-  feedbacks: number;
-}
-
-interface FeedbackByDay {
-  date: string;
-  total: number;
-  ratings: {
-    [key: string]: number;
-  };
-}
-
 const RATING_COLORS = {
   "1 sao": "#ff0000",
   "2 sao": "#ff6b00",
