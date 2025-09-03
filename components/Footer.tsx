@@ -109,14 +109,6 @@ const Footer = () => {
                         </a>
                     </div>
                 </div>
-
-                <div className="text-center mt-6 border-t border-gray-600 pt-4">
-                    <p className="text-gray-300 text-sm">
-                        Bản quyền © 2024-2035{" "}
-                        <span className="text-orange-400 font-medium">devgenZhuflit.com</span>. Hệ
-                        thống trực tuyến bảo vệ người dùng hàng đầu Việt Nam.
-                    </p>
-                </div>
             </div>
         </footer>
     );
