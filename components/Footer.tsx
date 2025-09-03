@@ -1,7 +1,8 @@
 import React from "react";
-import { IoIosArrowForward } from "react-icons/io";
-import { FaFacebookF, FaGithub, FaTwitter, FaLinkedinIn } from "react-icons/fa";
-import { TbPointFilled } from "react-icons/tb";
+import {IoIosArrowForward} from "react-icons/io";
+import {FaFacebookF, FaGithub, FaTwitter, FaLinkedinIn} from "react-icons/fa";
+import {TbPointFilled} from "react-icons/tb";
+import Image from "next/image";
 
 const Footer = () => {
     return (
@@ -10,15 +11,15 @@ const Footer = () => {
                 <div className="flex flex-wrap justify-between items-start mb-8">
                     <div className="w-full md:w-1/2 lg:w-1/4 p-4">
                         <div className="flex items-center mb-4">
-                            <img
+                            <Image
                                 src={"/images/zoro-back.png"}
                                 alt="Logo"
                                 className="w-16 h-16 rounded-full shadow-lg border-2 border-orange-500"
                             />
-                            <span className="text-2xl font-bold ml-3 text-white">xeplichhuflit.edu.vn</span>
+                            <span className="text-2xl font-bold ml-3 text-white">Hi</span>
                         </div>
                         <p className="text-gray-200">
-                            Công TTHH 2 thành viên Hieu Tuan Junior @huflit quản lý bởi TH True Company.
+                            {/*    TODO*/} His
                         </p>
                     </div>
 
@@ -31,7 +32,7 @@ const Footer = () => {
                                         href="#"
                                         className="flex items-center text-gray-200 hover:text-orange-400 transition duration-300 transform hover:translate-x-1"
                                     >
-                                        <IoIosArrowForward size={20} className="hover:text-orange-500" />
+                                        <IoIosArrowForward size={20} className="hover:text-orange-500"/>
                                         <span className="ml-2">{item}</span>
                                     </a>
                                 </li>
@@ -43,9 +44,7 @@ const Footer = () => {
                         <h3 className="text-xl font-bold mb-4 text-orange-600">Hotline</h3>
                         <ul className="space-y-2">
                             {[
-                                "Email: devgenZhuflit@gmail.com",
-                                "Điện thoại: +84 397 654 789",
-                                "Địa chỉ: Số 99 Đường SVH, Quận 13, TP HCM"
+                                "Email: tolashuu@gmail.com",
                             ].map((item) => (
                                 <li key={item} className="flex items-center justify-start">
                                     <TbPointFilled className={"text-orange-500"} size={18}/>
@@ -64,7 +63,7 @@ const Footer = () => {
                                         href="#"
                                         className="flex items-center text-gray-200 hover:text-orange-400 transition duration-300 transform hover:translate-x-1"
                                     >
-                                        <IoIosArrowForward size={20} className="hover:text-orange-500" />
+                                        <IoIosArrowForward size={20} className="hover:text-orange-500"/>
                                         <span className="ml-2">{item}</span>
                                     </a>
                                 </li>
@@ -82,7 +81,7 @@ const Footer = () => {
                             rel="noopener noreferrer"
                             className="text-gray-200 hover:text-orange-400 transition duration-300 transform hover:scale-110"
                         >
-                            <FaFacebookF size={24} />
+                            <FaFacebookF size={24}/>
                         </a>
                         <a
                             href="https://github.com"
@@ -90,7 +89,7 @@ const Footer = () => {
                             rel="noopener noreferrer"
                             className="text-gray-200 hover:text-orange-400 transition duration-300 transform hover:scale-110"
                         >
-                            <FaGithub size={24} />
+                            <FaGithub size={24}/>
                         </a>
                         <a
                             href="https://twitter.com"
@@ -98,7 +97,7 @@ const Footer = () => {
                             rel="noopener noreferrer"
                             className="text-gray-200 hover:text-orange-400 transition duration-300 transform hover:scale-110"
                         >
-                            <FaTwitter size={24} />
+                            <FaTwitter size={24}/>
                         </a>
                         <a
                             href="https://linkedin.com"
@@ -106,7 +105,7 @@ const Footer = () => {
                             rel="noopener noreferrer"
                             className="text-gray-200 hover:text-orange-400 transition duration-300 transform hover:scale-110"
                         >
-                            <FaLinkedinIn size={24} />
+                            <FaLinkedinIn size={24}/>
                         </a>
                     </div>
                 </div>
