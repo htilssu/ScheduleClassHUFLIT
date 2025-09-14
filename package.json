@@ -1,5 +1,5 @@
 {
-  "name": "chedule_huflit_class",
+  "name": "schedule_huflit_class",
   "version": "0.1.1",
   "private": true,
   "scripts": {
@@ -9,8 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "postinstall": "prisma generate",
-    "swagger-docs": "node scripts/generate-swagger-docs.js"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
@@ -53,8 +52,7 @@
     "mongodb": "^6.19.0",
     "nanoid": "^5.1.5",
     "next": "15.6.0-canary.6",
-    "next-auth": "5.0.0-beta.25",
-    "next-swagger-doc": "^0.4.1",
+    "next-auth": "5.0.0-beta.29",
     "qss": "^3.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
