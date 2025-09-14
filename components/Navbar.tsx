@@ -10,12 +10,13 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { clearUser, AppDispatch } from "@/lib/state";
 import useUser from "@/lib/hook/useUser";
+import useAppConfig from "@/lib/hook/use-app-config";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const config = useAppConfig();
   const pathname = usePathname();
 
-  // Sử dụng hook useUser để tự động fetch và lấy dữ liệu người dùng
   const { data: user, loading: userLoading } = useUser();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -30,9 +31,8 @@ const Navbar = () => {
   }, []);
 
   const handleSignOut = async () => {
-    // Dispatch action để clear user state trong redux
     dispatch(clearUser());
-    await signOut({ callbackUrl: "/" });
+    await signOut({ redirectTo: "/" });
   };
 
   return (
@@ -44,14 +44,14 @@ const Navbar = () => {
           <div className="shrink-0">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/images/LogoT&H1.png"
+                src="/favicon.ico"
                 alt="Logo"
                 width={48}
                 height={48}
                 className="h-12 w-auto"
               />
-              <span className="text-3xl font-bold bg-linear-to-r from-gray-700 via-orange-500 to-orange-300 bg-clip-text text-transparent">
-                SCHEDULE
+              <span className="text-3xl uppercase font-bold bg-linear-to-r from-gray-700 via-orange-500 to-orange-300 bg-clip-text text-transparent">
+                {config.appName}
               </span>
             </Link>
           </div>

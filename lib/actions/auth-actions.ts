@@ -3,8 +3,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { RegisterData, RegisterResponse } from "../types/auth";
+import { RegisterData, RegisterResponse } from "@/lib/types";
 import { nanoid } from "nanoid";
+import { registerSchema } from "@/lib/utils/register";
+import { hashPassword } from "@/lib/utils";
 
 // Hàm kiểm tra định dạng email
 function isValidEmail(email: string): boolean {
@@ -12,9 +14,7 @@ function isValidEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-// Hàm tạo username từ email
 function generateUsernameFromEmail(email: string): string {
-  // Lấy phần trước @ và thêm vài ký tự ngẫu nhiên để tránh trùng lặp
   const baseUsername = email.split("@")[0];
   const randomChars = nanoid(3);
   return `${baseUsername}_${randomChars}`;
@@ -24,31 +24,14 @@ export async function signUp(data: RegisterData): Promise<RegisterResponse> {
   try {
     const { name, email, password } = data;
 
-    // Validate input
-    if (!name || !email || !password) {
+    const safeParse = registerSchema.safeParse(data);
+    if (!safeParse.success) {
       return {
         success: false,
-        message: "Vui lòng điền đầy đủ thông tin",
+        message: safeParse.error.message,
       };
     }
 
-    // Kiểm tra định dạng email
-    if (!isValidEmail(email)) {
-      return {
-        success: false,
-        message: "Định dạng email không hợp lệ",
-      };
-    }
-
-    // Kiểm tra độ dài mật khẩu
-    if (password.length < 6) {
-      return {
-        success: false,
-        message: "Mật khẩu phải có ít nhất 6 ký tự",
-      };
-    }
-
-    // Kiểm tra email đã tồn tại chưa
     const existingUser = await prisma.user.findFirst({
       where: {
         email: email,
@@ -65,37 +48,8 @@ export async function signUp(data: RegisterData): Promise<RegisterResponse> {
     // Tạo username từ email
     let username = generateUsernameFromEmail(email);
 
-    // Kiểm tra username đã tồn tại chưa và tạo lại nếu cần
-    let usernameExists = true;
-    let maxAttempts = 5;
-    let attempts = 0;
+    const hashedPassword = await hashPassword(password);
 
-    while (usernameExists && attempts < maxAttempts) {
-      const existingUsername = await prisma.user.findFirst({
-        where: { username: username },
-      });
-
-      if (!existingUsername) {
-        usernameExists = false;
-      } else {
-        const randomChars = Math.random().toString(36).substring(2, 5);
-        username = `${username.split("_")[0]}_${randomChars}`;
-        attempts += 1;
-      }
-    }
-
-    if (usernameExists) {
-      return {
-        success: false,
-        message: "Không thể tạo tên đăng nhập. Vui lòng thử lại sau.",
-      };
-    }
-
-    // Mã hóa mật khẩu
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Tạo người dùng mới
     await prisma.user.create({
       data: {
         name: name,
@@ -182,7 +136,7 @@ export async function changePassword(data: {
     // Verify current password
     const isValidPassword = await bcrypt.compare(
       currentPassword,
-      user.password
+      user.password,
     );
     if (!isValidPassword) {
       return {

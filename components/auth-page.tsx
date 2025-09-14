@@ -5,13 +5,14 @@ import { cn } from "@/lib/utils/TwMerge";
 import { RegisterForm } from "@/app/(no-layout)/auth/components/RegisterForm";
 import { LoginForm } from "@/app/(no-layout)/auth/components/LoginForm";
 import Image from "next/image";
-import Logo from "@/public/images/LogoT&H.png";
 import Link from "next/link";
+import useAppConfig from "@/lib/hook/use-app-config";
+import Logo from "@/app/components/Logo";
 
 export function AuthPageComponent() {
   const [isLogin, setIsLogin] = useState(true);
+  const config = useAppConfig();
 
-  // Hàm chuyển đổi sang tab đăng nhập
   const switchToLogin = () => {
     setIsLogin(true);
   };
@@ -34,30 +35,22 @@ export function AuthPageComponent() {
             className={cn(
               "w-full max-w-md p-8 space-y-8 bg-white rounded-xl",
               "shadow-xl shadow-orange-300/50 ring-1 ring-orange-200",
-              "transform transition-all duration-300 hover:shadow-2xl hover:shadow-orange-400/50"
+              "transform transition-all duration-300 hover:shadow-2xl hover:shadow-orange-400/50",
             )}
           >
             <div className="relative">
               <div className="flex justify-center items-center">
-                <Link
-                  href="/"
-                  className="flex items-center space-x-2 shrink-0"
-                >
-                  <Image
-                    src={Logo}
-                    alt="Logo"
-                    className="w-11 md:w-14 lg:w-16 h-auto transition-all duration-300"
-                    priority
-                  />
+                <Link href="/" className="flex items-center space-x-2 shrink-0">
+                  <Logo />
                   <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold bg-linear-to-r from-gray-800 via-orange-500 to-orange-200 text-transparent bg-clip-text drop-shadow-lg hover:drop-shadow-xl transition-all duration-300 tracking-wide">
-                    SCHEDULE
+                    {config.appName}
                   </h2>
                 </Link>
               </div>
               <div
                 className={cn(
                   "flex rounded-lg bg-orange-50/50 p-1",
-                  "border border-orange-200/80"
+                  "border border-orange-200/80",
                 )}
               >
                 <button
@@ -65,7 +58,7 @@ export function AuthPageComponent() {
                     "flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md",
                     isLogin
                       ? "bg-white text-orange-500 shadow-xl shadow-orange-200/50"
-                      : "text-gray-500 hover:text-orange-400"
+                      : "text-gray-500 hover:text-orange-400",
                   )}
                   onClick={() => setIsLogin(true)}
                 >
@@ -76,7 +69,7 @@ export function AuthPageComponent() {
                     "flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md",
                     !isLogin
                       ? "bg-white text-orange-500 shadow-xl shadow-orange-200/50"
-                      : "text-gray-500 hover:text-orange-400"
+                      : "text-gray-500 hover:text-orange-400",
                   )}
                   onClick={() => setIsLogin(false)}
                 >

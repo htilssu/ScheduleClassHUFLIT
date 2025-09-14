@@ -1,14 +1,13 @@
 "use client";
 
-import { loadingSlice } from "@/lib/state";
+import { AppDispatch, loadingSlice } from "@/lib/state";
 import { useForm } from "@mantine/form";
-import { Button, TextInput, Text } from "@mantine/core";
+import { Button, Text, TextInput } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { resetUser } from "@/lib/state/user";
-import { AppDispatch } from "@/lib/state";
 
 interface LoginParam {
   username: string;
@@ -73,14 +72,14 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
-      <div className="space-y-2">
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <div className="space-y-2 mb-3">
         <Text component="label" htmlFor="username" size="sm" fw={500}>
           Tên đăng nhập / Email
         </Text>
         <TextInput id="username" {...form.getInputProps("username")} required />
       </div>
-      <div className="space-y-2">
+      <div className={"mb-1"}>
         <Text component="label" htmlFor="password" size="sm" fw={500}>
           Mật khẩu
         </Text>
@@ -92,11 +91,11 @@ export function LoginForm() {
         />
       </div>
       {error && (
-        <Text color="red" size="sm">
+        <Text c="red" size="sm">
           {error}
         </Text>
       )}
-      <Button type="submit" fullWidth color="orange">
+      <Button type="submit" fullWidth color="orange" className={"mt-2"}>
         Đăng nhập
       </Button>
     </form>

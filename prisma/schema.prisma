@@ -40,6 +40,7 @@ model User {
   Feedback          Feedback[]
   Code              Code[]
   CreditTransaction CreditTransaction[]
+  AuditLog          AuditLog[]
 }
 
 model Account {
@@ -249,4 +250,14 @@ model CreditTransaction {
   usageType   UsageType? // Loại sử dụng credit (chỉ áp dụng khi type là SUBTRACTION)
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
 }

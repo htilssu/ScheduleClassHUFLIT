@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "HUFLIT Schedule",
     images: [
       {
-        url: "https://xeplich.htilssu.id.vn/images/LogoT&H1.png",
+        url: "https://xeplich.htilssu.id.vn/favicon.ico",
         width: 1200,
         height: 630,
         alt: "Xếp lịch học HUFLIT Online",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "Xếp lịch học HUFLIT Online - Công cụ tra cứu lịch học chính xác nhất",
     description:
       "Ứng dụng xếp lịch học thông minh giúp sinh viên HUFLIT quản lý thời gian học tập hiệu quả",
-    images: ["https://xeplich.htilssu.id.vn/images/LogoT&H1.png"],
+    images: ["https://xeplich.htilssu.id.vn/favicon.ico"],
     creator: "@huflit_schedule",
     site: "@huflit_schedule",
   },

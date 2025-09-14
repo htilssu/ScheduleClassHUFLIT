@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: "Xếp lịch học HUFLIT",
     images: [
       {
-        url: "https://xeplich.htilssu.id.vn/images/LogoT&H1.png",
+        url: "https://xeplich.htilssu.id.vn/favicon.ico",
         width: 1200,
         height: 630,
         alt: "Xếp lịch học HUFLIT",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Xếp lịch học HUFLIT - Công cụ tra cứu lịch học thông minh",
     description: "Quản lý thời gian học tập hiệu quả cho sinh viên HUFLIT.",
-    images: ["https://xeplich.htilssu.id.vn/images/LogoT&H1.png"],
+    images: ["https://xeplich.htilssu.id.vn/favicon.ico"],
   },
 };
 
