@@ -11,15 +11,15 @@ const Footer = () => {
                 <div className="flex flex-wrap justify-between items-start mb-8">
                     <div className="w-full md:w-1/2 lg:w-1/4 p-4">
                         <div className="flex items-center mb-4">
-                            <Image
-                                src={"/images/zoro-back.png"}
-                                alt="Logo"
-                                className="w-16 h-16 rounded-full shadow-lg border-2 border-orange-500"
-                            />
+                            {/*<Image*/}
+                            {/*    src={"/images/zoro-back.png"}*/}
+                            {/*    alt="Logo"*/}
+                            {/*    className="w-16 h-16 rounded-full shadow-lg border-2 border-orange-500"*/}
+                            {/*/>*/}
                             <span className="text-2xl font-bold ml-3 text-white">Hi</span>
                         </div>
                         <p className="text-gray-200">
-                            {/*    TODO*/} His
+                            {/*    TODO*/} htilssu
                         </p>
                     </div>
 
