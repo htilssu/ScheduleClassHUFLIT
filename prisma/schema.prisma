@@ -201,7 +201,7 @@ model Week {
 
 model TimeLine {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  User        User     @relation(fields: [userId], references: [id])
+  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String   @db.ObjectId
   name        String
   description String?
