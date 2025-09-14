@@ -30,14 +30,14 @@ import { FeedbackCard } from "./feedback-manager/FeedbackCard";
 const FeedbackManager = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedRating, setSelectedRating] = React.useState<string | null>(
-    null
+    null,
   );
   const [replyingTo, setReplyingTo] = React.useState<string | null>(null);
   const [replyContent, setReplyContent] = React.useState("");
   const [copiedEmail, setCopiedEmail] = React.useState<string | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = React.useState(false);
   const [feedbackToDelete, setFeedbackToDelete] = React.useState<string | null>(
-    null
+    null,
   );
   const [isDeleting, setIsDeleting] = React.useState(false);
   const queryClient = useQueryClient();
@@ -47,10 +47,10 @@ const FeedbackManager = () => {
     queryKey: ["feedbacks", currentPage, selectedRating],
     queryFn: async () => {
       const response = await fetch(
-        `/v1/admin/feedbacks?page=${currentPage}&limit=10${
+        `/api/admin/feedbacks?page=${currentPage}&limit=10${
           selectedRating ? `&rating=${selectedRating}` : ""
         }`,
-        {}
+        {},
       );
       if (!response.ok) {
         throw new Error("Failed to fetch feedbacks");

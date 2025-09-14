@@ -42,7 +42,7 @@ interface CodeWithUser {
 
 // Hàm fetch danh sách mã
 async function fetchCodes(): Promise<CodeWithUser[]> {
-  const response = await fetch("/v1/admin/codes");
+  const response = await fetch("/api/admin/codes");
   if (!response.ok) {
     throw new Error("Failed to fetch codes");
   }
@@ -89,7 +89,7 @@ export default function CodeManager() {
     setTimeNow(new Date(Date.now()));
     createForm.setFieldValue(
       "expiredAt",
-      new Date(Date.now() + 24 * 60 * 60 * 1000)
+      new Date(Date.now() + 24 * 60 * 60 * 1000),
     );
   }, []);
 

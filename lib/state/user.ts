@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export async function fetchUserData() {
   try {
-    const response = await fetch("/v1/user");
+    const response = await fetch("/api/user");
 
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Không thể lấy thông tin người dùng: ${response.status} ${errorText}`
+        `Không thể lấy thông tin người dùng: ${response.status} ${errorText}`,
       );
     }
 

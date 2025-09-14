@@ -1,301 +1,299 @@
 "use client";
 
 import {
-    createTimeLine,
-    deleteTimeLine,
-    updateTimeLine,
+  createTimeLine,
+  deleteTimeLine,
+  updateTimeLine,
 } from "@/lib/actions/timeline-actions";
 import useUser from "@/lib/hook/useUser";
-import {Box, Button, Container, Flex, SimpleGrid, Title} from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
-import {notifications} from "@mantine/notifications";
-import {IconCalendarTime, IconPlus} from "@tabler/icons-react";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {useState} from "react";
-import {useRouter} from "next/navigation";
+import { Box, Button, Container, Flex, SimpleGrid, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconCalendarTime, IconPlus } from "@tabler/icons-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import {CreateTimelineModal} from "./CreateTimelineModal";
-import {DeleteTimelineModal} from "./DeleteTimelineModal";
-import {EditTimelineModal} from "./EditTimelineModal";
-import {TimelineCard} from "./TimelineCard";
-import {TimelineEmptyState} from "./TimelineEmptyState";
-import {TimelineSkeleton} from "./TimelineSkeleton";
-import {Timeline} from "./types";
+import { CreateTimelineModal } from "./CreateTimelineModal";
+import { DeleteTimelineModal } from "./DeleteTimelineModal";
+import { EditTimelineModal } from "./EditTimelineModal";
+import { TimelineCard } from "./TimelineCard";
+import { TimelineEmptyState } from "./TimelineEmptyState";
+import { TimelineSkeleton } from "./TimelineSkeleton";
+import { Timeline } from "./types";
 
 export function TimeLineList() {
-    const router = useRouter();
-    const userState = useUser();
-    const {data: userData, loading: isUserLoading} = userState;
-    const queryClient = useQueryClient();
-    const [timelineName, setTimelineName] = useState("");
-    const [timelineDesc, setTimelineDesc] = useState("");
-    const [selectedTimeline, setSelectedTimeline] = useState<Timeline | null>(
-        null
-    );
-    const [createOpened, {open: openCreate, close: closeCreate}] =
-        useDisclosure(false);
-    const [editOpened, {open: openEdit, close: closeEdit}] =
-        useDisclosure(false);
-    const [deleteOpened, {open: openDelete, close: closeDelete}] =
-        useDisclosure(false);
+  const router = useRouter();
+  const userState = useUser();
+  const { data: userData, loading: isUserLoading } = userState;
+  const queryClient = useQueryClient();
+  const [timelineName, setTimelineName] = useState("");
+  const [timelineDesc, setTimelineDesc] = useState("");
+  const [selectedTimeline, setSelectedTimeline] = useState<Timeline | null>(
+    null,
+  );
+  const [createOpened, { open: openCreate, close: closeCreate }] =
+    useDisclosure(false);
+  const [editOpened, { open: openEdit, close: closeEdit }] =
+    useDisclosure(false);
+  const [deleteOpened, { open: openDelete, close: closeDelete }] =
+    useDisclosure(false);
 
-    // Fetch timelines với useQuery
-    const {
-        data: timelines = [],
-        isLoading,
-        isError,
-        error,
-    } = useQuery<Timeline[], Error>({
-        queryKey: ["timelines", userData?.id],
-        queryFn: async () => {
-            if (!userData?.id) return [];
+  // Fetch timelines với useQuery
+  const {
+    data: timelines = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Timeline[], Error>({
+    queryKey: ["timelines", userData?.id],
+    queryFn: async () => {
+      if (!userData?.id) return [];
 
-            const response = await fetch("/v1/timeline");
-            if (!response.ok) {
-                if (response.status === 401) {
-                    // Chuyển hướng đến trang đăng nhập
-                    router.push("/auth");
-                    return [];
-                }
-                throw new Error("Không thể tải danh sách lịch học");
-            }
-            return response.json();
-        },
-        staleTime: 5 * 60 * 1000,
+      const response = await fetch("/api/timeline");
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Chuyển hướng đến trang đăng nhập
+          router.push("/auth");
+          return [];
+        }
+        throw new Error("Không thể tải danh sách lịch học");
+      }
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (isError) {
+    notifications.show({
+      title: "Lỗi",
+      message: error?.message || "Không thể tải danh sách lịch học",
+      color: "red",
     });
+    // Optionally render an error state UI here
+  }
 
-    if (isError) {
+  const handleCreateTimeline = async () => {
+    try {
+      const result = await createTimeLine({
+        name: timelineName,
+        description: timelineDesc || undefined,
+        classes: [],
+      });
+
+      if (result.success) {
         notifications.show({
-            title: "Lỗi",
-            message: error?.message || "Không thể tải danh sách lịch học",
-            color: "red",
+          title: "Thành công",
+          message: "Đã tạo lịch học mới",
+          color: "green",
         });
-        // Optionally render an error state UI here
+        setTimelineName("");
+        setTimelineDesc("");
+        closeCreate();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
+      } else {
+        notifications.show({
+          title: "Lỗi",
+          message: result.error || "Không thể tạo lịch học mới",
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo timeline:", error);
+      notifications.show({
+        title: "Lỗi",
+        message: "Không thể tạo lịch học mới",
+        color: "red",
+      });
     }
+  };
 
-    const handleCreateTimeline = async () => {
-        try {
-            const result = await createTimeLine({
-                name: timelineName,
-                description: timelineDesc || undefined,
-                classes: [],
-            });
+  const handleEditTimeline = async () => {
+    if (!selectedTimeline) return;
 
-            if (result.success) {
-                notifications.show({
-                    title: "Thành công",
-                    message: "Đã tạo lịch học mới",
-                    color: "green",
-                });
-                setTimelineName("");
-                setTimelineDesc("");
-                closeCreate();
-                queryClient.invalidateQueries({queryKey: ["timelines"]});
-            } else {
-                notifications.show({
-                    title: "Lỗi",
-                    message: result.error || "Không thể tạo lịch học mới",
-                    color: "red",
-                });
-            }
-        } catch (error) {
-            console.error("Lỗi khi tạo timeline:", error);
-            notifications.show({
-                title: "Lỗi",
-                message: "Không thể tạo lịch học mới",
-                color: "red",
-            });
-        }
-    };
+    try {
+      const result = await updateTimeLine({
+        id: selectedTimeline.id,
+        name: timelineName,
+        description: timelineDesc || undefined,
+        classes: selectedTimeline.classes
+          ? JSON.parse(selectedTimeline.classes as string)
+          : [],
+      });
 
-    const handleEditTimeline = async () => {
-        if (!selectedTimeline) return;
+      if (result.success) {
+        notifications.show({
+          title: "Thành công",
+          message: "Đã cập nhật lịch học",
+          color: "green",
+        });
+        setSelectedTimeline(null);
+        setTimelineName("");
+        setTimelineDesc("");
+        closeEdit();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
+      } else {
+        notifications.show({
+          title: "Lỗi",
+          message: result.error || "Không thể cập nhật lịch học",
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật timeline:", error);
+      notifications.show({
+        title: "Lỗi",
+        message: "Không thể cập nhật lịch học",
+        color: "red",
+      });
+    }
+  };
 
-        try {
-            const result = await updateTimeLine({
-                id: selectedTimeline.id,
-                name: timelineName,
-                description: timelineDesc || undefined,
-                classes: selectedTimeline.classes
-                    ? JSON.parse(selectedTimeline.classes as string)
-                    : [],
-            });
+  const handleDeleteTimeline = async () => {
+    if (!selectedTimeline) return;
 
-            if (result.success) {
-                notifications.show({
-                    title: "Thành công",
-                    message: "Đã cập nhật lịch học",
-                    color: "green",
-                });
-                setSelectedTimeline(null);
-                setTimelineName("");
-                setTimelineDesc("");
-                closeEdit();
-                queryClient.invalidateQueries({queryKey: ["timelines"]});
-            } else {
-                notifications.show({
-                    title: "Lỗi",
-                    message: result.error || "Không thể cập nhật lịch học",
-                    color: "red",
-                });
-            }
-        } catch (error) {
-            console.error("Lỗi khi cập nhật timeline:", error);
-            notifications.show({
-                title: "Lỗi",
-                message: "Không thể cập nhật lịch học",
-                color: "red",
-            });
-        }
-    };
+    try {
+      const result = await deleteTimeLine(selectedTimeline.id);
 
-    const handleDeleteTimeline = async () => {
-        if (!selectedTimeline) return;
+      if (result.success) {
+        notifications.show({
+          title: "Thành công",
+          message: "Đã xóa lịch học",
+          color: "green",
+        });
+        setSelectedTimeline(null);
+        closeDelete();
+        queryClient.invalidateQueries({ queryKey: ["timelines"] });
+      } else {
+        notifications.show({
+          title: "Lỗi",
+          message: result.error || "Không thể xóa lịch học",
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi xóa timeline:", error);
+      notifications.show({
+        title: "Lỗi",
+        message: "Không thể xóa lịch học",
+        color: "red",
+      });
+    }
+  };
 
-        try {
-            const result = await deleteTimeLine(selectedTimeline.id);
+  const openEditModal = (timeline: Timeline) => {
+    setSelectedTimeline(timeline);
+    setTimelineName(timeline.name);
+    setTimelineDesc(timeline.description || "");
+    openEdit();
+  };
 
-            if (result.success) {
-                notifications.show({
-                    title: "Thành công",
-                    message: "Đã xóa lịch học",
-                    color: "green",
-                });
-                setSelectedTimeline(null);
-                closeDelete();
-                queryClient.invalidateQueries({queryKey: ["timelines"]});
-            } else {
-                notifications.show({
-                    title: "Lỗi",
-                    message: result.error || "Không thể xóa lịch học",
-                    color: "red",
-                });
-            }
-        } catch (error) {
-            console.error("Lỗi khi xóa timeline:", error);
-            notifications.show({
-                title: "Lỗi",
-                message: "Không thể xóa lịch học",
-                color: "red",
-            });
-        }
-    };
+  const openDeleteModal = (timeline: Timeline) => {
+    setSelectedTimeline(timeline);
+    openDelete();
+  };
 
-    const openEditModal = (timeline: Timeline) => {
-        setSelectedTimeline(timeline);
-        setTimelineName(timeline.name);
-        setTimelineDesc(timeline.description || "");
-        openEdit();
-    };
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
 
-    const openDeleteModal = (timeline: Timeline) => {
-        setSelectedTimeline(timeline);
-        openDelete();
-    };
-
-    // Format date
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat("vi-VN", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(date);
-    };
-
-    return (
-
-        <div className=" py-10 px-10  rounded-md">
-            <div className="">
-                <Flex justify="space-between" align="center" mb="lg">
-                    <Title order={2}>
-                        <IconCalendarTime
-                            size={22}
-                            style={{marginRight: 10, marginBottom: -2}}
-                        />
-                        Lịch học của tôi
-                    </Title>
-                    {userData && (
-                        <Button
-                            leftSection={<IconPlus size={14}/>}
-                            onClick={openCreate}
-                            variant="filled"
-                            radius="md"
-                            size="md"
-                        >
-                            Tạo lịch học mới
-                        </Button>
-                    )}
-                </Flex>
-
-                {isUserLoading || userData === undefined ? (
-                    <TimelineSkeleton/>
-                ) : !userData ? (
-                    <Box py="xl" className="!py-20" ta="center">
-                        <Title order={3} mb="md">
-                            Bạn cần đăng nhập để xem lịch học
-                        </Title>
-                        <Button
-                            size="md"
-                            onClick={() => {
-                                router.push("/auth?redirect=/schedule");
-                            }}
-                        >
-                            Đăng nhập ngay
-                        </Button>
-                    </Box>
-                ) : isLoading ? (
-                    <TimelineSkeleton/>
-                ) : timelines.length === 0 ? (
-                    <TimelineEmptyState onOpenCreate={openCreate}/>
-                ) : (
-                    <SimpleGrid
-                        cols={{base: 1, xs: 1, sm: 1, md: 3, lg: 4}}
-                        spacing={{base: "sm", sm: "sm", md: "md", lg: "lg"}}
-                        verticalSpacing={{base: "sm", sm: "sm", md: "md", lg: "lg"}}
-                    >
-                        {timelines.map((timeline: Timeline) => (
-                            <TimelineCard
-                                key={timeline.id}
-                                timeline={timeline}
-                                onOpenEdit={openEditModal}
-                                onOpenDelete={openDeleteModal}
-                                formatDate={formatDate}
-                            />
-                        ))}
-                    </SimpleGrid>
-                )}
-            </div>
-
-            <CreateTimelineModal
-                opened={createOpened}
-                onClose={closeCreate}
-                timelineName={timelineName}
-                setTimelineName={setTimelineName}
-                timelineDesc={timelineDesc}
-                setTimelineDesc={setTimelineDesc}
-                handleCreate={handleCreateTimeline}
+  return (
+    <div className=" py-10 px-10  rounded-md">
+      <div className="">
+        <Flex justify="space-between" align="center" mb="lg">
+          <Title order={2}>
+            <IconCalendarTime
+              size={22}
+              style={{ marginRight: 10, marginBottom: -2 }}
             />
+            Lịch học của tôi
+          </Title>
+          {userData && (
+            <Button
+              leftSection={<IconPlus size={14} />}
+              onClick={openCreate}
+              variant="filled"
+              radius="md"
+              size="md"
+            >
+              Tạo lịch học mới
+            </Button>
+          )}
+        </Flex>
 
-            <EditTimelineModal
-                opened={editOpened}
-                onClose={closeEdit}
-                timelineName={timelineName}
-                setTimelineName={setTimelineName}
-                timelineDesc={timelineDesc}
-                setTimelineDesc={setTimelineDesc}
-                handleEdit={handleEditTimeline}
-            />
+        {isUserLoading || userData === undefined ? (
+          <TimelineSkeleton />
+        ) : !userData ? (
+          <Box py="xl" className="!py-20" ta="center">
+            <Title order={3} mb="md">
+              Bạn cần đăng nhập để xem lịch học
+            </Title>
+            <Button
+              size="md"
+              onClick={() => {
+                router.push("/auth?redirect=/schedule");
+              }}
+            >
+              Đăng nhập ngay
+            </Button>
+          </Box>
+        ) : isLoading ? (
+          <TimelineSkeleton />
+        ) : timelines.length === 0 ? (
+          <TimelineEmptyState onOpenCreate={openCreate} />
+        ) : (
+          <SimpleGrid
+            cols={{ base: 1, xs: 1, sm: 1, md: 3, lg: 4 }}
+            spacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+            verticalSpacing={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
+          >
+            {timelines.map((timeline: Timeline) => (
+              <TimelineCard
+                key={timeline.id}
+                timeline={timeline}
+                onOpenEdit={openEditModal}
+                onOpenDelete={openDeleteModal}
+                formatDate={formatDate}
+              />
+            ))}
+          </SimpleGrid>
+        )}
+      </div>
 
-            <DeleteTimelineModal
-                opened={deleteOpened}
-                onClose={closeDelete}
-                selectedTimeline={selectedTimeline}
-                handleDelete={handleDeleteTimeline}
-            />
-        </div>
+      <CreateTimelineModal
+        opened={createOpened}
+        onClose={closeCreate}
+        timelineName={timelineName}
+        setTimelineName={setTimelineName}
+        timelineDesc={timelineDesc}
+        setTimelineDesc={setTimelineDesc}
+        handleCreate={handleCreateTimeline}
+      />
 
-    );
+      <EditTimelineModal
+        opened={editOpened}
+        onClose={closeEdit}
+        timelineName={timelineName}
+        setTimelineName={setTimelineName}
+        timelineDesc={timelineDesc}
+        setTimelineDesc={setTimelineDesc}
+        handleEdit={handleEditTimeline}
+      />
+
+      <DeleteTimelineModal
+        opened={deleteOpened}
+        onClose={closeDelete}
+        selectedTimeline={selectedTimeline}
+        handleDelete={handleDeleteTimeline}
+      />
+    </div>
+  );
 }

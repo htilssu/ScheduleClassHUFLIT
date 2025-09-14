@@ -29,14 +29,18 @@ interface UseUsersParams {
   search?: string;
 }
 
-const fetchUsers = async ({ page = 1, limit = 10, search = "" }: UseUsersParams = {}): Promise<PaginatedResponse> => {
+const fetchUsers = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+}: UseUsersParams = {}): Promise<PaginatedResponse> => {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     search,
   });
-  
-  const response = await fetch(`/v1/admin/users?${params}`);
+
+  const response = await fetch(`/api/admin/users?${params}`);
   if (!response.ok) {
     throw new Error("Failed to fetch users");
   }
@@ -50,4 +54,4 @@ export const useUsers = (params?: UseUsersParams) => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
   });
-}; 
+};

@@ -38,15 +38,15 @@ function SetupSection() {
   const handleSaveClassConfig = useCallback(() => {
     localStorage.setItem("classConfig", JSON.stringify(form.values));
     document.cookie = `classConfig=${JSON.stringify(
-      form.values
+      form.values,
     )}; path=/; max-age=31536000`; // Lưu 1 năm
   }, [form.values]);
 
   // Gọi API khi component mount
   useEffect(() => {
-    get("/v1/major").then((res) => setMajor(res.data));
-    get("/v1/studyYear").then((res) => setStudyYear(res.data));
-    get("/v1/semester").then((res) => setSemester(res.data));
+    get("/api/major").then((res) => setMajor(res.data));
+    get("/api/studyYear").then((res) => setStudyYear(res.data));
+    get("/api/semester").then((res) => setSemester(res.data));
   }, []);
 
   return (
