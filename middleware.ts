@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export { auth } from "@/lib/auth";
-
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
@@ -21,10 +19,10 @@ function checkAdminAccess(session: any) {
 export default async function middleware(req: NextRequest) {
   const session = await auth();
 
-  if (/admin/i.test(req.nextUrl.pathname)) {
+  if (/^\/admin/i.test(req.nextUrl.pathname)) {
     if (!checkAdminAccess(session)) {
       const url = req.nextUrl.clone();
-      url.pathname = '/unauthorized';
+      url.pathname = "/unauthorized";
       return NextResponse.redirect(url);
     }
   }

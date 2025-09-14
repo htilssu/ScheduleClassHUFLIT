@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Logo from "@/app/components/Logo";
 
 export default function Unauthorized() {
   const [countdown, setCountdown] = useState(30);
@@ -50,12 +51,7 @@ export default function Unauthorized() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-2xl w-full p-8 text-center transform transition-all duration-300">
         <div className="relative lg:w-64 lg:h-64 w-32 h-32 mx-auto">
-          <Image
-            src="/images/LogoT&H.png"
-            alt="Unauthorized Access"
-            fill
-            className="object-cover rounded-full"
-          />
+          <Logo fullWidth />
         </div>
 
         <h1 className="text-6xl font-extrabold mb-4 flex items-center justify-center gap-1 animate-pulse">
@@ -111,4 +107,4 @@ export default function Unauthorized() {
       </div>
     </div>
   );
-} 
+}

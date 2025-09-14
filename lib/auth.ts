@@ -34,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const compareResult = await comparePassword(
           credentials.password as string,
-          user.password
+          user.password,
         );
         if (!compareResult) {
           throw new WrongPasswordException();
