@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, signOut } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   if (!session || !session.user) {
     return NextResponse.json(
       { error: "Không tìm thấy phiên đăng nhập" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(
           { error: "Tài khoản bị khóa hoặc không có quyền truy cập" },
-          { status: 403 }
+          { status: 403 },
         );
       }
 
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
     } else {
       return NextResponse.json(
         { error: "Không tìm thấy người dùng" },
-        { status: 401 }
+        { status: 401 },
       );
     }
   } catch (error) {
