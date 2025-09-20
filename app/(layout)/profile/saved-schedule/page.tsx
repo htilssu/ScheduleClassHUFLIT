@@ -1,13 +1,13 @@
-import React from 'react';
-import { Paper, Title, Text, Stack } from '@mantine/core';
-import {TimeLineList} from "@/app/(layout)/schedule/components/TimelineList";
+import React from "react";
+import { Paper } from "@mantine/core";
+import { TimeLineList } from "@/app/(proteced_route)/(main_layout)/schedule/components/TimelineList";
 
 const SavedSchedulePage = () => {
-    return (
-        <Paper shadow="sm" p="md" radius="md" withBorder>
-            <TimeLineList />
-        </Paper>
-    );
+  return (
+    <Paper shadow="sm" p="md" radius="md" withBorder>
+      <TimeLineList />
+    </Paper>
+  );
 };
 
-export default SavedSchedulePage; 
+export default SavedSchedulePage;
