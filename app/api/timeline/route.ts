@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /v1/timeline - Lấy danh sách timeLine của người dùng
+ * GET /api/timeline - Lấy danh sách timeLine của người dùng
  */
 export async function GET(req: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Người dùng chưa đăng nhập" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     console.error("Lỗi khi lấy danh sách timeLine:", error);
     return NextResponse.json(
       { error: "Lỗi khi lấy danh sách lịch học" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

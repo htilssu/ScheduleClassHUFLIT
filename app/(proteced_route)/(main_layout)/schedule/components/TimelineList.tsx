@@ -6,7 +6,7 @@ import {
   updateTimeLine,
 } from "@/lib/actions/timeline-actions";
 import useUser from "@/lib/hook/useUser";
-import { Box, Button, Container, Flex, SimpleGrid, Title } from "@mantine/core";
+import { Button, Flex, SimpleGrid, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconCalendarTime, IconPlus } from "@tabler/icons-react";
@@ -206,7 +206,7 @@ export function TimeLineList() {
   };
 
   return (
-    <div className=" py-10 px-10  rounded-md">
+    <div className="py-10 px-10 rounded-md">
       <div className="">
         <Flex justify="space-between" align="center" mb="lg">
           <Title order={2}>
@@ -214,7 +214,7 @@ export function TimeLineList() {
               size={22}
               style={{ marginRight: 10, marginBottom: -2 }}
             />
-            Lịch học của tôi
+            Lịch học của bạn
           </Title>
           {userData && (
             <Button
@@ -231,20 +231,6 @@ export function TimeLineList() {
 
         {isUserLoading || userData === undefined ? (
           <TimelineSkeleton />
-        ) : !userData ? (
-          <Box py="xl" className="!py-20" ta="center">
-            <Title order={3} mb="md">
-              Bạn cần đăng nhập để xem lịch học
-            </Title>
-            <Button
-              size="md"
-              onClick={() => {
-                router.push("/auth?redirect=/schedule");
-              }}
-            >
-              Đăng nhập ngay
-            </Button>
-          </Box>
         ) : isLoading ? (
           <TimelineSkeleton />
         ) : timelines.length === 0 ? (

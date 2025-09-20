@@ -43,7 +43,7 @@ const ContactForm: React.FC = () => {
       const { name, email, subject, message } = emailData;
 
       const timer = setTimeout(() => {
-        window.location.href = `mailto:tuanmeo980provip@gmail.com?subject=${subject} from ${name}&body=${message} (Email: ${email})`;
+        window.location.href = `mailto:trunghieu.dev88@gmail.com?subject=${subject} from ${name}&body=${message} (Email: ${email})`;
         setIsSending(false);
         setSentSuccess(true);
         form.reset();
@@ -145,4 +145,4 @@ const ContactForm: React.FC = () => {
   );
 };
 
-export default ContactForm; 
+export default ContactForm;

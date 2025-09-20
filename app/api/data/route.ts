@@ -3,7 +3,7 @@ import { DataImporter } from "@/lib/data/DataImporter";
 
 /**
  * @swagger
- * /v1/data:
+ * /api/data:
  *   get:
  *     summary: Import dữ liệu hệ thống
  *     description: Import dữ liệu lớp học và lịch học vào hệ thống

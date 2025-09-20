@@ -11,7 +11,7 @@ interface TimelineEmptyStateProps {
  */
 export function TimelineEmptyState({ onOpenCreate }: TimelineEmptyStateProps) {
   return (
-    <Paper p="xl" radius="md" withBorder>
+    <div>
       <Center style={{ flexDirection: "column", height: 300, padding: 20 }}>
         <IconCalendar size={60} style={{ opacity: 0.3, marginBottom: 20 }} />
         <Text fw={600} size="xl" ta="center" mb={10}>
@@ -28,6 +28,6 @@ export function TimelineEmptyState({ onOpenCreate }: TimelineEmptyStateProps) {
           Tạo lịch học đầu tiên
         </Button>
       </Center>
-    </Paper>
+    </div>
   );
 }

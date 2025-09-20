@@ -8,12 +8,6 @@ import { nanoid } from "nanoid";
 import { registerSchema } from "@/lib/utils/register";
 import { hashPassword } from "@/lib/utils";
 
-// Hàm kiểm tra định dạng email
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
 function generateUsernameFromEmail(email: string): string {
   const baseUsername = email.split("@")[0];
   const randomChars = nanoid(3);

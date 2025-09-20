@@ -28,7 +28,7 @@ interface TimeLineResult {
  * @returns Kết quả thao tác
  */
 export async function createTimeLine(
-  data: TimeLineData
+  data: TimeLineData,
 ): Promise<TimeLineResult> {
   try {
     const session = await auth();
@@ -78,7 +78,7 @@ export async function createTimeLine(
  * @returns Kết quả thao tác
  */
 export async function updateTimeLine(
-  data: UpdateTimeLineData
+  data: UpdateTimeLineData,
 ): Promise<TimeLineResult> {
   try {
     const session = await auth();

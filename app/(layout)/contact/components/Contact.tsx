@@ -20,12 +20,12 @@ const Contact: React.FC = () => {
           zIndex: 0,
         }}
       />
-      
+
       {/* Main content */}
       <div className="relative z-10">
         <ContactHeader />
         <Story />
-        <Team />
+        {/*<Team />*/}
         <ContactSection />
         <FAQ />
       </div>

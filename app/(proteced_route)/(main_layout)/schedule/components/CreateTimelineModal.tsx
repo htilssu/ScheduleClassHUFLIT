@@ -1,4 +1,11 @@
-import { Modal, TextInput, Textarea, Group, Button } from "@mantine/core";
+import {
+  Modal,
+  TextInput,
+  Textarea,
+  Group,
+  Button,
+  Select,
+} from "@mantine/core";
 
 interface CreateTimelineModalProps {
   opened: boolean;
@@ -46,6 +53,27 @@ export function CreateTimelineModal({
         mb="md"
         radius="md"
       />
+      <Select
+        label="Năm học"
+        placeholder="Chọn năm học"
+        mb="md"
+        radius="md"
+        data={["React", "Angular", "Vue", "Svelte"]}
+      />{" "}
+      <Select
+        label="Học kỳ"
+        placeholder="Chọn học kỳ"
+        mb="md"
+        radius="md"
+        data={["React", "Angular", "Vue", "Svelte"]}
+      />{" "}
+      <Select
+        label="Năm học"
+        placeholder="Chọn năm học"
+        mb="md"
+        radius="md"
+        data={["React", "Angular", "Vue", "Svelte"]}
+      />
       <Textarea
         label="Mô tả (tùy chọn)"
         placeholder="Mô tả ngắn gọn về lịch học này"
@@ -53,8 +81,6 @@ export function CreateTimelineModal({
         onChange={(e) => setTimelineDesc(e.target.value)}
         mb="xl"
         radius="md"
-        autosize
-        minRows={3}
       />
       <Group justify="flex-end">
         <Button variant="outline" onClick={onClose} radius="md">

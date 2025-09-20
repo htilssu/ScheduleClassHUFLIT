@@ -152,9 +152,10 @@ type ClassSecretType {
 }
 
 model Major {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  name     String    @unique
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  name     String     @unique
   Subjects Subject[]
+  TimeLine TimeLine[]
 }
 
 model Subject {
@@ -168,19 +169,21 @@ model Subject {
 }
 
 model YearStudy {
-  year      String   @id @map("_id")
+  year      String     @id @map("_id")
   Weeks     Week[]
   Classes   Class[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  TimeLine  TimeLine[]
 }
 
 model Semester {
-  semester  String   @map("_id")
+  semester  String     @map("_id")
   Week      Week[]
   Classes   Class[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  TimeLine  TimeLine[]
 
   @@id([semester])
 }
@@ -200,15 +203,21 @@ model Week {
 }
 
 model TimeLine {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String   @db.ObjectId
-  name        String
-  description String?
-  classes     Json     @default("[]") // Lưu trữ danh sách ID của các lớp học
-  isPublic    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  User             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String     @db.ObjectId
+  name             String
+  description      String?
+  classes          Json       @default("[]") // Lưu trữ danh sách ID của các lớp học
+  isPublic         Boolean    @default(false)
+  majorId          String?    @db.ObjectId
+  Major            Major?     @relation(fields: [majorId], references: [id])
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  YearStudy        YearStudy? @relation(fields: [yearStudyYear], references: [year])
+  yearStudyYear    String?
+  Semester         Semester?  @relation(fields: [semesterSemester], references: [semester])
+  semesterSemester String?
 }
 
 model Feedback {
