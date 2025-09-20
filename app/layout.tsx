@@ -4,6 +4,7 @@ import "@mantine/core/styles.css";
 import RootWrapper from "@/components/RootWrapper";
 import { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Xếp lịch học HUFLIT | Công cụ tra cứu lịch học thông minh",
@@ -57,6 +58,7 @@ const Layout = async ({ children }: Readonly<{ children: ReactNode }>) => {
     <html lang={"vi"}>
       <body suppressHydrationWarning>
         <Analytics />
+        <SpeedInsights />
         <RootWrapper>{children}</RootWrapper>
       </body>
     </html>
